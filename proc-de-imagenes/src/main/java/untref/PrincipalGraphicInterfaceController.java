@@ -1,11 +1,14 @@
 package untref;
 
+import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 import untref.interfacebuilders.ImageViewBuilder;
 
 import java.util.ArrayList;
@@ -22,8 +25,21 @@ public class PrincipalGraphicInterfaceController {
 
 		fileMenu.getItems().addAll(fileMenuItem);
 
-		ImageView imageView = new ImageViewBuilder("default.jpg").withPreserveRatio(true).withFitWidth(500).withFitHeight(500).withVisible(true)
+		final ImageView imageView = new ImageViewBuilder("default.jpg").withPreserveRatio(true).withFitWidth(500).withFitHeight(500).withVisible(true)
 				.withX(50).withY(150).withAutosize().build();
+
+		imageView.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+			public void handle(MouseEvent event) {
+				double x = event.getX();
+
+				System.out.println(x);
+				double y = event.getY();
+				System.out.println(y);
+				Color color = imageView.getImage().getPixelReader().getColor((int) x, (int) y);
+
+			}
+		});
+
 
 		List<Node> childrens = new ArrayList<Node>();
 		childrens.add(menuBar);
