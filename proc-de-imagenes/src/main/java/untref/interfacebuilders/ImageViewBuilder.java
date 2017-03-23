@@ -35,12 +35,12 @@ public class ImageViewBuilder {
 	}
 
 	public ImageViewBuilder withX(double x) {
-		imageView.setX(x);
+		imageView.setLayoutX(x);
 		return this;
 	}
 
 	public ImageViewBuilder withY(double y) {
-		imageView.setY(150);
+		imageView.setLayoutY(y);
 		return this;
 	}
 

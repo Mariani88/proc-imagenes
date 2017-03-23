@@ -1,9 +1,12 @@
 package untref;
 
 import javafx.application.Application;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+
+import java.util.List;
 
 public class PrincipalGraphicInterface extends Application {
 
@@ -13,11 +16,13 @@ public class PrincipalGraphicInterface extends Application {
 
 	@Override
 	public void start(Stage primaryStage) {
-		AnchorPane principalPane = new AnchorPane();
-		Scene scene = new Scene(principalPane, 300, 300);
+
+		AnchorPane principalPane = new PrincipalGraphicInterfaceController().initInterfaceElements();
+
+		Scene scene = new Scene(principalPane, 800, 600);
 		primaryStage.setScene(scene);
 
-		((AnchorPane) scene.getRoot()).getChildren().addAll(new PrincipalGraphicInterfaceController().initInterfaceElements());
+
 
 		primaryStage.setMaximized(true);
 		primaryStage.show();
