@@ -27,8 +27,9 @@ public class MenuBarBuilder {
 
 	private Menu createFileMenu(ImageView imageView) {
 		Menu fileMenu = new Menu("File");
-		MenuItem fileMenuItem = createOpenMenuItem(imageView);
-		fileMenu.getItems().addAll(fileMenuItem);
+		MenuItem fileMenuItemOpen = createOpenMenuItem(imageView);
+		MenuItem fileMenuItemSave = createSaveMenuItem(imageView);
+		fileMenu.getItems().addAll(fileMenuItemOpen, fileMenuItemSave);
 		return fileMenu;
 	}
 
@@ -39,14 +40,20 @@ public class MenuBarBuilder {
 		return fileMenuItem;
 	}
 
+	private MenuItem createSaveMenuItem(ImageView imageView) {
+		MenuItem fileMenuItem = new MenuItem("Save as");
+		final FileChooser fileChooser = createOpenFileChooser();
+		setSaveEvent(imageView, fileMenuItem, fileChooser);
+		return fileMenuItem;
+	}
+
 	private FileChooser createOpenFileChooser() {
 		final FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle("Open image");
-		fileChooser.getExtensionFilters()
-				.addAll(new FileChooser.ExtensionFilter("All Images", "*.*"), new FileChooser.ExtensionFilter("JPG", "*.jpg"),
-						new FileChooser.ExtensionFilter("PNG", "*.png"), new FileChooser.ExtensionFilter("RAW", "*.raw"),
-						new FileChooser.ExtensionFilter("PGM", "*.pgm"), new FileChooser.ExtensionFilter("PPM", "*.ppm"),
-						new FileChooser.ExtensionFilter("BMP", "*.bmp"));
+		fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("All Images", "*.*"),
+				new FileChooser.ExtensionFilter("JPG", "*.jpg"), new FileChooser.ExtensionFilter("PNG", "*.png"),
+				new FileChooser.ExtensionFilter("RAW", "*.raw"), new FileChooser.ExtensionFilter("PGM", "*.pgm"),
+				new FileChooser.ExtensionFilter("PPM", "*.ppm"), new FileChooser.ExtensionFilter("BMP", "*.bmp"));
 		return fileChooser;
 	}
 
@@ -61,6 +68,27 @@ public class MenuBarBuilder {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
+			}
+		});
+	}
+
+	private void setSaveEvent(final ImageView imageView, MenuItem fileMenuItem, final FileChooser fileChooser) {
+
+		fileMenuItem.setOnAction(new EventHandler<ActionEvent>() {
+
+			public void handle(ActionEvent event) {
+
+				fileChooser.setTitle("Save Image");
+				File file = fileChooser.showSaveDialog(null);
+
+				if (file != null) {
+					try {
+						ImageIO.write(SwingFXUtils.fromFXImage(imageView.getImage(), null), "jpg", file);
+					} catch (IOException ex) {
+						ex.printStackTrace();
+					}
+				}
+
 			}
 		});
 	}
