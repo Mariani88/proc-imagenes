@@ -1,4 +1,4 @@
-package untref;
+package untref.controllers;
 
 import javafx.event.EventHandler;
 import javafx.scene.Node;
@@ -7,7 +7,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
-import untref.interfacebuilders.ImageDataController;
 import untref.interfacebuilders.ImageViewBuilder;
 import untref.interfacebuilders.MenuBarBuilder;
 

@@ -1,10 +1,11 @@
-package untref.interfacebuilders;
+package untref.controllers;
 
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import untref.interfacebuilders.TextFieldBuilder;
 
 import java.util.Arrays;
 
