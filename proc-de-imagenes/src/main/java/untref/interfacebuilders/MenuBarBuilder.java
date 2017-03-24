@@ -49,9 +49,6 @@ public class MenuBarBuilder {
 				Image image = SwingFXUtils.toFXImage(bufferedImage, null);
 				imageView.setImage(image);
 
-
-
-
 			}
 		});
 

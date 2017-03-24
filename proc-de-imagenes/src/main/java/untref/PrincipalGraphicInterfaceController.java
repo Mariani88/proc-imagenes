@@ -8,12 +8,15 @@ import javafx.scene.layout.VBox;
 import untref.interfacebuilders.ImageDataBuilder;
 import untref.interfacebuilders.ImageViewBuilder;
 import untref.interfacebuilders.MenuBarBuilder;
+import untref.interfacebuilders.TextFieldBuilder;
+import untref.interfacebuilders.MenuBarBuilder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class PrincipalGraphicInterfaceController {
+
 
 	private AnchorPane principalPane;
 	private MenuBar menuBar;
@@ -48,12 +51,14 @@ public class PrincipalGraphicInterfaceController {
 	}
 
 	private ImageView createImageView(AnchorPane principalPane) {
-		return new ImageViewBuilder("default.jpg").withPreserveRatio(true).withFitWidth(500).withFitHeight(500).withVisible(true)
-				.withX(principalPane.getLayoutX() + 50).withY(principalPane.getLayoutY() + 150).withAutosize().build();
+		return new ImageViewBuilder("default.jpg").withPreserveRatio(true).withFitWidth(500).withFitHeight(500)
+				.withVisible(true).withX(principalPane.getLayoutX() + 50).withY(principalPane.getLayoutY() + 150)
+				.withAutosize().build();
 	}
 
 	private ImageView createImageResultView(ImageView imageView) {
-		return new ImageViewBuilder("default.jpg").withPreserveRatio(true).withFitWidth(500).withFitHeight(500).withVisible(true)
-				.withX(imageView.getLayoutX() + imageView.getFitWidth() + 20).withY(imageView.getLayoutY()).withAutosize().build();
+		return new ImageViewBuilder("default.jpg").withPreserveRatio(true).withFitWidth(500).withFitHeight(500)
+				.withVisible(true).withX(imageView.getLayoutX() + imageView.getFitWidth() + 20)
+				.withY(imageView.getLayoutY()).withAutosize().build();
 	}
 }
