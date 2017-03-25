@@ -23,4 +23,9 @@ public class TextFieldBuilder {
 	public TextField build(){
 		return textField;
 	}
+
+	public TextFieldBuilder withMaxWidth(int width) {
+		textField.setMaxWidth(width);
+		return this;
+	}
 }
