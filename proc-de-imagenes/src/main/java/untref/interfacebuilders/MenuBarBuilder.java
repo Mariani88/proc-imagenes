@@ -3,12 +3,18 @@ package untref.interfacebuilders;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.PixelReader;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
+import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
+import untref.DrawingSelect;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -18,10 +24,12 @@ import javax.imageio.ImageIO;
 
 public class MenuBarBuilder {
 
-	public MenuBar build(final ImageView imageView) {
+	public MenuBar build(ImageView imageView) {
 		MenuBar menuBar = new MenuBar();
+		Image image = imageView.getImage();
 		Menu fileMenu = createFileMenu(imageView);
-		menuBar.getMenus().addAll(fileMenu);
+		Menu selectionMenu = createSelectionMenu(imageView);
+		menuBar.getMenus().addAll(fileMenu, selectionMenu);
 		return menuBar;
 	}
 
@@ -31,6 +39,47 @@ public class MenuBarBuilder {
 		MenuItem fileMenuItemSave = createSaveMenuItem(imageView);
 		fileMenu.getItems().addAll(fileMenuItemOpen, fileMenuItemSave);
 		return fileMenu;
+	}
+
+	private Menu createSelectionMenu(ImageView imageView) {
+		Menu selectionMenu = new Menu("Selection");
+		MenuItem selectionImage = createSelectionMenuItem(imageView);
+
+		selectionMenu.getItems().addAll(selectionImage);
+		return selectionMenu;
+	}
+
+	private MenuItem createSelectionMenuItem(ImageView imageView) {
+		MenuItem selectionMenuItem = new MenuItem("Selection Image");
+		final FileChooser fileChooser = createOpenFileChooser();
+		setSelectionEvent(imageView, selectionMenuItem, fileChooser);
+		return selectionMenuItem;
+	}
+
+	private void setSelectionEvent(final ImageView imageView, MenuItem selectionMenuItem, FileChooser fileChooser) {
+		selectionMenuItem.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent event) {
+				// PixelReader pixelReader = imageView.getPixelReader();
+
+				/*
+				 * int width = (int)imageView.getWidth(); /* int height =
+				 * (int)imageView.getHeight();
+				 */
+				// Copy from source to destination pixel by pixel
+				WritableImage writableImage = imageView.snapshot(new SnapshotParameters(), null);
+				/*
+				 * PixelWriter pixelWriter = writableImage.getPixelWriter();
+				 * 
+				 * for (int y = 0; y < height; y++){ for (int x = 0; x < width;
+				 * x++){ Color color = pixelReader.getColor(x, y);
+				 * pixelWriter.setColor(x, y, color); } }
+				 */
+				DrawingSelect a = new DrawingSelect();
+				a.start(writableImage);
+
+			}
+		});
+
 	}
 
 	private MenuItem createOpenMenuItem(ImageView imageView) {
@@ -83,7 +132,14 @@ public class MenuBarBuilder {
 
 				if (file != null) {
 					try {
-						ImageIO.write(SwingFXUtils.fromFXImage(imageView.getImage(), null), "jpg", file);
+						String extension = "";
+
+						int i = file.getName().lastIndexOf('.');
+						int p = Math.max(file.getName().lastIndexOf('/'), file.getName().lastIndexOf('\\'));
+
+						if (i > p)
+							extension = file.getName().substring(i + 1).toUpperCase();
+						ImageIO.write(SwingFXUtils.fromFXImage(imageView.getImage(), null), extension, file);
 					} catch (IOException ex) {
 						ex.printStackTrace();
 					}
