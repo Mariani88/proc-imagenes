@@ -1,13 +1,12 @@
 package untref.controllers;
 
-import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.MenuBar;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
-import untref.eventHandlers.ClickImagePixelValues;
+import untref.eventhandlers.ClickImagePixelValues;
 import untref.interfacebuilders.ImageViewBuilder;
 import untref.interfacebuilders.MenuBarBuilder;
 

@@ -1,4 +1,4 @@
-package untref.eventHandlers;
+package untref.eventhandlers;
 
 import javafx.event.EventHandler;
 import javafx.scene.image.ImageView;

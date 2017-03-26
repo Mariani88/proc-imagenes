@@ -1,4 +1,4 @@
-package untref.eventHandlers;
+package untref.eventhandlers;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -9,6 +9,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import untref.service.ImageEditionService;
 
 public class ChangePixelValue implements EventHandler<ActionEvent> {
 
@@ -18,16 +19,18 @@ public class ChangePixelValue implements EventHandler<ActionEvent> {
 	private ImageView imageResultView;
 	private TextField xField;
 	private TextField yField;
+	private ImageEditionService imageEditionService;
 	private TextField editableValueField;
 
 	public ChangePixelValue(Label valueLabel, TextField valueField, ImageView imageView, ImageView imageResultView, TextField xField,
-			TextField yField) {
+			TextField yField, ImageEditionService imageEditionService) {
 		this.valueLabel = valueLabel;
 		this.valueField = valueField;
 		this.imageView = imageView;
 		this.imageResultView = imageResultView;
 		this.xField = xField;
 		this.yField = yField;
+		this.imageEditionService = imageEditionService;
 		this.editableValueField = new TextField();
 	}
 
@@ -48,29 +51,10 @@ public class ChangePixelValue implements EventHandler<ActionEvent> {
 		});
 	}
 
+	//TODO testear mandando esto a otro objeto
 	private void modifyImage(Image image) {
-		PixelReader pixelReader = image.getPixelReader();
-		int width = (int) image.getWidth();
-		int height = (int) image.getHeight();
-		WritableImage writableImage = new WritableImage(width, height);
-		PixelWriter pixelWriter = writableImage.getPixelWriter();
-
-		for (int x = 0; x < width; x++) {
-			for (int y = 0; y < height; y++) {
-				pixelWriter.setColor(x, y, pixelReader.getColor(x, y));
-			}
-		}
-
-		int x = toInt(xField.getText());
-		int y = toInt(yField.getText());
-		pixelWriter.setArgb(x, y, toInt(editableValueField.getText()));
+		Image writableImage = imageEditionService.modifyPixelValue(image, xField.getText(), yField.getText(), editableValueField.getText());
 		imageResultView.setImage(writableImage);
-		System.out.println(toInt(editableValueField.getText()));
-		System.out.println(imageResultView.getImage().getPixelReader().getArgb(x, y));
-	}
-
-	private int toInt(String text) {
-		return Integer.parseInt(text);
 	}
 
 }
