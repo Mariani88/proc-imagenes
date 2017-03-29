@@ -9,6 +9,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
+import untref.eventhandlers.BinaryImageWithQuadrateHandler;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -21,8 +22,17 @@ public class MenuBarBuilder {
 	public MenuBar build(final ImageView imageView) {
 		MenuBar menuBar = new MenuBar();
 		Menu fileMenu = createFileMenu(imageView);
-		menuBar.getMenus().addAll(fileMenu);
+		Menu editionMenu = createEditionMenu();
+		menuBar.getMenus().addAll(fileMenu, editionMenu);
 		return menuBar;
+	}
+
+	private Menu createEditionMenu() {
+		Menu editionMenu = new Menu("Edition");
+		MenuItem binaryImageWithQuadrate = new MenuItem("binary image with quadrate");
+		binaryImageWithQuadrate.setOnAction(new BinaryImageWithQuadrateHandler());
+		editionMenu.getItems().add(binaryImageWithQuadrate);
+		return editionMenu;
 	}
 
 	private Menu createFileMenu(ImageView imageView) {
