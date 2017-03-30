@@ -10,6 +10,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import untref.eventhandlers.BinaryImageWithQuadrateHandler;
+import untref.service.CreationImageService;
+import untref.service.CreationImageServiceImpl;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -18,6 +20,12 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 public class MenuBarBuilder {
+
+	private CreationImageService creationImageService;
+
+	public MenuBarBuilder() {
+		this.creationImageService = new CreationImageServiceImpl();
+	}
 
 	public MenuBar build(final ImageView imageView) {
 		MenuBar menuBar = new MenuBar();
@@ -30,7 +38,7 @@ public class MenuBarBuilder {
 	private Menu createEditionMenu() {
 		Menu editionMenu = new Menu("Edition");
 		MenuItem binaryImageWithQuadrate = new MenuItem("binary image with quadrate");
-		binaryImageWithQuadrate.setOnAction(new BinaryImageWithQuadrateHandler());
+		binaryImageWithQuadrate.setOnAction(new BinaryImageWithQuadrateHandler(creationImageService));
 		editionMenu.getItems().add(binaryImageWithQuadrate);
 		return editionMenu;
 	}
