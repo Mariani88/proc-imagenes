@@ -18,4 +18,10 @@ public class ImageIOServiceImpl implements ImageIOService {
 		File file = fileChooser.showOpenDialog(null);
 		return imageRepository.findImage(file);
 	}
+
+	@Override
+	public void saveImage(FileChooser fileChooser, Image image) {
+		File file = fileChooser.showSaveDialog(null);
+		imageRepository.storeImage(image, file);
+	}
 }

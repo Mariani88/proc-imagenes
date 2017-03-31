@@ -6,4 +6,6 @@ import java.io.File;
 
 public interface ImageRepository {
 	Image findImage(File file);
+
+	void storeImage(Image image, File file);
 }

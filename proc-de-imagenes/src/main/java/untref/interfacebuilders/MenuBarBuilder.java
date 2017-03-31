@@ -1,28 +1,19 @@
 package untref.interfacebuilders;
 
-import javafx.embed.swing.SwingFXUtils;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import untref.eventhandlers.BinaryImageWithQuadrateHandler;
 import untref.eventhandlers.OpenImageEventHandler;
+import untref.eventhandlers.SaveImageEventHandler;
 import untref.repository.ImageRepository;
 import untref.repository.ImageRepositoryImpl;
 import untref.service.CreationImageService;
 import untref.service.CreationImageServiceImpl;
 import untref.service.ImageIOService;
 import untref.service.ImageIOServiceImpl;
-
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
 
 public class MenuBarBuilder {
 
@@ -90,23 +81,6 @@ public class MenuBarBuilder {
 	}
 
 	private void setSaveEvent(final ImageView imageView, MenuItem fileMenuItem, final FileChooser fileChooser) {
-
-		fileMenuItem.setOnAction(new EventHandler<ActionEvent>() {
-
-			public void handle(ActionEvent event) {
-
-				fileChooser.setTitle("Save Image");
-				File file = fileChooser.showSaveDialog(null);
-
-				if (file != null) {
-					try {
-						ImageIO.write(SwingFXUtils.fromFXImage(imageView.getImage(), null), "jpg", file);
-					} catch (IOException ex) {
-						ex.printStackTrace();
-					}
-				}
-
-			}
-		});
+		fileMenuItem.setOnAction(new SaveImageEventHandler(fileChooser, imageView, imageIOService));
 	}
 }

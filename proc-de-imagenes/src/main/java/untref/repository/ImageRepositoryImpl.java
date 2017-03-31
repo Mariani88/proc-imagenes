@@ -20,4 +20,15 @@ public class ImageRepositoryImpl implements ImageRepository {
 			throw new RuntimeException(e);
 		}
 	}
+
+	@Override
+	public void storeImage(Image image, File file) {
+		if (file != null) {
+			try {
+				ImageIO.write(SwingFXUtils.fromFXImage(image, null), "jpg", file);
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+		}
+	}
 }
