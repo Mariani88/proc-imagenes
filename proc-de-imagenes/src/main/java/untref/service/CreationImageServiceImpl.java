@@ -4,29 +4,32 @@ import javafx.scene.image.Image;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 
-public class CreationImageServiceImpl implements CreationImageService{
+import static javafx.scene.paint.Color.BLACK;
+import static javafx.scene.paint.Color.WHITE;
+
+public class CreationImageServiceImpl implements CreationImageService {
 
 	@Override
-	public Image createBinaryImageWithCenterQuadrate(int width, int height){
+	public Image createBinaryImageWithCenterQuadrate(int width, int height) {
 		WritableImage writableImage = new WritableImage(width, height);
 		PixelWriter pixelWriter = writableImage.getPixelWriter();
-		createBlackImage(width, height, pixelWriter);
+		createBlankImage(width, height, pixelWriter);
 		createCenterQuadrate(width, height, pixelWriter);
 		return writableImage;
 	}
 
-	private void createBlackImage(int width, int height, PixelWriter pixelWriter) {
-		for (int i = 0; i < width; i++) {
-			for (int j = 0; i < height; i++) {
-				pixelWriter.setArgb(i, j, 0);
+	private void createBlankImage(int width, int height, PixelWriter pixelWriter) {
+		for (int row = 0; row < width; row++) {
+			for (int column = 0; column < height; column++) {
+				pixelWriter.setColor(row, column, WHITE);
 			}
 		}
 	}
 
 	private void createCenterQuadrate(int width, int height, PixelWriter pixelWriter) {
-		for(int i = width/3; i <= width*2/3; i++){
-			for(int j = height/3; j <= height*2/3; j++){
-				pixelWriter.setArgb(i, j, -0xFFFFFF);
+		for (int row = width / 3; row <= width * 2 / 3; row++) {
+			for (int column = height / 3; column <= height * 2 / 3; column++) {
+				pixelWriter.setColor(row, column, BLACK);
 			}
 		}
 	}

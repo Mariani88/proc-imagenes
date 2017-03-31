@@ -10,8 +10,13 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import untref.eventhandlers.BinaryImageWithQuadrateHandler;
+import untref.eventhandlers.OpenImageEventHandler;
+import untref.repository.ImageRepository;
+import untref.repository.ImageRepositoryImpl;
 import untref.service.CreationImageService;
 import untref.service.CreationImageServiceImpl;
+import untref.service.ImageIOService;
+import untref.service.ImageIOServiceImpl;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -22,9 +27,13 @@ import javax.imageio.ImageIO;
 public class MenuBarBuilder {
 
 	private CreationImageService creationImageService;
+	private ImageIOService imageIOService;
+	private ImageRepository imageRepository;
 
 	public MenuBarBuilder() {
+		this.imageRepository = new ImageRepositoryImpl();
 		this.creationImageService = new CreationImageServiceImpl();
+		this.imageIOService = new ImageIOServiceImpl(imageRepository);
 	}
 
 	public MenuBar build(final ImageView imageView) {
@@ -53,41 +62,31 @@ public class MenuBarBuilder {
 
 	private MenuItem createOpenMenuItem(ImageView imageView) {
 		MenuItem fileMenuItem = new MenuItem("open...");
-		final FileChooser fileChooser = createOpenFileChooser();
+		final FileChooser fileChooser = createFileChooser("open image");
 		setOpenEvent(imageView, fileMenuItem, fileChooser);
 		return fileMenuItem;
 	}
 
 	private MenuItem createSaveMenuItem(ImageView imageView) {
 		MenuItem fileMenuItem = new MenuItem("Save as");
-		final FileChooser fileChooser = createOpenFileChooser();
+		final FileChooser fileChooser = createFileChooser("save image");
 		setSaveEvent(imageView, fileMenuItem, fileChooser);
 		return fileMenuItem;
 	}
 
-	private FileChooser createOpenFileChooser() {
+	private FileChooser createFileChooser(String title) {
 		final FileChooser fileChooser = new FileChooser();
-		fileChooser.setTitle("Open image");
-		fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("All Images", "*.*"),
-				new FileChooser.ExtensionFilter("JPG", "*.jpg"), new FileChooser.ExtensionFilter("PNG", "*.png"),
-				new FileChooser.ExtensionFilter("RAW", "*.raw"), new FileChooser.ExtensionFilter("PGM", "*.pgm"),
-				new FileChooser.ExtensionFilter("PPM", "*.ppm"), new FileChooser.ExtensionFilter("BMP", "*.bmp"));
+		fileChooser.setTitle(title);
+		fileChooser.getExtensionFilters()
+				.addAll(new FileChooser.ExtensionFilter("All Images", "*.*"), new FileChooser.ExtensionFilter("JPG", "*.jpg"),
+						new FileChooser.ExtensionFilter("PNG", "*.png"), new FileChooser.ExtensionFilter("RAW", "*.raw"),
+						new FileChooser.ExtensionFilter("PGM", "*.pgm"), new FileChooser.ExtensionFilter("PPM", "*.ppm"),
+						new FileChooser.ExtensionFilter("BMP", "*.bmp"));
 		return fileChooser;
 	}
 
 	private void setOpenEvent(final ImageView imageView, MenuItem fileMenuItem, final FileChooser fileChooser) {
-		fileMenuItem.setOnAction(new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent event) {
-				File file = fileChooser.showOpenDialog(null);
-				try {
-					BufferedImage bufferedImage = ImageIO.read(file);
-					Image image = SwingFXUtils.toFXImage(bufferedImage, null);
-					imageView.setImage(image);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		});
+		fileMenuItem.setOnAction(new OpenImageEventHandler(fileChooser, imageView, imageIOService));
 	}
 
 	private void setSaveEvent(final ImageView imageView, MenuItem fileMenuItem, final FileChooser fileChooser) {

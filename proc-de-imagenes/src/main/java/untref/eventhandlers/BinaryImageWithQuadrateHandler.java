@@ -3,6 +3,8 @@ package untref.eventhandlers;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelWriter;
@@ -30,7 +32,11 @@ public class BinaryImageWithQuadrateHandler implements EventHandler<ActionEvent>
 		imageView.setFitHeight(height);
 		Image writableImage = creationImageService.createBinaryImageWithCenterQuadrate(width, height);
 		imageView.setImage(writableImage);
-		anchorPane.getChildren().add(imageView);
+
+		Menu saveMenu = new Menu("save");
+		MenuBar menuBar = new MenuBar(saveMenu);
+
+		anchorPane.getChildren().addAll(imageView, menuBar);
 		Scene scene = new Scene(anchorPane);
 		stage.setScene(scene);
 		stage.show();
