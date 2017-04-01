@@ -7,6 +7,8 @@ import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import untref.service.ImageIOService;
 
+import java.util.Optional;
+
 public class OpenImageEventHandler implements EventHandler<ActionEvent> {
 
 	private FileChooser fileChooser;
@@ -20,7 +22,7 @@ public class OpenImageEventHandler implements EventHandler<ActionEvent> {
 	}
 
 	public void handle(ActionEvent event) {
-		Image image = imageIOService.openImage(fileChooser);
-		imageView.setImage(image);
+		Optional<Image> image = imageIOService.openImage(fileChooser);
+		image.ifPresent(image1 -> imageView.setImage(image1));
 	}
 }

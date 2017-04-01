@@ -5,6 +5,7 @@ import javafx.stage.FileChooser;
 import untref.repository.ImageRepository;
 
 import java.io.File;
+import java.util.Optional;
 
 public class ImageIOServiceImpl implements ImageIOService {
 	private ImageRepository imageRepository;
@@ -14,9 +15,9 @@ public class ImageIOServiceImpl implements ImageIOService {
 	}
 
 	@Override
-	public Image openImage(FileChooser fileChooser) {
-		File file = fileChooser.showOpenDialog(null);
-		return imageRepository.findImage(file);
+	public Optional<Image> openImage(FileChooser fileChooser) {
+		Optional<File> file = Optional.ofNullable(fileChooser.showOpenDialog(null));
+		return file.map(file1 -> imageRepository.findImage(file1));
 	}
 
 	@Override
