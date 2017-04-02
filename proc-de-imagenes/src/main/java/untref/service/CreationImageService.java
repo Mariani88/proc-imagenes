@@ -5,4 +5,6 @@ import javafx.scene.image.Image;
 public interface CreationImageService {
 
 	Image createBinaryImageWithCenterQuadrate(int width, int weight);
+
+	Image createBinaryImageWithCenterCircle(int width, int weight);
 }

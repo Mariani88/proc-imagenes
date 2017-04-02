@@ -15,17 +15,21 @@ import untref.factory.FileImageChooserFactory;
 import untref.service.CreationImageService;
 import untref.service.ImageIOService;
 
-public class BinaryImageWithQuadrateHandler implements EventHandler<ActionEvent> {
+import java.util.function.Supplier;
+
+public class BinaryImageWithCenterFigureHandler implements EventHandler<ActionEvent> {
 
 	private CreationImageService creationImageService;
 	private ImageIOService imageIOService;
 	private FileImageChooserFactory fileImageChooserFactory;
+	private Supplier<Image> creationCenterFigure;
 
-	public BinaryImageWithQuadrateHandler(CreationImageService creationImageService, ImageIOService imageIOService,
-			FileImageChooserFactory fileImageChooserFactory) {
+	public BinaryImageWithCenterFigureHandler(CreationImageService creationImageService, ImageIOService imageIOService,
+			FileImageChooserFactory fileImageChooserFactory, Supplier<Image> creationCenterFigure) {
 		this.creationImageService = creationImageService;
 		this.imageIOService = imageIOService;
 		this.fileImageChooserFactory = fileImageChooserFactory;
+		this.creationCenterFigure = creationCenterFigure;
 	}
 
 	@Override
@@ -48,9 +52,10 @@ public class BinaryImageWithQuadrateHandler implements EventHandler<ActionEvent>
 		imageView.setLayoutY(menuBar.getLayoutY() + 30);
 		int width = 200;
 		int height = 200;
+		imageView.autosize();
 		imageView.setFitWidth(width);
 		imageView.setFitHeight(height);
-		Image writableImage = creationImageService.createBinaryImageWithCenterQuadrate(width, height);
+		Image writableImage = creationCenterFigure.get();//creationImageService.createBinaryImageWithCenterQuadrate(width, height);
 		imageView.setImage(writableImage);
 	}
 

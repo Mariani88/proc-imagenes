@@ -3,6 +3,12 @@ package untref.service;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import untref.figures.CenterCircle;
+import untref.figures.CenterQuadrate;
+
+import java.util.function.Consumer;
 
 import static javafx.scene.paint.Color.BLACK;
 import static javafx.scene.paint.Color.WHITE;
@@ -11,25 +17,26 @@ public class CreationImageServiceImpl implements CreationImageService {
 
 	@Override
 	public Image createBinaryImageWithCenterQuadrate(int width, int height) {
+		return creationWithCenterFigure(width, height, pixelWriter -> new CenterQuadrate().create(width, height, pixelWriter));
+	}
+
+	@Override
+	public Image createBinaryImageWithCenterCircle(int width, int height) {
+		return creationWithCenterFigure(width, height, pixelWriter -> new CenterCircle().create(width, height, pixelWriter));
+	}
+
+	private WritableImage creationWithCenterFigure(int width, int height, Consumer<PixelWriter> creationFigure) {
 		WritableImage writableImage = new WritableImage(width, height);
 		PixelWriter pixelWriter = writableImage.getPixelWriter();
 		createBlankImage(width, height, pixelWriter);
-		createCenterQuadrate(width, height, pixelWriter);
+		creationFigure.accept(pixelWriter);
 		return writableImage;
 	}
 
 	private void createBlankImage(int width, int height, PixelWriter pixelWriter) {
-		for (int row = 0; row < width; row++) {
-			for (int column = 0; column < height; column++) {
-				pixelWriter.setColor(row, column, WHITE);
-			}
-		}
-	}
-
-	private void createCenterQuadrate(int width, int height, PixelWriter pixelWriter) {
-		for (int row = width / 3; row <= width * 2 / 3; row++) {
-			for (int column = height / 3; column <= height * 2 / 3; column++) {
-				pixelWriter.setColor(row, column, BLACK);
+		for (int row = 0; row < height; row++) {
+			for (int column = 0; column < width; column++) {
+				pixelWriter.setColor(column, row, WHITE);
 			}
 		}
 	}
