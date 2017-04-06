@@ -7,6 +7,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import untref.eventhandlers.BinaryImageWithCenterFigureHandler;
+import untref.eventhandlers.CopyImageNewWindowsHandler;
 import untref.eventhandlers.OpenImageEventHandler;
 import untref.eventhandlers.SaveImageEventHandler;
 import untref.factory.FileImageChooserFactory;
@@ -36,12 +37,12 @@ public class MenuBarBuilder {
 	public MenuBar build(final ImageView imageView) {
 		MenuBar menuBar = new MenuBar();
 		Menu fileMenu = createFileMenu(imageView);
-		Menu editionMenu = createEditionMenu();
+		Menu editionMenu = createEditionMenu(imageView);
 		menuBar.getMenus().addAll(fileMenu, editionMenu);
 		return menuBar;
 	}
 
-	private Menu createEditionMenu() {
+	private Menu createEditionMenu(ImageView imageView) {
 		Menu editionMenu = new Menu("Edition");
 		MenuItem binaryImageWithQuadrate = new MenuItem("binary image with quadrate");
 		binaryImageWithQuadrate.setOnAction(new BinaryImageWithCenterFigureHandler(creationImageService, imageIOService, fileImageChooserFactory,
@@ -49,7 +50,10 @@ public class MenuBarBuilder {
 		MenuItem binaryImageWithCircle = new MenuItem("binary image with circle");
 		binaryImageWithCircle.setOnAction(new BinaryImageWithCenterFigureHandler(creationImageService, imageIOService, fileImageChooserFactory,
 				() -> creationImageService.createBinaryImageWithCenterCircle(200, 200)));
-		editionMenu.getItems().addAll(binaryImageWithQuadrate, binaryImageWithCircle);
+		
+		MenuItem copyImageNewWindows = new MenuItem("copy image new windows");
+		copyImageNewWindows.setOnAction(new CopyImageNewWindowsHandler(imageView));
+		editionMenu.getItems().addAll(binaryImageWithQuadrate, binaryImageWithCircle,copyImageNewWindows);
 		return editionMenu;
 	}
 
