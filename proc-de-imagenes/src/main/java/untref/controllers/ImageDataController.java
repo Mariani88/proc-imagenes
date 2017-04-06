@@ -1,38 +1,51 @@
 package untref.controllers;
 
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import untref.eventhandlers.ChangePixelValue;
 import untref.interfacebuilders.TextFieldBuilder;
+import untref.service.ImageEditionService;
+import untref.service.ImageEditionServiceImpl;
 
 import java.util.Arrays;
 
 public class ImageDataController {
 
 	private VBox imageData;
-	private Label label1;
-	private Label label2;
-	private Label label3;
+	private Label xLabel;
+	private Label yLabel;
+	private Label valueLabel;
 	private TextField xField;
 	private TextField yField;
 	private TextField valueField;
+	private Button changePixelValueButton;
+	private ImageEditionService imageEditionService;
 
-	public VBox build(ImageView imageResultView) {
+	public ImageDataController(){
+		imageEditionService = new ImageEditionServiceImpl();
+	}
+
+	public VBox build(ImageView imageView, ImageView imageResultView) {
 		imageData = new VBox();
 		imageData.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 		imageData.setLayoutX(imageResultView.getLayoutX() + imageResultView.getFitWidth() + 15);
 		imageData.setLayoutY(imageResultView.getLayoutY());
 
 		Label imageDataTitle = new Label("IMAGE DATA");
-		label1 = new Label("x");
-		label2 = new Label("y");
-		label3 = new Label("Value");
+		xLabel = new Label("x");
+		yLabel = new Label("y");
+		valueLabel = new Label("Value");
 		xField = new TextFieldBuilder().withEditable(false).withAutosize().withMaxWidth(50).build();
 		yField = new TextFieldBuilder().withEditable(false).withAutosize().withMaxWidth(50).build();
 		valueField = new TextFieldBuilder().withEditable(false).withAutosize().build();
-		imageData.getChildren().addAll(Arrays.asList(imageDataTitle, label1, xField, label2, yField, label3, valueField));
+		changePixelValueButton = new Button("Change value");
+		changePixelValueButton.setOnAction(new ChangePixelValue(valueLabel, valueField, imageView, imageResultView, xField, yField, imageEditionService));
+		imageData.getChildren().addAll(Arrays.asList(imageDataTitle, xLabel, xField, yLabel, yField, valueLabel, valueField,
+				changePixelValueButton));
 		return imageData;
 	}
 

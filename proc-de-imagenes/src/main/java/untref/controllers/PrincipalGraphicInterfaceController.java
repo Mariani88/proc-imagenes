@@ -1,12 +1,12 @@
 package untref.controllers;
 
-import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.MenuBar;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import untref.eventhandlers.ClickImagePixelValues;
 import untref.interfacebuilders.ImageViewBuilder;
 import untref.interfacebuilders.MenuBarBuilder;
 
@@ -33,20 +33,12 @@ public class PrincipalGraphicInterfaceController {
 		imageView = createImageView(principalPane);
 		imageResultView = createImageResultView(imageView);
 		menuBar = new MenuBarBuilder().build(imageView);
-		imageData = imageDataController.build(imageResultView);
+		imageData = imageDataController.build(imageView, imageResultView);
 		principalPaneChildrens = new ArrayList<Node>();
 		principalPaneChildrens.addAll(Arrays.asList(menuBar, imageView, imageResultView, imageData));
 		principalPane.getChildren().addAll(principalPaneChildrens);
-
-		imageView.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-			public void handle(MouseEvent event) {
-				int x = (int) event.getX();
-				int y = (int) event.getY();
-				int pixelValue = imageView.getImage().getPixelReader().getArgb(x, y);
-				imageDataController.setPixelValueText(x, y, pixelValue);
-			}
-		});
-
+		imageView.addEventHandler(MouseEvent.MOUSE_CLICKED, new ClickImagePixelValues(imageView, imageDataController));
+		imageResultView.addEventHandler(MouseEvent.MOUSE_CLICKED, new ClickImagePixelValues(imageResultView, imageDataController));
 		return principalPane;
 	}
 

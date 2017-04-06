@@ -14,14 +14,9 @@ public class PrincipalGraphicInterface extends Application {
 
 	@Override
 	public void start(Stage primaryStage) {
-
 		AnchorPane principalPane = new PrincipalGraphicInterfaceController().initInterfaceElements();
-
 		Scene scene = new Scene(principalPane, 800, 600);
 		primaryStage.setScene(scene);
-
-
-
 		primaryStage.setMaximized(true);
 		primaryStage.show();
 	}
