@@ -3,8 +3,6 @@ package untref.service;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import untref.figures.CenterCircle;
 import untref.figures.CenterQuadrate;
 
@@ -28,15 +26,15 @@ public class CreationImageServiceImpl implements CreationImageService {
 	private WritableImage creationWithCenterFigure(int width, int height, Consumer<PixelWriter> creationFigure) {
 		WritableImage writableImage = new WritableImage(width, height);
 		PixelWriter pixelWriter = writableImage.getPixelWriter();
-		createBlankImage(width, height, pixelWriter);
+		createBlackImage(width, height, pixelWriter);
 		creationFigure.accept(pixelWriter);
 		return writableImage;
 	}
 
-	private void createBlankImage(int width, int height, PixelWriter pixelWriter) {
+	private void createBlackImage(int width, int height, PixelWriter pixelWriter) {
 		for (int row = 0; row < height; row++) {
 			for (int column = 0; column < width; column++) {
-				pixelWriter.setColor(column, row, WHITE);
+				pixelWriter.setColor(column, row, BLACK);
 			}
 		}
 	}
