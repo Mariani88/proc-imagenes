@@ -11,7 +11,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import untref.service.ImageEditionService;
 
-public class ChangePixelValue implements EventHandler<ActionEvent> {
+public class ChangePixelValueEventHandler implements EventHandler<ActionEvent> {
 
 	private Label valueLabel;
 	private TextField valueField;
@@ -22,7 +22,7 @@ public class ChangePixelValue implements EventHandler<ActionEvent> {
 	private ImageEditionService imageEditionService;
 	private TextField editableValueField;
 
-	public ChangePixelValue(Label valueLabel, TextField valueField, ImageView imageView, ImageView imageResultView, TextField xField,
+	public ChangePixelValueEventHandler(Label valueLabel, TextField valueField, ImageView imageView, ImageView imageResultView, TextField xField,
 			TextField yField, ImageEditionService imageEditionService) {
 		this.valueLabel = valueLabel;
 		this.valueField = valueField;

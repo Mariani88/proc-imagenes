@@ -43,14 +43,26 @@ public class MenuBarBuilder {
 
 	private Menu createEditionMenu() {
 		Menu editionMenu = new Menu("Edition");
+
+		Menu binaryImages = createBinaryImagesSubMenu();
+
+
+
+
+		editionMenu.getItems().addAll(binaryImages);
+		return editionMenu;
+	}
+
+	private Menu createBinaryImagesSubMenu() {
+		Menu binaryImages = new Menu("BinaryImages");
 		MenuItem binaryImageWithQuadrate = new MenuItem("binary image with quadrate");
 		binaryImageWithQuadrate.setOnAction(new BinaryImageWithCenterFigureHandler(creationImageService, imageIOService, fileImageChooserFactory,
 				() -> creationImageService.createBinaryImageWithCenterQuadrate(200, 200)));
 		MenuItem binaryImageWithCircle = new MenuItem("binary image with circle");
 		binaryImageWithCircle.setOnAction(new BinaryImageWithCenterFigureHandler(creationImageService, imageIOService, fileImageChooserFactory,
 				() -> creationImageService.createBinaryImageWithCenterCircle(200, 200)));
-		editionMenu.getItems().addAll(binaryImageWithQuadrate, binaryImageWithCircle);
-		return editionMenu;
+		binaryImages.getItems().addAll(binaryImageWithQuadrate,binaryImageWithCircle);
+		return binaryImages;
 	}
 
 	private Menu createFileMenu(ImageView imageView) {
