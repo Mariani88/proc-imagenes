@@ -8,114 +8,97 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeLineCap;
 
-
 public class DrawRectangleSelection {
 
-    final DragContext dragContext = new DragContext();
-    Rectangle rect = new Rectangle();
+	//final DragContext dragContext = new DragContext();
+	Point pointInitial, pointEnd;
+	Rectangle rect = new Rectangle();
+	int click;
 
-    Group group;
+	Group group;
 
+	public DrawRectangleSelection(Group group) {
+		pointInitial = new Point();
+		pointEnd = new Point();
+		this.group = group;
+		this.click = 0;
 
-  
+		rect = new Rectangle(0, 0, 0, 0);
+		rect.setStroke(Color.BLUE);
+		rect.setStrokeWidth(1);
+		rect.setStrokeLineCap(StrokeLineCap.ROUND);
+		rect.setFill(Color.LIGHTBLUE.deriveColor(0, 1.2, 1, 0.6));
 
-    public DrawRectangleSelection( Group group) {
+		group.addEventHandler(MouseEvent.MOUSE_PRESSED, onMousePressedEventHandler);
 
-        this.group = group;
+		group.addEventHandler(MouseEvent.MOUSE_RELEASED, onMouseReleasedEventHandler);
 
-        rect = new Rectangle( 0,0,0,0);
-        rect.setStroke(Color.BLUE);
-        rect.setStrokeWidth(1);
-        rect.setStrokeLineCap(StrokeLineCap.ROUND);
-        rect.setFill(Color.LIGHTBLUE.deriveColor(0, 1.2, 1, 0.6));
-
-        group.addEventHandler(MouseEvent.MOUSE_PRESSED, onMousePressedEventHandler);
-        group.addEventHandler(MouseEvent.MOUSE_DRAGGED, onMouseDraggedEventHandler);
-        group.addEventHandler(MouseEvent.MOUSE_RELEASED, onMouseReleasedEventHandler);
-
-    }
+	}
 
 	public Bounds getBounds() {
 		return rect.getBoundsInParent();
 	}
-    EventHandler<MouseEvent> onMousePressedEventHandler = new EventHandler<MouseEvent>() {
 
-        public void handle(MouseEvent event) {
+	private void drawingRectangle(Point pointInitial, Point pointEnd) {
 
-            if( event.isSecondaryButtonDown())
-                return;
+	 	if (pointInitial.isMenor(pointEnd))
+		 drawRectangle(pointInitial, pointEnd);
+	 	else
+			
+	drawRectangle(pointEnd, pointInitial);
+	}
 
-           /*
-            rect.setX(0);
-            rect.setY(0);
-            rect.setWidth(0);
-            rect.setHeight(0);*/
+	private void drawRectangle(Point pointInitial, Point pointEnd) {
 
-            group.getChildren().remove( rect);
-            
-            dragContext.mouseAnchorX = event.getX();
-            dragContext.mouseAnchorY = event.getY();
+		rect.setX(pointInitial.getX());
+		rect.setY(pointInitial.getY());
+		rect.setWidth(pointEnd.getX() - pointInitial.getX());
+		rect.setHeight(pointEnd.getY() - pointInitial.getY());
+		group.getChildren().add(rect);
 
-            rect.setX(dragContext.mouseAnchorX);
-            rect.setY(dragContext.mouseAnchorY);
-            rect.setWidth(0);
-            rect.setHeight(0);
+	}
 
-            group.getChildren().add( rect);
+	EventHandler<MouseEvent> onMousePressedEventHandler = new EventHandler<MouseEvent>() {
 
-        }
-    };
+		public void handle(MouseEvent event) {
 
-    EventHandler<MouseEvent> onMouseDraggedEventHandler = new EventHandler<MouseEvent>() {
+			if (event.isSecondaryButtonDown())
+				return;
 
-        public void handle(MouseEvent event) {
+			/*
+			 * rect.setX(0); rect.setY(0); rect.setWidth(0); rect.setHeight(0);
+			 */
 
-            if( event.isSecondaryButtonDown())
-                return;
+			group.getChildren().remove(rect);
+			if (click == 0) {
+				pointInitial.setPoint(event.getX(), event.getY());
+				click++;
+			} else {
+				pointEnd.setPoint(event.getX(), event.getY());
+				click = 0;
+				drawingRectangle(pointInitial, pointEnd);
 
-            double offsetX = event.getX() - dragContext.mouseAnchorX;
-            double offsetY = event.getY() - dragContext.mouseAnchorY;
+			}
 
-            if( offsetX > 0)
-                rect.setWidth( offsetX);
-            else {
-                rect.setX(event.getX());
-                rect.setWidth(dragContext.mouseAnchorX - rect.getX());
-            }
+		}
+	};
 
-            if( offsetY > 0) {
-                rect.setHeight( offsetY);
-            } else {
-                rect.setY(event.getY());
-                rect.setHeight(dragContext.mouseAnchorY - rect.getY());
-            }
-        }
-    };
+	EventHandler<MouseEvent> onMouseReleasedEventHandler = new EventHandler<MouseEvent>() {
 
+		public void handle(MouseEvent event) {
 
-    EventHandler<MouseEvent> onMouseReleasedEventHandler = new EventHandler<MouseEvent>() {
+			if (event.isSecondaryButtonDown())
+				return;
 
-        public void handle(MouseEvent event) {
+			/*
+			 * rect.setX(0); rect.setY(0); rect.setWidth(0); rect.setHeight(0);
+			 * 
+			 * group.getChildren().remove( rect);
+			 * 
+			 * /
+			 */
+		}
+	};
 
-            if( event.isSecondaryButtonDown())
-                return;
-
-               /*
-            rect.setX(0);
-            rect.setY(0);
-            rect.setWidth(0);
-            rect.setHeight(0);
-
-            group.getChildren().remove( rect);
-            
-/*/
-        }
-    };
-    private static final class DragContext {
-
-        public double mouseAnchorX;
-        public double mouseAnchorY;
-
-
-    }
+	
 }

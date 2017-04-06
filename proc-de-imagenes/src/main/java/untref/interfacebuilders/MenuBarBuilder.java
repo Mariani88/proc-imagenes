@@ -3,11 +3,10 @@ package untref.interfacebuilders;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
-import untref.eventhandlers.BinaryImageWithCenterFigureHandler;
 import untref.eventhandlers.CopyImageNewWindowsHandler;
+import untref.eventhandlers.CreationSpecificImageHandler;
 import untref.eventhandlers.OpenImageEventHandler;
 import untref.eventhandlers.SaveImageEventHandler;
 import untref.factory.FileImageChooserFactory;
@@ -17,8 +16,6 @@ import untref.service.CreationImageService;
 import untref.service.CreationImageServiceImpl;
 import untref.service.ImageIOService;
 import untref.service.ImageIOServiceImpl;
-
-import java.util.function.Supplier;
 
 public class MenuBarBuilder {
 
@@ -44,17 +41,33 @@ public class MenuBarBuilder {
 
 	private Menu createEditionMenu(ImageView imageView) {
 		Menu editionMenu = new Menu("Edition");
+		Menu binaryImages = createBinaryImagesSubMenu();
+		Menu degreeImages = createDegreeImagesSubMenu();
+		MenuItem copyImageNewWindows = new MenuItem("selection image");
+		copyImageNewWindows.setOnAction(new CopyImageNewWindowsHandler(imageView));
+		editionMenu.getItems().addAll(binaryImages, degreeImages,copyImageNewWindows);
+		return editionMenu;
+	}
+
+	private Menu createDegreeImagesSubMenu() {
+		Menu degrees = new Menu("degreeas");
+		MenuItem grayDegree = new MenuItem("gray degree");
+		grayDegree.setOnAction(new CreationSpecificImageHandler(creationImageService, imageIOService, fileImageChooserFactory,
+				() -> creationImageService.createImageWithGrayDegree(250, 250)));
+		degrees.getItems().addAll(grayDegree);
+		return degrees;
+	}
+
+	private Menu createBinaryImagesSubMenu() {
+		Menu binaryImages = new Menu("BinaryImages");
 		MenuItem binaryImageWithQuadrate = new MenuItem("binary image with quadrate");
-		binaryImageWithQuadrate.setOnAction(new BinaryImageWithCenterFigureHandler(creationImageService, imageIOService, fileImageChooserFactory,
+		binaryImageWithQuadrate.setOnAction(new CreationSpecificImageHandler(creationImageService, imageIOService, fileImageChooserFactory,
 				() -> creationImageService.createBinaryImageWithCenterQuadrate(200, 200)));
 		MenuItem binaryImageWithCircle = new MenuItem("binary image with circle");
-		binaryImageWithCircle.setOnAction(new BinaryImageWithCenterFigureHandler(creationImageService, imageIOService, fileImageChooserFactory,
+		binaryImageWithCircle.setOnAction(new CreationSpecificImageHandler(creationImageService, imageIOService, fileImageChooserFactory,
 				() -> creationImageService.createBinaryImageWithCenterCircle(200, 200)));
-		
-		MenuItem copyImageNewWindows = new MenuItem("copy image new windows");
-		copyImageNewWindows.setOnAction(new CopyImageNewWindowsHandler(imageView));
-		editionMenu.getItems().addAll(binaryImageWithQuadrate, binaryImageWithCircle,copyImageNewWindows);
-		return editionMenu;
+		binaryImages.getItems().addAll(binaryImageWithQuadrate, binaryImageWithCircle);
+		return binaryImages;
 	}
 
 	private Menu createFileMenu(ImageView imageView) {

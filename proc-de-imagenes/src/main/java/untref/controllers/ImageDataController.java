@@ -6,7 +6,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import untref.eventhandlers.ChangePixelValue;
+import untref.eventhandlers.ChangePixelValueEventHandler;
 import untref.interfacebuilders.TextFieldBuilder;
 import untref.service.ImageEditionService;
 import untref.service.ImageEditionServiceImpl;
@@ -25,7 +25,7 @@ public class ImageDataController {
 	private Button changePixelValueButton;
 	private ImageEditionService imageEditionService;
 
-	public ImageDataController(){
+	public ImageDataController() {
 		imageEditionService = new ImageEditionServiceImpl();
 	}
 
@@ -43,7 +43,8 @@ public class ImageDataController {
 		yField = new TextFieldBuilder().withEditable(false).withAutosize().withMaxWidth(50).build();
 		valueField = new TextFieldBuilder().withEditable(false).withAutosize().build();
 		changePixelValueButton = new Button("Change value");
-		changePixelValueButton.setOnAction(new ChangePixelValue(valueLabel, valueField, imageView, imageResultView, xField, yField, imageEditionService));
+		changePixelValueButton.setOnAction(
+				new ChangePixelValueEventHandler(valueLabel, valueField, imageView, imageResultView, xField, yField, imageEditionService));
 		imageData.getChildren().addAll(Arrays.asList(imageDataTitle, xLabel, xField, yLabel, yField, valueLabel, valueField,
 				changePixelValueButton));
 		return imageData;

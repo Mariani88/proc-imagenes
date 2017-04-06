@@ -17,9 +17,7 @@ public class CopyImageNewWindowsHandler  implements EventHandler<ActionEvent> {
 
 	@Override
 	public void handle(ActionEvent arg0) {
-		// TODO Auto-generated method stub
 		WritableImage writableImage = imageView.snapshot(new SnapshotParameters(), null);
-		
 		untref.controllers.DrawingSelect a = new untref.controllers.DrawingSelect();
 		a.start(writableImage);
 	}
