@@ -61,4 +61,23 @@ public class CreationImageServiceImpl implements CreationImageService {
 			}
 		}
 	}
+
+	@Override
+	public Image createImageWithColorDegree(int width, int height) {
+		WritableImage writableImage = new WritableImage(width, height);
+		PixelWriter pixelWriter = writableImage.getPixelWriter();
+		 Color colorRGB;
+
+		for (int row = 0; row < height; row++) {
+			for (int column = 0; column < width; column++) {
+
+			 colorRGB=Color.rgb(255-column ,row ,column );
+				pixelWriter.setColor(column, row, colorRGB);
+			}
+
+			 
+		}
+
+		return writableImage;
+	}
 }

@@ -9,4 +9,6 @@ public interface CreationImageService {
 	Image createBinaryImageWithCenterCircle(int width, int height);
 
 	Image createImageWithGrayDegree(int width, int height);
+	
+	Image createImageWithColorDegree(int width, int height);
 }

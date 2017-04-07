@@ -52,9 +52,13 @@ public class MenuBarBuilder {
 	private Menu createDegreeImagesSubMenu() {
 		Menu degrees = new Menu("degreeas");
 		MenuItem grayDegree = new MenuItem("gray degree");
+		MenuItem colorDegree = new MenuItem("color degree");
 		grayDegree.setOnAction(new CreationSpecificImageHandler(creationImageService, imageIOService, fileImageChooserFactory,
 				() -> creationImageService.createImageWithGrayDegree(250, 250)));
 		degrees.getItems().addAll(grayDegree);
+		colorDegree.setOnAction(new CreationSpecificImageHandler(creationImageService, imageIOService, fileImageChooserFactory,
+				() -> creationImageService.createImageWithColorDegree(255, 255)));
+		degrees.getItems().addAll(grayDegree,colorDegree);
 		return degrees;
 	}
 
