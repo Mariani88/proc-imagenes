@@ -6,7 +6,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
-import untref.eventhandlers.BinaryImageWithCenterFigureHandler;
+import untref.eventhandlers.CreationSpecificImageHandler;
 import untref.eventhandlers.OpenImageEventHandler;
 import untref.eventhandlers.SaveImageEventHandler;
 import untref.factory.FileImageChooserFactory;
@@ -43,25 +43,30 @@ public class MenuBarBuilder {
 
 	private Menu createEditionMenu() {
 		Menu editionMenu = new Menu("Edition");
-
 		Menu binaryImages = createBinaryImagesSubMenu();
-
-
-
-
-		editionMenu.getItems().addAll(binaryImages);
+		Menu degreeImages = createDegreeImagesSubMenu();
+		editionMenu.getItems().addAll(binaryImages, degreeImages);
 		return editionMenu;
+	}
+
+	private Menu createDegreeImagesSubMenu() {
+		Menu degrees = new Menu("degreeas");
+		MenuItem grayDegree = new MenuItem("gray degree");
+		grayDegree.setOnAction(new CreationSpecificImageHandler(creationImageService, imageIOService, fileImageChooserFactory,
+				() -> creationImageService.createImageWithGrayDegree(250, 250)));
+		degrees.getItems().addAll(grayDegree);
+		return degrees;
 	}
 
 	private Menu createBinaryImagesSubMenu() {
 		Menu binaryImages = new Menu("BinaryImages");
 		MenuItem binaryImageWithQuadrate = new MenuItem("binary image with quadrate");
-		binaryImageWithQuadrate.setOnAction(new BinaryImageWithCenterFigureHandler(creationImageService, imageIOService, fileImageChooserFactory,
+		binaryImageWithQuadrate.setOnAction(new CreationSpecificImageHandler(creationImageService, imageIOService, fileImageChooserFactory,
 				() -> creationImageService.createBinaryImageWithCenterQuadrate(200, 200)));
 		MenuItem binaryImageWithCircle = new MenuItem("binary image with circle");
-		binaryImageWithCircle.setOnAction(new BinaryImageWithCenterFigureHandler(creationImageService, imageIOService, fileImageChooserFactory,
+		binaryImageWithCircle.setOnAction(new CreationSpecificImageHandler(creationImageService, imageIOService, fileImageChooserFactory,
 				() -> creationImageService.createBinaryImageWithCenterCircle(200, 200)));
-		binaryImages.getItems().addAll(binaryImageWithQuadrate,binaryImageWithCircle);
+		binaryImages.getItems().addAll(binaryImageWithQuadrate, binaryImageWithCircle);
 		return binaryImages;
 	}
 

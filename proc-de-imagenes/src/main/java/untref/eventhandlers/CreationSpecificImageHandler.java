@@ -17,19 +17,19 @@ import untref.service.ImageIOService;
 
 import java.util.function.Supplier;
 
-public class BinaryImageWithCenterFigureHandler implements EventHandler<ActionEvent> {
+public class CreationSpecificImageHandler implements EventHandler<ActionEvent> {
 
 	private CreationImageService creationImageService;
 	private ImageIOService imageIOService;
 	private FileImageChooserFactory fileImageChooserFactory;
 	private Supplier<Image> creationCenterFigure;
 
-	public BinaryImageWithCenterFigureHandler(CreationImageService creationImageService, ImageIOService imageIOService,
-			FileImageChooserFactory fileImageChooserFactory, Supplier<Image> creationCenterFigure) {
+	public CreationSpecificImageHandler(CreationImageService creationImageService, ImageIOService imageIOService,
+			FileImageChooserFactory fileImageChooserFactory, Supplier<Image> specificCreation) {
 		this.creationImageService = creationImageService;
 		this.imageIOService = imageIOService;
 		this.fileImageChooserFactory = fileImageChooserFactory;
-		this.creationCenterFigure = creationCenterFigure;
+		this.creationCenterFigure = specificCreation;
 	}
 
 	@Override
@@ -55,7 +55,7 @@ public class BinaryImageWithCenterFigureHandler implements EventHandler<ActionEv
 		imageView.autosize();
 		imageView.setFitWidth(width);
 		imageView.setFitHeight(height);
-		Image writableImage = creationCenterFigure.get();//creationImageService.createBinaryImageWithCenterQuadrate(width, height);
+		Image writableImage = creationCenterFigure.get();
 		imageView.setImage(writableImage);
 	}
 
