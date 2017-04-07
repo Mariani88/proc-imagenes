@@ -3,9 +3,9 @@ package untref.interfacebuilders;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
+import untref.eventhandlers.CopyImageNewWindowsHandler;
 import untref.eventhandlers.CreationSpecificImageHandler;
 import untref.eventhandlers.OpenImageEventHandler;
 import untref.eventhandlers.SaveImageEventHandler;
@@ -16,8 +16,6 @@ import untref.service.CreationImageService;
 import untref.service.CreationImageServiceImpl;
 import untref.service.ImageIOService;
 import untref.service.ImageIOServiceImpl;
-
-import java.util.function.Supplier;
 
 public class MenuBarBuilder {
 
@@ -36,16 +34,18 @@ public class MenuBarBuilder {
 	public MenuBar build(final ImageView imageView) {
 		MenuBar menuBar = new MenuBar();
 		Menu fileMenu = createFileMenu(imageView);
-		Menu editionMenu = createEditionMenu();
+		Menu editionMenu = createEditionMenu(imageView);
 		menuBar.getMenus().addAll(fileMenu, editionMenu);
 		return menuBar;
 	}
 
-	private Menu createEditionMenu() {
+	private Menu createEditionMenu(ImageView imageView) {
 		Menu editionMenu = new Menu("Edition");
 		Menu binaryImages = createBinaryImagesSubMenu();
 		Menu degreeImages = createDegreeImagesSubMenu();
-		editionMenu.getItems().addAll(binaryImages, degreeImages);
+		MenuItem copyImageNewWindows = new MenuItem("copy image new windows");
+		copyImageNewWindows.setOnAction(new CopyImageNewWindowsHandler(imageView));
+		editionMenu.getItems().addAll(binaryImages, degreeImages,copyImageNewWindows);
 		return editionMenu;
 	}
 
