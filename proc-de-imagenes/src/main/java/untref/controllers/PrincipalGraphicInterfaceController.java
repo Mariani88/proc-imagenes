@@ -41,7 +41,7 @@ public class PrincipalGraphicInterfaceController {
 		imageResultView.addEventHandler(MouseEvent.MOUSE_CLICKED, new ClickImagePixelValues(imageResultView, imageDataController));
 		return principalPane;
 	}
-
+	
 	private ImageView createImageView(AnchorPane principalPane) {
 		return new ImageViewBuilder("default.jpg").withPreserveRatio(true).withFitWidth(500).withFitHeight(500).withVisible(true)
 				.withX(principalPane.getLayoutX() + 50).withY(principalPane.getLayoutY() + 150).withAutosize().build();

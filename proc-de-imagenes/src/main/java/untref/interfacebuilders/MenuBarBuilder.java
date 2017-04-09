@@ -5,6 +5,7 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
+import untref.eventhandlers.ChangeColorFromRGBToHSVHandler;
 import untref.eventhandlers.CopyImageNewWindowsHandler;
 import untref.eventhandlers.CreationSpecificImageHandler;
 import untref.eventhandlers.OpenImageEventHandler;
@@ -14,6 +15,8 @@ import untref.repository.ImageRepository;
 import untref.repository.ImageRepositoryImpl;
 import untref.service.CreationImageService;
 import untref.service.CreationImageServiceImpl;
+import untref.service.ImageEditionServiceImpl;
+import untref.service.ImageGetColorRGBImpl;
 import untref.service.ImageIOService;
 import untref.service.ImageIOServiceImpl;
 
@@ -44,8 +47,13 @@ public class MenuBarBuilder {
 		Menu binaryImages = createBinaryImagesSubMenu();
 		Menu degreeImages = createDegreeImagesSubMenu();
 		MenuItem copyImageNewWindows = new MenuItem("selection image");
+		MenuItem rgbToHsv = new MenuItem("RGB to HSV");
 		copyImageNewWindows.setOnAction(new CopyImageNewWindowsHandler(imageView));
-		editionMenu.getItems().addAll(binaryImages, degreeImages,copyImageNewWindows);
+		
+		rgbToHsv.setOnAction(new ChangeColorFromRGBToHSVHandler(imageView,
+				new ImageGetColorRGBImpl(imageView.getImage()), new ImageEditionServiceImpl()));
+		
+		editionMenu.getItems().addAll(binaryImages, degreeImages, copyImageNewWindows, rgbToHsv);
 		return editionMenu;
 	}
 
@@ -53,23 +61,24 @@ public class MenuBarBuilder {
 		Menu degrees = new Menu("degreeas");
 		MenuItem grayDegree = new MenuItem("gray degree");
 		MenuItem colorDegree = new MenuItem("color degree");
-		grayDegree.setOnAction(new CreationSpecificImageHandler(creationImageService, imageIOService, fileImageChooserFactory,
-				() -> creationImageService.createImageWithGrayDegree(250, 250)));
+		grayDegree.setOnAction(new CreationSpecificImageHandler(creationImageService, imageIOService,
+				fileImageChooserFactory, () -> creationImageService.createImageWithGrayDegree(250, 250)));
 		degrees.getItems().addAll(grayDegree);
-		colorDegree.setOnAction(new CreationSpecificImageHandler(creationImageService, imageIOService, fileImageChooserFactory,
-				() -> creationImageService.createImageWithColorDegree(255, 255)));
-		degrees.getItems().addAll(grayDegree,colorDegree);
+		colorDegree.setOnAction(new CreationSpecificImageHandler(creationImageService, imageIOService,
+				fileImageChooserFactory, () -> creationImageService.createImageWithColorDegree(255, 255)));
+		degrees.getItems().addAll(grayDegree, colorDegree);
+
 		return degrees;
 	}
 
 	private Menu createBinaryImagesSubMenu() {
 		Menu binaryImages = new Menu("BinaryImages");
 		MenuItem binaryImageWithQuadrate = new MenuItem("binary image with quadrate");
-		binaryImageWithQuadrate.setOnAction(new CreationSpecificImageHandler(creationImageService, imageIOService, fileImageChooserFactory,
-				() -> creationImageService.createBinaryImageWithCenterQuadrate(200, 200)));
+		binaryImageWithQuadrate.setOnAction(new CreationSpecificImageHandler(creationImageService, imageIOService,
+				fileImageChooserFactory, () -> creationImageService.createBinaryImageWithCenterQuadrate(200, 200)));
 		MenuItem binaryImageWithCircle = new MenuItem("binary image with circle");
-		binaryImageWithCircle.setOnAction(new CreationSpecificImageHandler(creationImageService, imageIOService, fileImageChooserFactory,
-				() -> creationImageService.createBinaryImageWithCenterCircle(200, 200)));
+		binaryImageWithCircle.setOnAction(new CreationSpecificImageHandler(creationImageService, imageIOService,
+				fileImageChooserFactory, () -> creationImageService.createBinaryImageWithCenterCircle(200, 200)));
 		binaryImages.getItems().addAll(binaryImageWithQuadrate, binaryImageWithCircle);
 		return binaryImages;
 	}

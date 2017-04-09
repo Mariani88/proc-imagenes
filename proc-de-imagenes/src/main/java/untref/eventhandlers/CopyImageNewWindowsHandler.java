@@ -5,20 +5,20 @@ import javafx.event.EventHandler;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
+import untref.controllers.DrawingSelect;
 
-public class CopyImageNewWindowsHandler  implements EventHandler<ActionEvent> {
+public class CopyImageNewWindowsHandler implements EventHandler<ActionEvent> {
 
-	ImageView imageView;
+	private ImageView imageView;
+
 	public CopyImageNewWindowsHandler(ImageView imageView) {
-		
-		this.imageView=imageView;
-		
+		this.imageView = imageView;
 	}
 
 	@Override
 	public void handle(ActionEvent arg0) {
 		WritableImage writableImage = imageView.snapshot(new SnapshotParameters(), null);
-		untref.controllers.DrawingSelect a = new untref.controllers.DrawingSelect();
+		DrawingSelect a = new DrawingSelect();
 		a.start(writableImage);
 	}
 }
