@@ -32,7 +32,7 @@ public class PrincipalGraphicInterfaceController {
 		principalPane = new AnchorPane();
 		imageView = createImageView(principalPane);
 		imageResultView = createImageResultView(imageView);
-		menuBar = new MenuBarBuilder().build(imageView);
+		menuBar = new MenuBarBuilder().build(imageView,imageResultView);
 		imageData = imageDataController.build(imageView, imageResultView);
 		principalPaneChildrens = new ArrayList<Node>();
 		principalPaneChildrens.addAll(Arrays.asList(menuBar, imageView, imageResultView, imageData));

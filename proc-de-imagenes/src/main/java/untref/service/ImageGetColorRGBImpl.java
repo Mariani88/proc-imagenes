@@ -9,6 +9,14 @@ public class ImageGetColorRGBImpl implements ImageGetColorRGB {
 	private double green;
 	private double blue;
 	private Image image;
+	public Image getImage() {
+		return image;
+	}
+
+	public void setImage(Image image) {
+		this.image = image;
+	}
+
 	private int totalPixel;
 	private double gray;
 
