@@ -51,7 +51,7 @@ public class MenuBarBuilder {
 		MenuItem rgbToHsv = new MenuItem("RGB to HSV");
 		copyImageNewWindows.setOnAction(new CopyImageNewWindowsHandler(imageView));
 		
-		rgbToHsv.setOnAction(new ChangeColorFromRGBToHSVHandler(imageResultView,
+		rgbToHsv.setOnAction(new ChangeColorFromRGBToHSVHandler(imageView, imageResultView,
 				new ImageGetColorRGBImpl(imageView.getImage()), new ImageEditionServiceImpl()));
 		
 		editionMenu.getItems().addAll(binaryImages, degreeImages, copyImageNewWindows, rgbToHsv);
