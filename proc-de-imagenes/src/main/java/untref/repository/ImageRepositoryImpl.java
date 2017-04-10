@@ -19,16 +19,30 @@ public class ImageRepositoryImpl implements ImageRepository {
 	@Override
 	public Image findImage(File file) {
 		
+BufferedImage bufferedImage = null;
+		
+ 
+ if (! getFileExtension(file).equalsIgnoreCase("RAW")){
 		Opener opener = new Opener();
-		BufferedImage bufferedImage = null;
+		
 
 		Path path = file.toPath();
 
 		ImagePlus img = opener.openImage(path.toString());
 
 		bufferedImage = img.getBufferedImage();
-		return SwingFXUtils.toFXImage(bufferedImage, null);
+		 
+		}else{ 
+			ImageRaw imageRaw=new ImageRaw(100,100);
+			try {
+				bufferedImage=imageRaw.abrirImagen(file.toPath().toString());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		 }
 		
+		return SwingFXUtils.toFXImage(bufferedImage, null);
 /*
 		try {
 			BufferedImage bufferedImage = ImageIO.read(file);
@@ -59,5 +73,12 @@ public class ImageRepositoryImpl implements ImageRepository {
 	private int toInt(double value) {
 		return (int) value;
 	}
+	
+	private static String getFileExtension(File file) {
+        String fileName = file.getName();
+        if(fileName.lastIndexOf(".") != -1 && fileName.lastIndexOf(".") != 0)
+        return fileName.substring(fileName.lastIndexOf(".")+1);
+        else return "";
+    }
 
 }
