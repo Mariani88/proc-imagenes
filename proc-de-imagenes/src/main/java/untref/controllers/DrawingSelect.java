@@ -22,6 +22,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import untref.service.DrawRectangleSelection;
+import untref.service.DrawRectangleSelectionImpl;
 import untref.service.ImageGetColorRGB;
 import untref.service.ImageGetColorRGBImpl;
 
@@ -64,7 +66,7 @@ public class DrawingSelect {
 		root.autosize();
 
 		root.setTop(createHboxAverangeColorInformation());
-		seccionSelection = new DrawRectangleSelection(imageLayer);
+		seccionSelection = new DrawRectangleSelectionImpl(imageLayer);
 
 		final ContextMenu contextMenu = new ContextMenu();
 
