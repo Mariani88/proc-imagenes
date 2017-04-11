@@ -5,6 +5,7 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
+import untref.eventhandlers.ChangeColorFromRGBToHSVHandler;
 import untref.eventhandlers.CopyImageNewWindowsHandler;
 import untref.eventhandlers.CreationSpecificImageHandler;
 import untref.eventhandlers.OpenImageEventHandler;
@@ -14,6 +15,8 @@ import untref.repository.ImageRepository;
 import untref.repository.ImageRepositoryImpl;
 import untref.service.CreationImageService;
 import untref.service.CreationImageServiceImpl;
+import untref.service.ImageEditionServiceImpl;
+import untref.service.ImageGetColorRGBImpl;
 import untref.service.ImageIOService;
 import untref.service.ImageIOServiceImpl;
 
@@ -43,10 +46,15 @@ public class MenuBarBuilder {
 		Menu editionMenu = new Menu("Edition");
 		Menu binaryImages = createBinaryImagesSubMenu();
 		Menu degreeImages = createDegreeImagesSubMenu();
-		MenuItem copyImageNewWindows = new MenuItem("selection image");
+		MenuItem copyImageNewWindows = new MenuItem("selection image");MenuItem rgbToHsv = new MenuItem("RGB to HSV");
 		copyImageNewWindows.setOnAction(new CopyImageNewWindowsHandler(imageView));
-		editionMenu.getItems().addAll(binaryImages, degreeImages, copyImageNewWindows);
+		
+		rgbToHsv.setOnAction(new ChangeColorFromRGBToHSVHandler(imageView,
+				new ImageGetColorRGBImpl(imageView.getImage()), new ImageEditionServiceImpl()));
+		
+		editionMenu.getItems().addAll(binaryImages, degreeImages, copyImageNewWindows, rgbToHsv);
 		return editionMenu;
+	
 	}
 
 	private Menu createDegreeImagesSubMenu() {
