@@ -45,7 +45,7 @@ public class MenuBarBuilder {
 		Menu degreeImages = createDegreeImagesSubMenu();
 		MenuItem copyImageNewWindows = new MenuItem("selection image");
 		copyImageNewWindows.setOnAction(new CopyImageNewWindowsHandler(imageView));
-		editionMenu.getItems().addAll(binaryImages, degreeImages,copyImageNewWindows);
+		editionMenu.getItems().addAll(binaryImages, degreeImages, copyImageNewWindows);
 		return editionMenu;
 	}
 
@@ -57,7 +57,7 @@ public class MenuBarBuilder {
 				() -> creationImageService.createImageWithGrayDegree(250, 250)));
 		colorDegree.setOnAction(new CreationSpecificImageHandler(creationImageService, imageIOService, fileImageChooserFactory,
 				() -> creationImageService.createImageWithColorDegree(255, 255)));
-		degrees.getItems().addAll(grayDegree,colorDegree);
+		degrees.getItems().addAll(grayDegree, colorDegree);
 		return degrees;
 	}
 

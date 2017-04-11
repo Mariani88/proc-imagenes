@@ -40,7 +40,7 @@ public class CreationImageServiceImpl implements CreationImageService {
 				pixelWriter.setColor(column, row, Color.gray(grayColor / 255));
 			}
 
-			grayColor = - offset;
+			grayColor = -offset;
 		}
 
 		return writableImage;
@@ -66,16 +66,14 @@ public class CreationImageServiceImpl implements CreationImageService {
 	public Image createImageWithColorDegree(int width, int height) {
 		WritableImage writableImage = new WritableImage(width, height);
 		PixelWriter pixelWriter = writableImage.getPixelWriter();
-		 Color colorRGB;
+		Color colorRGB;
 
 		for (int row = 0; row < height; row++) {
 			for (int column = 0; column < width; column++) {
-
-			 colorRGB=Color.rgb(255-column ,row ,column );
+				colorRGB = Color.rgb(255 - column, row, column);
 				pixelWriter.setColor(column, row, colorRGB);
 			}
 
-			 
 		}
 
 		return writableImage;
