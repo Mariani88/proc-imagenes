@@ -19,6 +19,9 @@ import untref.service.ImageEditionServiceImpl;
 import untref.service.ImageGetColorRGBImpl;
 import untref.service.ImageIOService;
 import untref.service.ImageIOServiceImpl;
+import untref.service.colorbands.BlueBand;
+import untref.service.colorbands.GreenBand;
+import untref.service.colorbands.RedBand;
 
 public class MenuBarBuilder {
 
@@ -46,15 +49,31 @@ public class MenuBarBuilder {
 		Menu editionMenu = new Menu("Edition");
 		Menu binaryImages = createBinaryImagesSubMenu();
 		Menu degreeImages = createDegreeImagesSubMenu();
-		MenuItem copyImageNewWindows = new MenuItem("selection image");MenuItem rgbToHsv = new MenuItem("RGB to HSV");
+		MenuItem copyImageNewWindows = new MenuItem("selection image");
+		MenuItem rgbToHsv = new MenuItem("RGB to HSV");
+		Menu colorBand = createColorBandMenu(imageView);
 		copyImageNewWindows.setOnAction(new CopyImageNewWindowsHandler(imageView));
-		
-		rgbToHsv.setOnAction(new ChangeColorFromRGBToHSVHandler(imageView,
-				new ImageGetColorRGBImpl(imageView.getImage()), new ImageEditionServiceImpl()));
-		
-		editionMenu.getItems().addAll(binaryImages, degreeImages, copyImageNewWindows, rgbToHsv);
+		rgbToHsv.setOnAction(
+				new ChangeColorFromRGBToHSVHandler(imageView, new ImageGetColorRGBImpl(imageView.getImage()), new ImageEditionServiceImpl()));
+
+		editionMenu.getItems().addAll(binaryImages, degreeImages, copyImageNewWindows, rgbToHsv, colorBand);
 		return editionMenu;
-	
+
+	}
+
+	private Menu createColorBandMenu(ImageView imageView) {
+		Menu colorBand = new Menu("Color band");
+		MenuItem redBand = new MenuItem("red band");
+		redBand.setOnAction(new CreationSpecificImageHandler(creationImageService, imageIOService, fileImageChooserFactory,
+				() -> creationImageService.createImageWithSpecificColorBand(imageView.getImage(), new RedBand())));
+		MenuItem blueBand = new MenuItem("blue band");
+		blueBand.setOnAction(new CreationSpecificImageHandler(creationImageService, imageIOService, fileImageChooserFactory,
+				() -> creationImageService.createImageWithSpecificColorBand(imageView.getImage(), new BlueBand())));
+		MenuItem greenBand = new MenuItem("green band");
+		greenBand.setOnAction(new CreationSpecificImageHandler(creationImageService, imageIOService, fileImageChooserFactory,
+				() -> creationImageService.createImageWithSpecificColorBand(imageView.getImage(), new GreenBand())));
+		colorBand.getItems().addAll(redBand, blueBand, greenBand);
+		return colorBand;
 	}
 
 	private Menu createDegreeImagesSubMenu() {

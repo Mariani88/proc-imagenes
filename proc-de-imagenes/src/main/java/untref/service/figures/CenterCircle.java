@@ -1,4 +1,4 @@
-package untref.figures;
+package untref.service.figures;
 
 import javafx.scene.image.PixelWriter;
 import javafx.scene.shape.Circle;

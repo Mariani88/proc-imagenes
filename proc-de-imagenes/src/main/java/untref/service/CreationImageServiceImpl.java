@@ -4,8 +4,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
-import untref.figures.CenterCircle;
-import untref.figures.CenterQuadrate;
+import untref.service.colorbands.SpecificBand;
+import untref.service.figures.CenterCircle;
+import untref.service.figures.CenterQuadrate;
 
 import java.util.function.Consumer;
 
@@ -77,5 +78,10 @@ public class CreationImageServiceImpl implements CreationImageService {
 		}
 
 		return writableImage;
+	}
+
+	@Override
+	public Image createImageWithSpecificColorBand(Image image, SpecificBand specificBand) {
+		return specificBand.createWithBand(image);
 	}
 }

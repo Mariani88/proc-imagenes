@@ -1,6 +1,7 @@
 package untref.service;
 
 import javafx.scene.image.Image;
+import untref.service.colorbands.SpecificBand;
 
 public interface CreationImageService {
 
@@ -11,4 +12,6 @@ public interface CreationImageService {
 	Image createImageWithGrayDegree(int width, int height);
 	
 	Image createImageWithColorDegree(int width, int height);
+
+	Image createImageWithSpecificColorBand(Image image, SpecificBand specificBand);
 }
