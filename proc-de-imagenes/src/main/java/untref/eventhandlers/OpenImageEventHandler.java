@@ -28,9 +28,16 @@ public class OpenImageEventHandler implements EventHandler<ActionEvent> {
 			@Override
 			public void accept(Image image1) {
 
+
+				if ( image1.getHeight() < 500 & image1.getWidth() < 500) {
+					imageView.setFitHeight(image1.getHeight());
+					imageView.setFitWidth(image1.getWidth());
+				}else{
+					imageView.setFitHeight(500);
+					imageView.setFitWidth(500);
+				}
 				imageView.setImage(image1);
-				imageView.setFitHeight(image1.getHeight());
-				imageView.setFitWidth(image1.getWidth());
+
 			}
 		});
 	}
