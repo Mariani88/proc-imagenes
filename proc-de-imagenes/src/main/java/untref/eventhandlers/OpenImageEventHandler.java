@@ -8,6 +8,7 @@ import javafx.stage.FileChooser;
 import untref.service.ImageIOService;
 
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public class OpenImageEventHandler implements EventHandler<ActionEvent> {
 
@@ -23,6 +24,14 @@ public class OpenImageEventHandler implements EventHandler<ActionEvent> {
 
 	public void handle(ActionEvent event) {
 		Optional<Image> image = imageIOService.openImage(fileChooser);
-		image.ifPresent(image1 -> imageView.setImage(image1));
+		image.ifPresent(new Consumer<Image>() {
+			@Override
+			public void accept(Image image1) {
+
+				imageView.setImage(image1);
+				imageView.setFitHeight(image1.getHeight());
+				imageView.setFitWidth(image1.getWidth());
+			}
+		});
 	}
 }
