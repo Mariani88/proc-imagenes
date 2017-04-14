@@ -4,18 +4,34 @@ import javafx.scene.image.Image;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
+import untref.service.arithmeticoperations.ArithmeticOperation;
+import untref.service.arithmeticoperations.ArithmeticOperationMultiply;
 import untref.service.arithmeticoperations.ArithmeticOperationPlus;
+import untref.service.arithmeticoperations.ArithmeticOperationSubtract;
 import untref.service.colorbands.SpecificBand;
+import untref.service.evaluators.ImagePositionEvaluator;
 import untref.service.figures.CenterCircle;
 import untref.service.figures.CenterQuadrate;
 
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import static javafx.scene.paint.Color.BLACK;
 
 public class CreationImageServiceImpl implements CreationImageService {
 
 	private static final int LIMIT_SCALE = 255;
+	private final ImagePositionEvaluator imagePositionEvaluator;
+	private final ArithmeticOperationSubtract arithmeticOperationSubtract;
+	private final ArithmeticOperationMultiply arithmeticOperationMultiply;
+	private ArithmeticOperation arithmeticOperationPlus;
+
+	public CreationImageServiceImpl() {
+		this.arithmeticOperationPlus = new ArithmeticOperationPlus();
+		this.imagePositionEvaluator = new ImagePositionEvaluator();
+		this.arithmeticOperationSubtract = new ArithmeticOperationSubtract();
+		arithmeticOperationMultiply = new ArithmeticOperationMultiply();
+	}
 
 	@Override
 	public Image createBinaryImageWithCenterQuadrate(int width, int height) {
@@ -90,6 +106,20 @@ public class CreationImageServiceImpl implements CreationImageService {
 
 	@Override
 	public Image plusImages(Image image, Image image2) {
+		return applyArithmeticOperation(image, image2, arithmeticOperationPlus);
+	}
+
+	@Override
+	public Image subtractImages(Image image, Image image2) {
+		return applyArithmeticOperation(image, image2, arithmeticOperationSubtract);
+	}
+
+	@Override
+	public Image multiplyImages(Image image, Image image2) {
+		return applyArithmeticOperation(image, image2, arithmeticOperationMultiply);
+	}
+
+	private WritableImage applyArithmeticOperation(Image image, Image image2, ArithmeticOperation arithmeticOperation) {
 		int maxHeight = (int) Math.max(image.getHeight(), image2.getHeight());
 		int maxWidth = (int) Math.max(image.getWidth(), image2.getWidth());
 		WritableImage imageResult = new WritableImage(maxWidth, maxHeight);
@@ -97,42 +127,12 @@ public class CreationImageServiceImpl implements CreationImageService {
 
 		for (int row = 0; row < maxHeight; row++) {
 			for (int column = 0; column < maxWidth; column++) {
-				pixelWriter.setColor(column, row, calculateColor(image, image2, row, column));
+				Color sumsColor1 = imagePositionEvaluator.obtainSumsColor(image, row, column);
+				Color sumsColor2 = imagePositionEvaluator.obtainSumsColor(image2, row, column);
+				Supplier<Color> operation = () -> arithmeticOperation.calculateColor(sumsColor1, sumsColor2);
+				pixelWriter.setColor(column, row, operation.get());
 			}
 		}
-
 		return imageResult;
-	}
-
-	@Override
-	public Image subtractImages(Image image, Image image2) {
-		int maxHeight = (int) Math.max(image.getHeight(), image2.getHeight());
-		int maxWidth = (int) Math.max(image.getWidth(), image2.getWidth());
-		WritableImage imageResult = new WritableImage(maxWidth, maxHeight);
-		PixelWriter pixelWriter = imageResult.getPixelWriter();
-
-
-		return imageResult;
-	}
-
-	private Color calculateColor(Image image, Image image2, int row, int column) {
-		Color sumsColor1 = obtainSumsColor(image, row, column);
-		Color sumsColor2 = obtainSumsColor(image2, row, column);
-		return new ArithmeticOperationPlus().calculateColor(sumsColor1, sumsColor2);
-	}
-
-
-	private Color obtainSumsColor(Image image, int row, int column) {
-		Color color = Color.rgb(0, 0, 0);
-
-		if (imageContainsPosition(image, row, column)) {
-			color = image.getPixelReader().getColor(column, row);
-		}
-
-		return color;
-	}
-
-	private boolean imageContainsPosition(Image image, int row, int column) {
-		return row < image.getHeight() && column < image.getWidth();
 	}
 }

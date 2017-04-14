@@ -18,4 +18,6 @@ public interface CreationImageService {
 	Image plusImages(Image image, Image image1);
 
 	Image subtractImages(Image image, Image image1);
+
+	Image multiplyImages(Image image, Image image1);
 }

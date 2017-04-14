@@ -59,7 +59,10 @@ public class MenuBarBuilder {
 		MenuItem subtractImages = new MenuItem("subtract images");
 		subtractImages.setOnAction(new CreationSpecificImageHandler(creationImageService, imageIOService, fileImageChooserFactory,
 				() -> creationImageService.subtractImages(imageView.getImage(), imageViewResult.getImage())));
-		arithmeticOperationsBetweenImages.getItems().addAll(plusImages, subtractImages);
+		MenuItem multiplyImages = new MenuItem("multiply images");
+		multiplyImages.setOnAction(new CreationSpecificImageHandler(creationImageService, imageIOService, fileImageChooserFactory,
+				() -> creationImageService.multiplyImages(imageView.getImage(), imageViewResult.getImage())));
+		arithmeticOperationsBetweenImages.getItems().addAll(plusImages, subtractImages, multiplyImages);
 		return arithmeticOperationsBetweenImages;
 	}
 
