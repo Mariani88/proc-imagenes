@@ -5,20 +5,11 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
-import untref.eventhandlers.ChangeColorFromRGBToHSVHandler;
-import untref.eventhandlers.CopyImageNewWindowsHandler;
-import untref.eventhandlers.CreationSpecificImageHandler;
-import untref.eventhandlers.OpenImageEventHandler;
-import untref.eventhandlers.SaveImageEventHandler;
+import untref.eventhandlers.*;
 import untref.factory.FileImageChooserFactory;
 import untref.repository.ImageRepository;
 import untref.repository.ImageRepositoryImpl;
-import untref.service.CreationImageService;
-import untref.service.CreationImageServiceImpl;
-import untref.service.ImageEditionServiceImpl;
-import untref.service.ImageGetColorRGBImpl;
-import untref.service.ImageIOService;
-import untref.service.ImageIOServiceImpl;
+import untref.service.*;
 import untref.service.colorbands.BlueBand;
 import untref.service.colorbands.GreenBand;
 import untref.service.colorbands.RedBand;
@@ -37,15 +28,15 @@ public class MenuBarBuilder {
 		this.fileImageChooserFactory = new FileImageChooserFactory();
 	}
 
-	public MenuBar build(final ImageView imageView) {
+	public MenuBar build(final ImageView imageView, final ImageView imageViewResult) {
 		MenuBar menuBar = new MenuBar();
-		Menu fileMenu = createFileMenu(imageView);
-		Menu editionMenu = createEditionMenu(imageView);
+		Menu fileMenu = createFileMenu(imageView, imageViewResult);
+		Menu editionMenu = createEditionMenu(imageView, imageViewResult);
 		menuBar.getMenus().addAll(fileMenu, editionMenu);
 		return menuBar;
 	}
 
-	private Menu createEditionMenu(ImageView imageView) {
+	private Menu createEditionMenu(ImageView imageView, ImageView imageViewResult) {
 		Menu editionMenu = new Menu("Edition");
 		Menu binaryImages = createBinaryImagesSubMenu();
 		Menu degreeImages = createDegreeImagesSubMenu();
@@ -55,10 +46,18 @@ public class MenuBarBuilder {
 		copyImageNewWindows.setOnAction(new CopyImageNewWindowsHandler(imageView));
 		rgbToHsv.setOnAction(
 				new ChangeColorFromRGBToHSVHandler(imageView, new ImageGetColorRGBImpl(imageView.getImage()), new ImageEditionServiceImpl()));
-
-		editionMenu.getItems().addAll(binaryImages, degreeImages, copyImageNewWindows, rgbToHsv, colorBand);
+		Menu arithmeticOperationsBetweenImages = createArithmeticOperationsBetweenImages(imageView, imageViewResult);
+		editionMenu.getItems().addAll(binaryImages, degreeImages, copyImageNewWindows, rgbToHsv, colorBand, arithmeticOperationsBetweenImages);
 		return editionMenu;
+	}
 
+	private Menu createArithmeticOperationsBetweenImages(ImageView imageView, ImageView imageViewResult) {
+		Menu arithmeticOperationsBetweenImages = new Menu("arithmetic operations between images");
+		MenuItem plusImages = new MenuItem("plus images");
+		plusImages.setOnAction(new CreationSpecificImageHandler(creationImageService, imageIOService, fileImageChooserFactory,
+				() -> creationImageService.plusImages(imageView.getImage(), imageViewResult.getImage())));
+		arithmeticOperationsBetweenImages.getItems().addAll(plusImages);
+		return arithmeticOperationsBetweenImages;
 	}
 
 	private Menu createColorBandMenu(ImageView imageView) {
@@ -100,12 +99,23 @@ public class MenuBarBuilder {
 		return binaryImages;
 	}
 
-	private Menu createFileMenu(ImageView imageView) {
+	private Menu createFileMenu(ImageView imageView, ImageView imageView2) {
 		Menu fileMenu = new Menu("File");
 		MenuItem fileMenuItemOpen = createOpenMenuItem(imageView);
+		Menu multiplesImagesOpen = createMultiplesImagesOpenMenu(imageView, imageView2);
 		MenuItem fileMenuItemSave = createSaveMenuItem(imageView);
-		fileMenu.getItems().addAll(fileMenuItemOpen, fileMenuItemSave);
+		fileMenu.getItems().addAll(fileMenuItemOpen, multiplesImagesOpen, fileMenuItemSave);
 		return fileMenu;
+	}
+
+	private Menu createMultiplesImagesOpenMenu(ImageView imageView, ImageView imageView2) {
+		Menu openMultiplesImages = new Menu("open multiples images");
+		MenuItem addToFirstViewer = new MenuItem("add to first viewer");
+		addToFirstViewer.setOnAction(new OpenImageEventHandler(fileImageChooserFactory.create("Open image"), imageView, imageIOService));
+		MenuItem addToSecondViewer = new MenuItem("add to second viewer");
+		addToSecondViewer.setOnAction(new OpenImageEventHandler(fileImageChooserFactory.create("Open image"), imageView2, imageIOService));
+		openMultiplesImages.getItems().addAll(addToFirstViewer, addToSecondViewer);
+		return openMultiplesImages;
 	}
 
 	private MenuItem createOpenMenuItem(ImageView imageView) {

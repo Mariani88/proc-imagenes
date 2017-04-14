@@ -14,6 +14,8 @@ import static javafx.scene.paint.Color.BLACK;
 
 public class CreationImageServiceImpl implements CreationImageService {
 
+	private static final int LIMIT_SCALE = 255;
+
 	@Override
 	public Image createBinaryImageWithCenterQuadrate(int width, int height) {
 		return creationWithCenterFigure(width, height, pixelWriter -> new CenterQuadrate().create(width, height, pixelWriter));
@@ -38,7 +40,7 @@ public class CreationImageServiceImpl implements CreationImageService {
 					grayColor += offset;
 				}
 
-				pixelWriter.setColor(column, row, Color.gray(grayColor / 255));
+				pixelWriter.setColor(column, row, Color.gray(grayColor / LIMIT_SCALE));
 			}
 
 			grayColor = -offset;
@@ -71,7 +73,7 @@ public class CreationImageServiceImpl implements CreationImageService {
 
 		for (int row = 0; row < height; row++) {
 			for (int column = 0; column < width; column++) {
-				colorRGB = Color.rgb(255 - column, row, column);
+				colorRGB = Color.rgb(LIMIT_SCALE - column, row, column);
 				pixelWriter.setColor(column, row, colorRGB);
 			}
 
@@ -83,5 +85,61 @@ public class CreationImageServiceImpl implements CreationImageService {
 	@Override
 	public Image createImageWithSpecificColorBand(Image image, SpecificBand specificBand) {
 		return specificBand.createWithBand(image);
+	}
+
+	@Override
+	public Image plusImages(Image image, Image image2) {
+		int maxHeight = (int) Math.max(image.getHeight(), image2.getHeight());
+		int maxWidth = (int) Math.max(image.getWidth(), image2.getWidth());
+		WritableImage imageResult = new WritableImage(maxWidth, maxHeight);
+		PixelWriter pixelWriter = imageResult.getPixelWriter();
+
+		for (int row = 0; row < maxHeight; row++) {
+			for (int column = 0; column < maxWidth; column++) {
+				pixelWriter.setColor(column, row, calculateColor(image, image2, row, column));
+			}
+		}
+
+		return imageResult;
+	}
+
+	private Color calculateColor(Image image, Image image2, int row, int column) {
+		Color sumsColor1 = obtainSumsColor(image, row, column);
+		Color sumsColor2 = obtainSumsColor(image2, row, column);
+		return plusColors(sumsColor1, sumsColor2);
+	}
+
+	private Color plusColors(Color sumsColor1, Color sumsColor2) {
+		int red = (int) ((sumsColor1.getRed() + sumsColor2.getRed()) * LIMIT_SCALE);
+		int blue = (int) ((sumsColor1.getBlue() + sumsColor2.getBlue()) * LIMIT_SCALE);
+		int green = (int) ((sumsColor1.getGreen() + sumsColor2.getGreen()) * LIMIT_SCALE);
+		red = applyTransformationForExceeded(red);
+		blue = applyTransformationForExceeded(blue);
+		green = applyTransformationForExceeded(green);
+		return Color.rgb(red, green, blue);
+	}
+
+	private int applyTransformationForExceeded(int grayScale) {
+		int transformed = grayScale;
+
+		if (LIMIT_SCALE < grayScale) {
+			transformed = grayScale / 2;
+		}
+
+		return transformed;
+	}
+
+	private Color obtainSumsColor(Image image, int row, int column) {
+		Color color = Color.rgb(0, 0, 0);
+
+		if (imageContainsPosition(image, row, column)) {
+			color = image.getPixelReader().getColor(column, row);
+		}
+
+		return color;
+	}
+
+	private boolean imageContainsPosition(Image image, int row, int column) {
+		return row < image.getHeight() && column < image.getWidth();
 	}
 }

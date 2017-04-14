@@ -32,9 +32,9 @@ public class PrincipalGraphicInterfaceController {
 		principalPane = new AnchorPane();
 		imageView = createImageView(principalPane);
 		imageResultView = createImageResultView(imageView);
-		menuBar = new MenuBarBuilder().build(imageView);
+		menuBar = new MenuBarBuilder().build(imageView, imageResultView);
 		imageData = imageDataController.build(imageView, imageResultView);
-		principalPaneChildrens = new ArrayList<Node>();
+		principalPaneChildrens = new ArrayList<>();
 		principalPaneChildrens.addAll(Arrays.asList(menuBar, imageView, imageResultView, imageData));
 		principalPane.getChildren().addAll(principalPaneChildrens);
 		imageView.addEventHandler(MouseEvent.MOUSE_CLICKED, new ClickImagePixelValues(imageView, imageDataController));

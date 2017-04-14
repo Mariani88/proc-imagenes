@@ -50,11 +50,7 @@ public class CreationSpecificImageHandler implements EventHandler<ActionEvent> {
 
 	private void configImageViewAndSetImage(ImageView imageView, MenuBar menuBar) {
 		imageView.setLayoutY(menuBar.getLayoutY() + 30);
-		int width = 200;
-		int height = 200;
 		imageView.autosize();
-		imageView.setFitWidth(width);
-		imageView.setFitHeight(height);
 		Image writableImage = creationCenterFigure.get();
 		imageView.setImage(writableImage);
 	}

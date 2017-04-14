@@ -14,4 +14,6 @@ public interface CreationImageService {
 	Image createImageWithColorDegree(int width, int height);
 
 	Image createImageWithSpecificColorBand(Image image, SpecificBand specificBand);
+
+	Image plusImages(Image image, Image image1);
 }
