@@ -5,6 +5,7 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
+import untref.controllers.ArithmeticOperationsMenuController;
 import untref.eventhandlers.*;
 import untref.factory.FileImageChooserFactory;
 import untref.repository.ImageRepository;
@@ -16,6 +17,7 @@ import untref.service.colorbands.RedBand;
 
 public class MenuBarBuilder {
 
+	private final ArithmeticOperationsMenuController arithmeticOperationsMenuController;
 	private CreationImageService creationImageService;
 	private ImageIOService imageIOService;
 	private ImageRepository imageRepository;
@@ -26,6 +28,7 @@ public class MenuBarBuilder {
 		this.creationImageService = new CreationImageServiceImpl();
 		this.imageIOService = new ImageIOServiceImpl(imageRepository);
 		this.fileImageChooserFactory = new FileImageChooserFactory();
+		arithmeticOperationsMenuController = new ArithmeticOperationsMenuController(creationImageService, imageIOService, fileImageChooserFactory);
 	}
 
 	public MenuBar build(final ImageView imageView, final ImageView imageViewResult) {
@@ -46,24 +49,10 @@ public class MenuBarBuilder {
 		copyImageNewWindows.setOnAction(new CopyImageNewWindowsHandler(imageView));
 		rgbToHsv.setOnAction(
 				new ChangeColorFromRGBToHSVHandler(imageView, new ImageGetColorRGBImpl(imageView.getImage()), new ImageEditionServiceImpl()));
-		Menu arithmeticOperationsBetweenImages = createArithmeticOperationsBetweenImages(imageView, imageViewResult);
+		Menu arithmeticOperationsBetweenImages = arithmeticOperationsMenuController
+				.createArithmeticOperationsBetweenImages(imageView, imageViewResult);
 		editionMenu.getItems().addAll(binaryImages, degreeImages, copyImageNewWindows, rgbToHsv, colorBand, arithmeticOperationsBetweenImages);
 		return editionMenu;
-	}
-
-	private Menu createArithmeticOperationsBetweenImages(ImageView imageView, ImageView imageViewResult) {
-		Menu arithmeticOperationsBetweenImages = new Menu("arithmetic operations between images");
-		MenuItem plusImages = new MenuItem("plus images");
-		plusImages.setOnAction(new CreationSpecificImageHandler(creationImageService, imageIOService, fileImageChooserFactory,
-				() -> creationImageService.plusImages(imageView.getImage(), imageViewResult.getImage())));
-		MenuItem subtractImages = new MenuItem("subtract images");
-		subtractImages.setOnAction(new CreationSpecificImageHandler(creationImageService, imageIOService, fileImageChooserFactory,
-				() -> creationImageService.subtractImages(imageView.getImage(), imageViewResult.getImage())));
-		MenuItem multiplyImages = new MenuItem("multiply images");
-		multiplyImages.setOnAction(new CreationSpecificImageHandler(creationImageService, imageIOService, fileImageChooserFactory,
-				() -> creationImageService.multiplyImages(imageView.getImage(), imageViewResult.getImage())));
-		arithmeticOperationsBetweenImages.getItems().addAll(plusImages, subtractImages, multiplyImages);
-		return arithmeticOperationsBetweenImages;
 	}
 
 	private Menu createColorBandMenu(ImageView imageView) {
