@@ -4,6 +4,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
+import untref.service.arithmeticoperations.ArithmeticOperationPlus;
 import untref.service.colorbands.SpecificBand;
 import untref.service.figures.CenterCircle;
 import untref.service.figures.CenterQuadrate;
@@ -103,31 +104,23 @@ public class CreationImageServiceImpl implements CreationImageService {
 		return imageResult;
 	}
 
+	@Override
+	public Image subtractImages(Image image, Image image2) {
+		int maxHeight = (int) Math.max(image.getHeight(), image2.getHeight());
+		int maxWidth = (int) Math.max(image.getWidth(), image2.getWidth());
+		WritableImage imageResult = new WritableImage(maxWidth, maxHeight);
+		PixelWriter pixelWriter = imageResult.getPixelWriter();
+
+
+		return imageResult;
+	}
+
 	private Color calculateColor(Image image, Image image2, int row, int column) {
 		Color sumsColor1 = obtainSumsColor(image, row, column);
 		Color sumsColor2 = obtainSumsColor(image2, row, column);
-		return plusColors(sumsColor1, sumsColor2);
+		return new ArithmeticOperationPlus().calculateColor(sumsColor1, sumsColor2);
 	}
 
-	private Color plusColors(Color sumsColor1, Color sumsColor2) {
-		int red = (int) ((sumsColor1.getRed() + sumsColor2.getRed()) * LIMIT_SCALE);
-		int blue = (int) ((sumsColor1.getBlue() + sumsColor2.getBlue()) * LIMIT_SCALE);
-		int green = (int) ((sumsColor1.getGreen() + sumsColor2.getGreen()) * LIMIT_SCALE);
-		red = applyTransformationForExceeded(red);
-		blue = applyTransformationForExceeded(blue);
-		green = applyTransformationForExceeded(green);
-		return Color.rgb(red, green, blue);
-	}
-
-	private int applyTransformationForExceeded(int grayScale) {
-		int transformed = grayScale;
-
-		if (LIMIT_SCALE < grayScale) {
-			transformed = grayScale / 2;
-		}
-
-		return transformed;
-	}
 
 	private Color obtainSumsColor(Image image, int row, int column) {
 		Color color = Color.rgb(0, 0, 0);

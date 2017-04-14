@@ -16,4 +16,6 @@ public interface CreationImageService {
 	Image createImageWithSpecificColorBand(Image image, SpecificBand specificBand);
 
 	Image plusImages(Image image, Image image1);
+
+	Image subtractImages(Image image, Image image1);
 }
