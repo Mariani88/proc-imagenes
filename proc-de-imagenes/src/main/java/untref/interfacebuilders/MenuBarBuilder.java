@@ -7,6 +7,7 @@ import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import untref.eventhandlers.ChangeColorFromRGBToHSVHandler;
 import untref.eventhandlers.CopyImageNewWindowsHandler;
+import untref.eventhandlers.CreateHistogramHandler;
 import untref.eventhandlers.CreationSpecificImageHandler;
 import untref.eventhandlers.OpenImageEventHandler;
 import untref.eventhandlers.SaveImageEventHandler;
@@ -41,10 +42,27 @@ public class MenuBarBuilder {
 		MenuBar menuBar = new MenuBar();
 		Menu fileMenu = createFileMenu(imageView);
 		Menu editionMenu = createEditionMenu(imageView);
-		menuBar.getMenus().addAll(fileMenu, editionMenu);
+		Menu histogramMenu = createHistogramMenu(imageView);
+		menuBar.getMenus().addAll(fileMenu, editionMenu,histogramMenu);
 		return menuBar;
 	}
 
+	
+	private Menu createHistogramMenu(ImageView imageView) {
+		Menu histogramMenu = new Menu("histogram");
+	//	Menu binaryImages = createBinaryImagesSubMenu();
+	//	Menu degreeImages = createDegreeImagesSubMenu();
+		MenuItem create = new MenuItem("create");
+		//MenuItem rgbToHsv = new MenuItem("RGB to HSV");
+		//Menu colorBand = createColorBandMenu(imageView);
+		create.setOnAction(new CreateHistogramHandler(imageView));
+	
+		histogramMenu.getItems().addAll( create);
+		return histogramMenu;
+
+	}
+	
+	
 	private Menu createEditionMenu(ImageView imageView) {
 		Menu editionMenu = new Menu("Edition");
 		Menu binaryImages = createBinaryImagesSubMenu();

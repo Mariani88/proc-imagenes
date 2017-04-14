@@ -5,8 +5,8 @@ import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import untref.service.colorbands.SpecificBand;
-import untref.service.figures.CenterCircle;
-import untref.service.figures.CenterQuadrate;
+import untref.service.figuresAndGrafic.CenterCircle;
+import untref.service.figuresAndGrafic.CenterQuadrate;
 
 import java.util.function.Consumer;
 
