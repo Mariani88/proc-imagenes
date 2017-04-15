@@ -19,14 +19,12 @@ import java.util.function.Supplier;
 
 public class CreationSpecificImageHandler implements EventHandler<ActionEvent> {
 
-	private CreationImageService creationImageService;
 	private ImageIOService imageIOService;
 	private FileImageChooserFactory fileImageChooserFactory;
 	private Supplier<Image> creationCenterFigure;
 
-	public CreationSpecificImageHandler(CreationImageService creationImageService, ImageIOService imageIOService,
-			FileImageChooserFactory fileImageChooserFactory, Supplier<Image> specificCreation) {
-		this.creationImageService = creationImageService;
+	public CreationSpecificImageHandler(ImageIOService imageIOService, FileImageChooserFactory fileImageChooserFactory,
+			Supplier<Image> specificCreation) {
 		this.imageIOService = imageIOService;
 		this.fileImageChooserFactory = fileImageChooserFactory;
 		this.creationCenterFigure = specificCreation;

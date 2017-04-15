@@ -58,13 +58,13 @@ public class MenuBarBuilder {
 	private Menu createColorBandMenu(ImageView imageView) {
 		Menu colorBand = new Menu("Color band");
 		MenuItem redBand = new MenuItem("red band");
-		redBand.setOnAction(new CreationSpecificImageHandler(creationImageService, imageIOService, fileImageChooserFactory,
+		redBand.setOnAction(new CreationSpecificImageHandler(imageIOService, fileImageChooserFactory,
 				() -> creationImageService.createImageWithSpecificColorBand(imageView.getImage(), new RedBand())));
 		MenuItem blueBand = new MenuItem("blue band");
-		blueBand.setOnAction(new CreationSpecificImageHandler(creationImageService, imageIOService, fileImageChooserFactory,
+		blueBand.setOnAction(new CreationSpecificImageHandler(imageIOService, fileImageChooserFactory,
 				() -> creationImageService.createImageWithSpecificColorBand(imageView.getImage(), new BlueBand())));
 		MenuItem greenBand = new MenuItem("green band");
-		greenBand.setOnAction(new CreationSpecificImageHandler(creationImageService, imageIOService, fileImageChooserFactory,
+		greenBand.setOnAction(new CreationSpecificImageHandler(imageIOService, fileImageChooserFactory,
 				() -> creationImageService.createImageWithSpecificColorBand(imageView.getImage(), new GreenBand())));
 		colorBand.getItems().addAll(redBand, blueBand, greenBand);
 		return colorBand;
@@ -74,9 +74,9 @@ public class MenuBarBuilder {
 		Menu degrees = new Menu("degreeas");
 		MenuItem grayDegree = new MenuItem("gray degree");
 		MenuItem colorDegree = new MenuItem("color degree");
-		grayDegree.setOnAction(new CreationSpecificImageHandler(creationImageService, imageIOService, fileImageChooserFactory,
+		grayDegree.setOnAction(new CreationSpecificImageHandler(imageIOService, fileImageChooserFactory,
 				() -> creationImageService.createImageWithGrayDegree(250, 250)));
-		colorDegree.setOnAction(new CreationSpecificImageHandler(creationImageService, imageIOService, fileImageChooserFactory,
+		colorDegree.setOnAction(new CreationSpecificImageHandler(imageIOService, fileImageChooserFactory,
 				() -> creationImageService.createImageWithColorDegree(255, 255)));
 		degrees.getItems().addAll(grayDegree, colorDegree);
 		return degrees;
@@ -85,10 +85,10 @@ public class MenuBarBuilder {
 	private Menu createBinaryImagesSubMenu() {
 		Menu binaryImages = new Menu("BinaryImages");
 		MenuItem binaryImageWithQuadrate = new MenuItem("binary image with quadrate");
-		binaryImageWithQuadrate.setOnAction(new CreationSpecificImageHandler(creationImageService, imageIOService, fileImageChooserFactory,
+		binaryImageWithQuadrate.setOnAction(new CreationSpecificImageHandler(imageIOService, fileImageChooserFactory,
 				() -> creationImageService.createBinaryImageWithCenterQuadrate(200, 200)));
 		MenuItem binaryImageWithCircle = new MenuItem("binary image with circle");
-		binaryImageWithCircle.setOnAction(new CreationSpecificImageHandler(creationImageService, imageIOService, fileImageChooserFactory,
+		binaryImageWithCircle.setOnAction(new CreationSpecificImageHandler(imageIOService, fileImageChooserFactory,
 				() -> creationImageService.createBinaryImageWithCenterCircle(200, 200)));
 		binaryImages.getItems().addAll(binaryImageWithQuadrate, binaryImageWithCircle);
 		return binaryImages;

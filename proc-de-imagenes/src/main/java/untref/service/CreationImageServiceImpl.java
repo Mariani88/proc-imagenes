@@ -1,17 +1,19 @@
 package untref.service;
 
 import javafx.scene.image.Image;
+import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
-import untref.service.arithmeticoperations.ArithmeticOperation;
-import untref.service.arithmeticoperations.ArithmeticOperationMultiply;
-import untref.service.arithmeticoperations.ArithmeticOperationPlus;
-import untref.service.arithmeticoperations.ArithmeticOperationSubtract;
+import untref.service.arithmeticoperations.ArithmeticOperationBetweenImages;
+import untref.service.arithmeticoperations.ArithmeticOperationBetweenImagesMultiply;
+import untref.service.arithmeticoperations.ArithmeticOperationBetweenImagesPlus;
+import untref.service.arithmeticoperations.ArithmeticOperationBetweenImagesSubtract;
 import untref.service.colorbands.SpecificBand;
 import untref.service.evaluators.ImagePositionEvaluator;
 import untref.service.figures.CenterCircle;
 import untref.service.figures.CenterQuadrate;
+import untref.service.transformationoutrang.SuperiorLimitTransformation;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -22,15 +24,15 @@ public class CreationImageServiceImpl implements CreationImageService {
 
 	private static final int LIMIT_SCALE = 255;
 	private final ImagePositionEvaluator imagePositionEvaluator;
-	private final ArithmeticOperationSubtract arithmeticOperationSubtract;
-	private final ArithmeticOperationMultiply arithmeticOperationMultiply;
-	private ArithmeticOperation arithmeticOperationPlus;
+	private final ArithmeticOperationBetweenImagesSubtract arithmeticOperationSubtract;
+	private final ArithmeticOperationBetweenImagesMultiply arithmeticOperationMultiply;
+	private ArithmeticOperationBetweenImages arithmeticOperationBetweenImagesPlus;
 
 	public CreationImageServiceImpl() {
-		this.arithmeticOperationPlus = new ArithmeticOperationPlus();
+		this.arithmeticOperationBetweenImagesPlus = new ArithmeticOperationBetweenImagesPlus();
 		this.imagePositionEvaluator = new ImagePositionEvaluator();
-		this.arithmeticOperationSubtract = new ArithmeticOperationSubtract();
-		arithmeticOperationMultiply = new ArithmeticOperationMultiply();
+		this.arithmeticOperationSubtract = new ArithmeticOperationBetweenImagesSubtract();
+		arithmeticOperationMultiply = new ArithmeticOperationBetweenImagesMultiply();
 	}
 
 	@Override
@@ -106,7 +108,7 @@ public class CreationImageServiceImpl implements CreationImageService {
 
 	@Override
 	public Image plusImages(Image image, Image image2) {
-		return applyArithmeticOperation(image, image2, arithmeticOperationPlus);
+		return applyArithmeticOperation(image, image2, arithmeticOperationBetweenImagesPlus);
 	}
 
 	@Override
@@ -119,7 +121,26 @@ public class CreationImageServiceImpl implements CreationImageService {
 		return applyArithmeticOperation(image, image2, arithmeticOperationMultiply);
 	}
 
-	private WritableImage applyArithmeticOperation(Image image, Image image2, ArithmeticOperation arithmeticOperation) {
+	@Override
+	public Image multiplyImageByScalar(double scalar, Image image) {
+		WritableImage imageResult = new WritableImage((int) image.getWidth(), (int) image.getHeight());
+		PixelWriter pixelWriter = imageResult.getPixelWriter();
+		PixelReader pixelReader = image.getPixelReader();
+
+		for (int row = 0; row < imageResult.getHeight(); row++) {
+			for (int column = 0; column < imageResult.getWidth(); column++) {
+				Color color = pixelReader.getColor(column, row);
+				int blue = new SuperiorLimitTransformation().apply((int) (color.getBlue() * LIMIT_SCALE * scalar));
+				int green = new SuperiorLimitTransformation().apply((int) (color.getGreen() * LIMIT_SCALE * scalar));
+				int red = new SuperiorLimitTransformation().apply((int) (color.getRed() * LIMIT_SCALE * scalar));
+				pixelWriter.setColor(column, row, Color.rgb(red, green, blue));
+			}
+		}
+
+		return imageResult;
+	}
+
+	private WritableImage applyArithmeticOperation(Image image, Image image2, ArithmeticOperationBetweenImages arithmeticOperationBetweenImages) {
 		int maxHeight = (int) Math.max(image.getHeight(), image2.getHeight());
 		int maxWidth = (int) Math.max(image.getWidth(), image2.getWidth());
 		WritableImage imageResult = new WritableImage(maxWidth, maxHeight);
@@ -129,7 +150,7 @@ public class CreationImageServiceImpl implements CreationImageService {
 			for (int column = 0; column < maxWidth; column++) {
 				Color sumsColor1 = imagePositionEvaluator.obtainSumsColor(image, row, column);
 				Color sumsColor2 = imagePositionEvaluator.obtainSumsColor(image2, row, column);
-				Supplier<Color> operation = () -> arithmeticOperation.calculateColor(sumsColor1, sumsColor2);
+				Supplier<Color> operation = () -> arithmeticOperationBetweenImages.calculateColor(sumsColor1, sumsColor2);
 				pixelWriter.setColor(column, row, operation.get());
 			}
 		}

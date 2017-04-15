@@ -5,6 +5,7 @@ import javafx.event.EventHandler;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
+import untref.controllers.nodeutils.ImageSetter;
 import untref.service.ImageIOService;
 
 import java.util.Optional;
@@ -24,21 +25,6 @@ public class OpenImageEventHandler implements EventHandler<ActionEvent> {
 
 	public void handle(ActionEvent event) {
 		Optional<Image> image = imageIOService.openImage(fileChooser);
-		image.ifPresent(new Consumer<Image>() {
-			@Override
-			public void accept(Image image1) {
-
-
-				if ( image1.getHeight() < 500 & image1.getWidth() < 500) {
-					imageView.setFitHeight(image1.getHeight());
-					imageView.setFitWidth(image1.getWidth());
-				}else{
-					imageView.setFitHeight(500);
-					imageView.setFitWidth(500);
-				}
-				imageView.setImage(image1);
-
-			}
-		});
+		image.ifPresent(image1 -> ImageSetter.set(imageView, image1));
 	}
 }

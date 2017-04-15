@@ -43,11 +43,9 @@ public class ChangePixelValueEventHandler implements EventHandler<ActionEvent> {
 		stage.setMaxWidth(200);
 		stage.setHeight(200);
 		stage.show();
-		saveButton.setOnAction(new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent event) {
-				modifyImage(imageView.getImage());
-				stage.close();
-			}
+		saveButton.setOnAction(event1 -> {
+			modifyImage(imageView.getImage());
+			stage.close();
 		});
 	}
 

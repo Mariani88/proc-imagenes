@@ -3,12 +3,12 @@ package untref.service.arithmeticoperations;
 import javafx.scene.paint.Color;
 import untref.service.transformationoutrang.InferiorLimitTransformation;
 
-public class ArithmeticOperationSubtract implements ArithmeticOperation {
+public class ArithmeticOperationBetweenImagesSubtract implements ArithmeticOperationBetweenImages {
 
 	private static final int LIMIT_SCALE = 255;
 	private InferiorLimitTransformation inferiorLimitTransformation;
 
-	public ArithmeticOperationSubtract() {
+	public ArithmeticOperationBetweenImagesSubtract() {
 		this.inferiorLimitTransformation = new InferiorLimitTransformation();
 	}
 
