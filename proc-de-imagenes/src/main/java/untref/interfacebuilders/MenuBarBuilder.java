@@ -9,6 +9,7 @@ import untref.eventhandlers.ChangeColorFromRGBToHSVHandler;
 import untref.eventhandlers.CopyImageNewWindowsHandler;
 import untref.eventhandlers.CreateHistogramHandler;
 import untref.eventhandlers.CreationSpecificImageHandler;
+import untref.eventhandlers.EqualizeHandler;
 import untref.eventhandlers.OpenImageEventHandler;
 import untref.eventhandlers.SaveImageEventHandler;
 import untref.factory.FileImageChooserFactory;
@@ -38,26 +39,27 @@ public class MenuBarBuilder {
 		this.fileImageChooserFactory = new FileImageChooserFactory();
 	}
 
-	public MenuBar build(final ImageView imageView) {
+	public MenuBar build(final ImageView imageView, final ImageView imageResultView) {
 		MenuBar menuBar = new MenuBar();
 		Menu fileMenu = createFileMenu(imageView);
 		Menu editionMenu = createEditionMenu(imageView);
-		Menu histogramMenu = createHistogramMenu(imageView);
+		Menu histogramMenu = createHistogramMenu(imageView,imageResultView);
 		menuBar.getMenus().addAll(fileMenu, editionMenu,histogramMenu);
 		return menuBar;
 	}
 
 	
-	private Menu createHistogramMenu(ImageView imageView) {
-		Menu histogramMenu = new Menu("histogram");
+	private Menu createHistogramMenu(ImageView imageView,ImageView imageResultView) {
+		Menu histogramMenu = new Menu("Histogram");
 	//	Menu binaryImages = createBinaryImagesSubMenu();
 	//	Menu degreeImages = createDegreeImagesSubMenu();
 		MenuItem create = new MenuItem("create");
-		//MenuItem rgbToHsv = new MenuItem("RGB to HSV");
+		MenuItem equalize= new MenuItem("Equalize");
 		//Menu colorBand = createColorBandMenu(imageView);
 		create.setOnAction(new CreateHistogramHandler(imageView));
+		equalize.setOnAction(new EqualizeHandler(imageView,imageResultView));
 	
-		histogramMenu.getItems().addAll( create);
+		histogramMenu.getItems().addAll( create,equalize);
 		return histogramMenu;
 
 	}

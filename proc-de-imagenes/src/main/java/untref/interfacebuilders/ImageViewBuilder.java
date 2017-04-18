@@ -9,6 +9,11 @@ public class ImageViewBuilder {
 		this.imageView = new ImageView(imagePath);
 	}
 
+	public ImageViewBuilder withText() {
+		this.imageView = new ImageView(imagePath);
+	}
+
+	
 	public ImageViewBuilder withAutosize() {
 		this.imageView.autosize();
 		return this;

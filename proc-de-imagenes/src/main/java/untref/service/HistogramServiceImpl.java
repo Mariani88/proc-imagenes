@@ -21,9 +21,10 @@ public class HistogramServiceImpl implements HistogramService {
 		for (int i = 0; i < this.image.getWidth(); i++)
 			for (int j = 0; j < this.image.getHeight(); j++){
 					
-				
+			
 				arrayHistogram[this.serviceImageRgb.getValueRgb(i, j)] += 1;
 			}
+		
 		return arrayHistogram;
 	}
 
