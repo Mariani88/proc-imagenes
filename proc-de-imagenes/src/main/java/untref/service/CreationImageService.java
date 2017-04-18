@@ -14,12 +14,4 @@ public interface CreationImageService {
 	Image createImageWithColorDegree(int width, int height);
 
 	Image createImageWithSpecificColorBand(Image image, SpecificBand specificBand);
-
-	Image plusImages(Image image, Image image1);
-
-	Image subtractImages(Image image, Image image1);
-
-	Image multiplyImages(Image image, Image image1);
-
-	Image multiplyImageByScalar(double scalar, Image image);
 }

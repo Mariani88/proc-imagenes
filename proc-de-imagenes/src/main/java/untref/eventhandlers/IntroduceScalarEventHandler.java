@@ -10,18 +10,18 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import untref.controllers.nodeutils.ImageSetter;
-import untref.factory.FileImageChooserFactory;
 import untref.service.CreationImageService;
-import untref.service.ImageIOService;
+import untref.service.ImageArithmeticOperationService;
 
 public class IntroduceScalarEventHandler implements EventHandler<ActionEvent> {
 
-	private CreationImageService creationImageService;
+	private ImageArithmeticOperationService imageArithmeticOperationService;
 	private ImageView imageView;
 	private ImageView imageResultView;
 
-	public IntroduceScalarEventHandler(CreationImageService creationImageService, ImageView imageView, ImageView imageResultView) {
-		this.creationImageService = creationImageService;
+	public IntroduceScalarEventHandler(ImageArithmeticOperationService imageArithmeticOperationService, ImageView imageView,
+			ImageView imageResultView) {
+		this.imageArithmeticOperationService = imageArithmeticOperationService;
 		this.imageView = imageView;
 		this.imageResultView = imageResultView;
 	}
@@ -40,7 +40,7 @@ public class IntroduceScalarEventHandler implements EventHandler<ActionEvent> {
 		button.setOnAction(event1 -> {
 			double scalar = Double.valueOf(scalarValue.getText());
 			stage.close();
-			ImageSetter.set(imageResultView, creationImageService.multiplyImageByScalar(scalar, imageView.getImage()));
+			ImageSetter.set(imageResultView, imageArithmeticOperationService.multiplyImageByScalar(scalar, imageView.getImage()));
 		});
 		pane.getChildren().addAll(scalarLabel, scalarValue, button);
 		Scene scene = new Scene(pane);

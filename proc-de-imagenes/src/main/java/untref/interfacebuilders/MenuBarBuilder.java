@@ -22,13 +22,16 @@ public class MenuBarBuilder {
 	private ImageIOService imageIOService;
 	private ImageRepository imageRepository;
 	private FileImageChooserFactory fileImageChooserFactory;
+	private final ImageArithmeticOperationService imageArithmeticOperationService;
 
 	public MenuBarBuilder() {
 		this.imageRepository = new ImageRepositoryImpl();
 		this.creationImageService = new CreationImageServiceImpl();
 		this.imageIOService = new ImageIOServiceImpl(imageRepository);
 		this.fileImageChooserFactory = new FileImageChooserFactory();
-		arithmeticOperationsMenuController = new ArithmeticOperationsMenuController(creationImageService, imageIOService, fileImageChooserFactory);
+		imageArithmeticOperationService = new ImageArithmeticOperationServiceImpl();
+		arithmeticOperationsMenuController = new ArithmeticOperationsMenuController(imageArithmeticOperationService, imageIOService,
+				fileImageChooserFactory);
 	}
 
 	public MenuBar build(final ImageView imageView, final ImageView imageViewResult) {
