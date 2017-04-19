@@ -4,6 +4,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
+import javafx.scene.paint.Color;
 
 public class ImageEditionServiceImpl implements ImageEditionService {
 
@@ -64,8 +65,32 @@ public class ImageEditionServiceImpl implements ImageEditionService {
 
 		return new double[] { h, s, v };
 	}
-	
-	
+
+	//TODO testear.
+	@Override
+	public Image transformToNegative(Image image) {
+		WritableImage writableImage = new WritableImage((int) image.getWidth(), (int) image.getHeight());
+		PixelWriter pixelWriter = writableImage.getPixelWriter();
+		PixelReader pixelReader = image.getPixelReader();
+
+		for (int row = 0; row < image.getHeight(); row++) {
+			for (int column = 0; column < image.getWidth(); column++) {
+				pixelWriter.setColor(column, row, transformToNegativeColor(pixelReader.getColor(column, row)));
+			}
+		}
+
+		return writableImage;
+	}
+
+	private Color transformToNegativeColor(Color color) {
+		return Color.rgb(calculateNegativeScaleGray(color.getRed()), calculateNegativeScaleGray(color.getGreen()),
+				calculateNegativeScaleGray(color.getBlue()));
+	}
+
+	private int calculateNegativeScaleGray(double grayScale) {
+		return (int) (255 - grayScale * 255);
+	}
+
 	private int toInt(String text) {
 		return Integer.parseInt(text);
 	}

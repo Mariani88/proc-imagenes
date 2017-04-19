@@ -1,8 +1,11 @@
 package untref.interfacebuilders;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import untref.controllers.ArithmeticOperationsMenuController;
@@ -15,6 +18,8 @@ import untref.service.colorbands.BlueBand;
 import untref.service.colorbands.GreenBand;
 import untref.service.colorbands.RedBand;
 
+import java.util.function.Supplier;
+
 public class MenuBarBuilder {
 
 	private final ArithmeticOperationsMenuController arithmeticOperationsMenuController;
@@ -23,8 +28,10 @@ public class MenuBarBuilder {
 	private ImageRepository imageRepository;
 	private FileImageChooserFactory fileImageChooserFactory;
 	private final ImageArithmeticOperationService imageArithmeticOperationService;
+	private final ImageEditionService imageEditionService;
 
 	public MenuBarBuilder() {
+		imageEditionService = new ImageEditionServiceImpl();
 		this.imageRepository = new ImageRepositoryImpl();
 		this.creationImageService = new CreationImageServiceImpl();
 		this.imageIOService = new ImageIOServiceImpl(imageRepository);
@@ -45,17 +52,12 @@ public class MenuBarBuilder {
 
 	private Menu createHistogramMenu(ImageView imageView, ImageView imageResultView) {
 		Menu histogramMenu = new Menu("Histogram");
-		//	Menu binaryImages = createBinaryImagesSubMenu();
-		//	Menu degreeImages = createDegreeImagesSubMenu();
 		MenuItem create = new MenuItem("create");
 		MenuItem equalize = new MenuItem("Equalize");
-		//Menu colorBand = createColorBandMenu(imageView);
 		create.setOnAction(new CreateHistogramHandler(imageView));
 		equalize.setOnAction(new EqualizeHandler(imageView, imageResultView));
-
 		histogramMenu.getItems().addAll(create, equalize);
 		return histogramMenu;
-
 	}
 
 	private Menu createEditionMenu(ImageView imageView, ImageView imageViewResult) {
@@ -70,7 +72,13 @@ public class MenuBarBuilder {
 				new ChangeColorFromRGBToHSVHandler(imageView, new ImageGetColorRGBImpl(imageView.getImage()), new ImageEditionServiceImpl()));
 		Menu arithmeticOperationsBetweenImages = arithmeticOperationsMenuController
 				.createArithmeticOperationsBetweenImages(imageView, imageViewResult);
-		editionMenu.getItems().addAll(binaryImages, degreeImages, copyImageNewWindows, rgbToHsv, colorBand, arithmeticOperationsBetweenImages);
+
+		MenuItem negativeImage = new MenuItem("Negative image");
+		negativeImage.setOnAction(
+				new EditionImageEventHandler(imageView, imageViewResult, () -> imageEditionService.transformToNegative(imageView.getImage())));
+
+		editionMenu.getItems()
+				.addAll(binaryImages, degreeImages, copyImageNewWindows, rgbToHsv, colorBand, arithmeticOperationsBetweenImages, negativeImage);
 		return editionMenu;
 	}
 

@@ -6,4 +6,6 @@ public interface ImageEditionService {
 	Image modifyPixelValue(Image image, String aX, String aY, String pixelValue);
 
 	double[] RGBtoHSV(double r, double g, double b);
+
+	Image transformToNegative(Image image);
 }
