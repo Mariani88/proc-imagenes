@@ -44,7 +44,7 @@ public class ImageViewBuilder {
 		return this;
 	}
 
-	public ImageView build(){
+	public ImageView build() {
 		return imageView;
 	}
 }

@@ -22,4 +22,6 @@ public interface ImageGetColorRGB {
 
 	int getTotalPixel();
 
+	int getValueRgb(int x, int y);
+
 }

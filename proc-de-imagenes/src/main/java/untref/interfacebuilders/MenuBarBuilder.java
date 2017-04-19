@@ -34,12 +34,28 @@ public class MenuBarBuilder {
 				fileImageChooserFactory);
 	}
 
-	public MenuBar build(final ImageView imageView, final ImageView imageViewResult) {
+	public MenuBar build(final ImageView imageView, final ImageView imageResultView) {
 		MenuBar menuBar = new MenuBar();
-		Menu fileMenu = createFileMenu(imageView, imageViewResult);
-		Menu editionMenu = createEditionMenu(imageView, imageViewResult);
-		menuBar.getMenus().addAll(fileMenu, editionMenu);
+		Menu fileMenu = createFileMenu(imageView, imageResultView);
+		Menu editionMenu = createEditionMenu(imageView, imageResultView);
+		Menu histogramMenu = createHistogramMenu(imageView, imageResultView);
+		menuBar.getMenus().addAll(fileMenu, editionMenu, histogramMenu);
 		return menuBar;
+	}
+
+	private Menu createHistogramMenu(ImageView imageView, ImageView imageResultView) {
+		Menu histogramMenu = new Menu("Histogram");
+		//	Menu binaryImages = createBinaryImagesSubMenu();
+		//	Menu degreeImages = createDegreeImagesSubMenu();
+		MenuItem create = new MenuItem("create");
+		MenuItem equalize = new MenuItem("Equalize");
+		//Menu colorBand = createColorBandMenu(imageView);
+		create.setOnAction(new CreateHistogramHandler(imageView));
+		equalize.setOnAction(new EqualizeHandler(imageView, imageResultView));
+
+		histogramMenu.getItems().addAll(create, equalize);
+		return histogramMenu;
+
 	}
 
 	private Menu createEditionMenu(ImageView imageView, ImageView imageViewResult) {

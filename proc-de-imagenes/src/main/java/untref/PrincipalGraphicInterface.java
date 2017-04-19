@@ -6,6 +6,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import untref.controllers.PrincipalGraphicInterfaceController;
 
+
+
+
 public class PrincipalGraphicInterface extends Application {
 
 	public static void main(String[] args) {
@@ -21,3 +24,7 @@ public class PrincipalGraphicInterface extends Application {
 		primaryStage.show();
 	}
 }
+
+
+
+

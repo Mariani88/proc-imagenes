@@ -96,7 +96,7 @@ public class ImageGetColorRGBImpl implements ImageGetColorRGB {
 
 	@Override
 	public Double getValueChannelG(int x, int y) {
-		
+
 		PixelReader reader = image.getPixelReader();
 
 		return reader.getColor(x, y).getGreen();
@@ -107,6 +107,15 @@ public class ImageGetColorRGBImpl implements ImageGetColorRGB {
 		PixelReader reader = image.getPixelReader();
 
 		return reader.getColor(x, y).getBlue();
+	}
+
+	@Override
+	public int getValueRgb(int x, int y) {
+		int promedio;
+		promedio = (int) ((this.getValueChannelB(x, y) * 255 + this.getValueChannelG(x, y) * 255
+				+ this.getValueChannelR(x, y) * 255) / 3);
+
+		return promedio;
 	}
 
 }
