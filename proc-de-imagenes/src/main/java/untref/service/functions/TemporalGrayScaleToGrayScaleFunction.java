@@ -1,6 +1,5 @@
 package untref.service.functions;
 
-import java.math.BigDecimal;
 import java.util.function.Function;
 
 public class TemporalGrayScaleToGrayScaleFunction implements Function<Integer, Integer> {

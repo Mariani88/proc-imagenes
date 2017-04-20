@@ -1,28 +1,28 @@
 package untref.domain;
 
-import untref.service.functions.TemporalGrayScaleToGrayScaleFunction;
+import java.util.function.Function;
 
 public class GrayScaleFunctionsContainer {
-	private TemporalGrayScaleToGrayScaleFunction redGrayScaleFunction;
-	private TemporalGrayScaleToGrayScaleFunction greenGrayScaleFunction;
-	private TemporalGrayScaleToGrayScaleFunction blueGrayScaleFunction;
+	private Function<Integer, Integer> redGrayScaleFunction;
+	private Function<Integer, Integer> greenGrayScaleFunction;
+	private Function<Integer, Integer> blueGrayScaleFunction;
 
-	public GrayScaleFunctionsContainer(TemporalGrayScaleToGrayScaleFunction redGrayScaleFunction,
-			TemporalGrayScaleToGrayScaleFunction greenGrayScaleFunction, TemporalGrayScaleToGrayScaleFunction blueGrayScaleFunction) {
+	public GrayScaleFunctionsContainer(Function<Integer, Integer> redGrayScaleFunction, Function<Integer, Integer> greenGrayScaleFunction,
+			Function<Integer, Integer> blueGrayScaleFunction) {
 		this.redGrayScaleFunction = redGrayScaleFunction;
 		this.greenGrayScaleFunction = greenGrayScaleFunction;
 		this.blueGrayScaleFunction = blueGrayScaleFunction;
 	}
 
-	public TemporalGrayScaleToGrayScaleFunction getRedGrayScaleFunction() {
+	public Function<Integer, Integer> getRedGrayScaleFunction() {
 		return redGrayScaleFunction;
 	}
 
-	public TemporalGrayScaleToGrayScaleFunction getGreenGrayScaleFunction() {
+	public Function<Integer, Integer> getGreenGrayScaleFunction() {
 		return greenGrayScaleFunction;
 	}
 
-	public TemporalGrayScaleToGrayScaleFunction getBlueGrayScaleFunction() {
+	public Function<Integer, Integer> getBlueGrayScaleFunction() {
 		return blueGrayScaleFunction;
 	}
 }

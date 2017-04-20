@@ -12,6 +12,7 @@ import untref.service.arithmeticoperations.ArithmeticOperationBetweenImagesMulti
 import untref.service.arithmeticoperations.ArithmeticOperationBetweenImagesPlus;
 import untref.service.arithmeticoperations.ArithmeticOperationBetweenImagesSubtract;
 import untref.service.evaluators.ImagePositionEvaluator;
+import untref.service.functions.DynamicRangeFunction;
 import untref.service.functions.TemporalGrayScaleToGrayScaleFunction;
 
 import java.util.function.Supplier;
@@ -48,34 +49,53 @@ public class ImageArithmeticOperationServiceImpl implements ImageArithmeticOpera
 
 	@Override
 	public Image multiplyImageByScalar(double scalar, Image image) {
-		WritableImage imageResult = new WritableImage((int) image.getWidth(), (int) image.getHeight());
-		PixelWriter pixelWriter = imageResult.getPixelWriter();
 		PixelReader pixelReader = image.getPixelReader();
+		TemporalColor temporalImageData[][] = new TemporalColor[(int) image.getHeight()][(int) image.getWidth()];
 
-		for (int row = 0; row < imageResult.getHeight(); row++) {
-			for (int column = 0; column < imageResult.getWidth(); column++) {
+		for (int row = 0; row < image.getHeight(); row++) {
+			for (int column = 0; column < image.getWidth(); column++) {
 				Color color = pixelReader.getColor(column, row);
 				int blue = (int) (color.getBlue() * LIMIT_SCALE * scalar);
 				int green = (int) (color.getGreen() * LIMIT_SCALE * scalar);
 				int red = (int) (color.getRed() * LIMIT_SCALE * scalar);
-				pixelWriter.setColor(column, row, Color.rgb(red, green, blue));
+				TemporalColor temporalColor = new TemporalColor(red, green, blue);
+				temporalImageData[row][column] = temporalColor;
 			}
 		}
 
-		return imageResult;
+		return parseToImage(temporalImageData, (int) image.getWidth(), (int) image.getHeight(), () -> obtainDynamicRangeFunctions
+				(temporalImageData));
+	}
+
+	private GrayScaleFunctionsContainer obtainDynamicRangeFunctions(TemporalColor[][] temporalImageData) {
+		int maxRed = Integer.MIN_VALUE;
+		int maxGreen = Integer.MIN_VALUE;
+		int maxBlue = Integer.MIN_VALUE;
+
+		for (int row = 0; row < temporalImageData.length; row++) {
+			for (int column = 0; column < temporalImageData[row].length; column++) {
+				maxRed = Math.max(maxRed, temporalImageData[row][column].getRed());
+				maxGreen = Math.max(maxGreen, temporalImageData[row][column].getGreen());
+				maxBlue = Math.max(maxBlue, temporalImageData[row][column].getBlue());
+			}
+		}
+
+		return new GrayScaleFunctionsContainer(new DynamicRangeFunction(maxRed), new DynamicRangeFunction(maxGreen),
+				new DynamicRangeFunction(maxBlue));
 	}
 
 	private WritableImage applyArithmeticOperation(Image image, Image image2, ArithmeticOperationBetweenImages arithmeticOperationBetweenImages) {
 		int maxHeight = (int) Math.max(image.getHeight(), image2.getHeight());
 		int maxWidth = (int) Math.max(image.getWidth(), image2.getWidth());
 		TemporalColor[][] temporalImageData = calculateTemporalImageData(image, image2, arithmeticOperationBetweenImages, maxHeight, maxWidth);
-		return parseToImage(temporalImageData, maxWidth, maxHeight);
+		return parseToImage(temporalImageData, maxWidth, maxHeight, () -> obtainFunctionsForExceededRGB(temporalImageData));
 	}
 
-	private WritableImage parseToImage(TemporalColor[][] temporalImageData, int maxWidth, int maxHeight) {
+	private WritableImage parseToImage(TemporalColor[][] temporalImageData, int maxWidth, int maxHeight,
+			Supplier<GrayScaleFunctionsContainer> obtentionGrayScaleFunctionsOperation) {
 		WritableImage imageResult = new WritableImage(maxWidth, maxHeight);
 		PixelWriter pixelWriter = imageResult.getPixelWriter();
-		GrayScaleFunctionsContainer grayScaleFunctionsContainer = obtainFunctionsForExceededRGB(temporalImageData);
+		GrayScaleFunctionsContainer grayScaleFunctionsContainer = obtentionGrayScaleFunctionsOperation.get();
 
 		for (int row = 0; row < maxHeight; row++) {
 			for (int column = 0; column < maxWidth; column++) {
@@ -138,5 +158,4 @@ public class ImageArithmeticOperationServiceImpl implements ImageArithmeticOpera
 		}
 		return temporalImageData;
 	}
-
 }
