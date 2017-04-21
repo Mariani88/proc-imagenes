@@ -2,7 +2,7 @@ package untref.service;
 
 public interface HistogramService {
 
-	int[] getArrayHistogram();
+	double[] getArrayHistogram();
 
 	void BarChartDraw();
 

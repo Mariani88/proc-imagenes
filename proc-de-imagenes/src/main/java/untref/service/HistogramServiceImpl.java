@@ -3,19 +3,19 @@ package untref.service;
 import javafx.scene.image.Image;
 
 public class HistogramServiceImpl implements HistogramService {
-	int arrayHistogram[];
+	double arrayHistogram[];
 	Image image;
 	int totalPixels;
 	ImageGetColorRGB serviceImageRgb;
 
 	public HistogramServiceImpl(Image image) {
-		this.arrayHistogram = new int[256];
+		this.arrayHistogram = new double[257];
 		this.totalPixels = 0;
 		this.image = image;
 	}
 
 	@Override
-	public int[] getArrayHistogram() {
+	public double[] getArrayHistogram() {
 		this.serviceImageRgb = new ImageGetColorRGBImpl(this.image);
 		this.totalPixels = this.serviceImageRgb.getTotalPixel();
 		for (int i = 0; i < this.image.getWidth(); i++)
@@ -25,7 +25,9 @@ public class HistogramServiceImpl implements HistogramService {
 				arrayHistogram[this.serviceImageRgb.getValueRgb(i, j)] += 1;
 			}
 		
-		return arrayHistogram;
+		for (int i = 0; i <256; i++)
+			arrayHistogram[i]=arrayHistogram[i]/totalPixels;
+		return arrayHistogram ;
 	}
 
 	@Override
