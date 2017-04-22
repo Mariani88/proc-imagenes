@@ -13,13 +13,13 @@ import untref.controllers.nodeutils.ImageSetter;
 import untref.service.CreationImageService;
 import untref.service.ImageArithmeticOperationService;
 
-public class IntroduceScalarEventHandler implements EventHandler<ActionEvent> {
+public class IntroduceParamEventHandler implements EventHandler<ActionEvent> {
 
 	private ImageArithmeticOperationService imageArithmeticOperationService;
 	private ImageView imageView;
 	private ImageView imageResultView;
 
-	public IntroduceScalarEventHandler(ImageArithmeticOperationService imageArithmeticOperationService, ImageView imageView,
+	public IntroduceParamEventHandler(ImageArithmeticOperationService imageArithmeticOperationService, ImageView imageView,
 			ImageView imageResultView) {
 		this.imageArithmeticOperationService = imageArithmeticOperationService;
 		this.imageView = imageView;

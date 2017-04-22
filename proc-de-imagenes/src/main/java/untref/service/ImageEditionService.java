@@ -8,4 +8,6 @@ public interface ImageEditionService {
 	double[] RGBtoHSV(double r, double g, double b);
 
 	Image transformToNegative(Image image);
+
+	Image applyPowerLawFunction(double parameter, Image image);
 }

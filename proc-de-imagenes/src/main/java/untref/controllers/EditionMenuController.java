@@ -3,10 +3,7 @@ package untref.controllers;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.ImageView;
-import untref.eventhandlers.ChangeColorFromRGBToHSVHandler;
-import untref.eventhandlers.CopyImageNewWindowsHandler;
-import untref.eventhandlers.CreationSpecificImageHandler;
-import untref.eventhandlers.EditionImageEventHandler;
+import untref.eventhandlers.*;
 import untref.factory.FileImageChooserFactory;
 import untref.service.*;
 import untref.service.colorbands.BlueBand;
@@ -42,13 +39,14 @@ public class EditionMenuController {
 				new ChangeColorFromRGBToHSVHandler(imageView, new ImageGetColorRGBImpl(imageView.getImage()), new ImageEditionServiceImpl()));
 		Menu arithmeticOperationsBetweenImages = arithmeticOperationsMenuController
 				.createArithmeticOperationsBetweenImages(imageView, imageViewResult);
-
 		MenuItem negativeImage = new MenuItem("Negative image");
-		negativeImage.setOnAction(
-				new EditionImageEventHandler(imageView, imageViewResult, () -> imageEditionService.transformToNegative(imageView.getImage())));
-
+		negativeImage.setOnAction(new EditionImageEventHandler(imageViewResult, () -> imageEditionService.transformToNegative(imageView.getImage()
+		)));
+		MenuItem powerLawFunction = new MenuItem("power law function");
+		powerLawFunction.setOnAction(new PowerLawGammaEventHandler(imageEditionService, imageView, imageViewResult));
 		editionMenu.getItems()
-				.addAll(binaryImages, degreeImages, copyImageNewWindows, rgbToHsv, colorBand, arithmeticOperationsBetweenImages, negativeImage);
+				.addAll(binaryImages, degreeImages, copyImageNewWindows, rgbToHsv, colorBand, arithmeticOperationsBetweenImages, negativeImage,
+						powerLawFunction);
 		return editionMenu;
 	}
 

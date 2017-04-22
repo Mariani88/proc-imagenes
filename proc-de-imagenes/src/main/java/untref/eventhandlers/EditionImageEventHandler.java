@@ -10,12 +10,10 @@ import java.util.function.Supplier;
 
 public class EditionImageEventHandler implements EventHandler<ActionEvent>{
 
-	private ImageView imageView;
 	private ImageView imageViewResult;
 	private Supplier<Image> editionImage;
 
-	public EditionImageEventHandler(ImageView imageView, ImageView imageViewResult, Supplier<Image> editionImage) {
-		this.imageView = imageView;
+	public EditionImageEventHandler(ImageView imageViewResult, Supplier<Image> editionImage) {
 		this.imageViewResult = imageViewResult;
 		this.editionImage = editionImage;
 	}

@@ -4,9 +4,8 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.ImageView;
 import untref.eventhandlers.CreationSpecificImageHandler;
-import untref.eventhandlers.IntroduceScalarEventHandler;
+import untref.eventhandlers.IntroduceParamEventHandler;
 import untref.factory.FileImageChooserFactory;
-import untref.service.CreationImageService;
 import untref.service.ImageArithmeticOperationService;
 import untref.service.ImageIOService;
 
@@ -35,7 +34,7 @@ public class ArithmeticOperationsMenuController {
 		multiplyImages.setOnAction(new CreationSpecificImageHandler(imageIOService, fileImageChooserFactory,
 				() -> imageArithmeticOperationService.multiplyImages(imageView.getImage(), imageViewResult.getImage())));
 		MenuItem multiplyImageByScalar = new MenuItem("multiply image by scalar");
-		multiplyImageByScalar.setOnAction(new IntroduceScalarEventHandler(imageArithmeticOperationService, imageView, imageViewResult));
+		multiplyImageByScalar.setOnAction(new IntroduceParamEventHandler(imageArithmeticOperationService, imageView, imageViewResult));
 		arithmeticOperationsBetweenImages.getItems().addAll(plusImages, subtractImages, multiplyImages, multiplyImageByScalar);
 		return arithmeticOperationsBetweenImages;
 	}

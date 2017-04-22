@@ -5,6 +5,7 @@ import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
+import untref.service.functions.PowerLawGammaFunction;
 
 public class ImageEditionServiceImpl implements ImageEditionService {
 
@@ -80,6 +81,29 @@ public class ImageEditionServiceImpl implements ImageEditionService {
 		}
 
 		return writableImage;
+	}
+
+	@Override
+	public Image applyPowerLawFunction(double gamma, Image image) {
+		PowerLawGammaFunction powerLawGammaFunction = new PowerLawGammaFunction(gamma);
+		WritableImage writableImage = new WritableImage((int) image.getWidth(), (int) image.getHeight());
+		PixelWriter pixelWriter = writableImage.getPixelWriter();
+		PixelReader pixelReader = image.getPixelReader();
+
+		for (int row = 0; row < image.getHeight(); row++) {
+			for (int column = 0; column < image.getWidth(); column++) {
+				int red = powerLawGammaFunction.apply(adjustValue(pixelReader.getColor(column, row).getRed()));
+				int green = powerLawGammaFunction.apply(adjustValue(pixelReader.getColor(column, row).getGreen()));
+				int blue = powerLawGammaFunction.apply(adjustValue(pixelReader.getColor(column, row).getBlue()));
+				pixelWriter.setColor(column, row, Color.rgb(red, green, blue));
+			}
+		}
+
+		return writableImage;
+	}
+
+	private int adjustValue(double grayValue) {
+		return (int) (grayValue * 255);
 	}
 
 	private Color transformToNegativeColor(Color color) {
