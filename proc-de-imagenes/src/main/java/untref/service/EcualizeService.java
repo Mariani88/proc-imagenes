@@ -12,12 +12,10 @@ import javafx.scene.paint.Color;
 public class EcualizeService {
 	
 	
-	public Image ecualizerHistogram(int [] histograma,Image image){
+	public Image ecualizerHistogram(double [] histograma,Image image){
 		
 		double imageWidth=image.getWidth();
 		double imageHeigth=image.getHeight();
-		
-		int totalPixel=(int)(imageWidth*imageHeigth);
 		
 		ImageGetColorRGB imageService= new ImageGetColorRGBImpl(image);
 		
@@ -27,7 +25,7 @@ public class EcualizeService {
 		
 		for(int i=0;i<image.getWidth();i++ ){
 			for(int j=0;j<image.getHeight();j++) {
-				Summation=  (int) ((255)*(addPixel(histograma, (imageService.getValueRgb(i, j)), totalPixel)));
+				Summation=  (int) ((255)*(addPixel(histograma, (imageService.getValueRgb(i, j)))));
 			Color colorRGB=Color.rgb(Summation,Summation,Summation);
 				
 			PixelWriter pixelWriter = imageOut.getPixelWriter();
@@ -45,10 +43,11 @@ public class EcualizeService {
 
 }
 	
-	private double addPixel(int [] histogram , int limit, int totalPixel){
+	private double addPixel(double[] histogram , int limit){
 		double add = 0;
 		for(int i=0;i<=limit;i++){	
-			add = add + (((double)histogram[i])/totalPixel);	
+			add = add + histogram[i]
+;	
 		}
 		return add/2;
 	}	

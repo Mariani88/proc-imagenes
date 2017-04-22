@@ -25,7 +25,7 @@ public class BarChartDraw {
 		this.dataSeries = new XYChart.Series();
 	}
 
-	public void setData(String valueNameScale, int valueScale) {
+	public void setData(String valueNameScale, double valueScale) {
 		this.dataSeries.getData().add(new XYChart.Data(valueNameScale, valueScale));
 
 	}
