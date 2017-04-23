@@ -6,5 +6,5 @@ public interface HistogramService {
 
 	void BarChartDraw();
 
-
+	void sampleHistogramDraw(int[] sample);
 }

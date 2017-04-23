@@ -7,19 +7,24 @@ import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import untref.controllers.ArithmeticOperationsMenuController;
 import untref.controllers.EditionMenuController;
-import untref.eventhandlers.CreateHistogramHandler;
-import untref.eventhandlers.EqualizeHandler;
+import untref.controllers.HistogramMenuController;
 import untref.eventhandlers.OpenImageEventHandler;
 import untref.eventhandlers.SaveImageEventHandler;
 import untref.factory.FileImageChooserFactory;
 import untref.repository.ImageRepository;
 import untref.repository.ImageRepositoryImpl;
 import untref.service.*;
+import untref.service.functions.AleatoryNumbersGeneratorServiceImpl;
+
+import java.util.Random;
 
 public class MenuBarBuilder {
 
 	private final ArithmeticOperationsMenuController arithmeticOperationsMenuController;
 	private final EditionMenuController editionMenuController;
+	private final AleatoryNumbersGeneratorService aleatoryNumbersGeneratorService;
+	private final HistogramService histogramService;
+	private final HistogramMenuController histogramMenuController;
 	private CreationImageService creationImageService;
 	private ImageIOService imageIOService;
 	private ImageRepository imageRepository;
@@ -28,35 +33,28 @@ public class MenuBarBuilder {
 	private final ImageEditionService imageEditionService;
 
 	public MenuBarBuilder() {
-		imageEditionService = new ImageEditionServiceImpl();
+		this.imageEditionService = new ImageEditionServiceImpl();
 		this.imageRepository = new ImageRepositoryImpl();
 		this.creationImageService = new CreationImageServiceImpl();
 		this.imageIOService = new ImageIOServiceImpl(imageRepository);
 		this.fileImageChooserFactory = new FileImageChooserFactory();
-		imageArithmeticOperationService = new ImageArithmeticOperationServiceImpl();
-		arithmeticOperationsMenuController = new ArithmeticOperationsMenuController(imageArithmeticOperationService, imageIOService,
+		this.imageArithmeticOperationService = new ImageArithmeticOperationServiceImpl();
+		this.arithmeticOperationsMenuController = new ArithmeticOperationsMenuController(imageArithmeticOperationService, imageIOService,
 				fileImageChooserFactory);
-		editionMenuController = new EditionMenuController(arithmeticOperationsMenuController, imageEditionService, imageIOService,
+		this.editionMenuController = new EditionMenuController(arithmeticOperationsMenuController, imageEditionService, imageIOService,
 				fileImageChooserFactory, creationImageService);
+		this.aleatoryNumbersGeneratorService = new AleatoryNumbersGeneratorServiceImpl(new Random());
+		histogramService = new HistogramServiceImpl();
+		histogramMenuController = new HistogramMenuController(aleatoryNumbersGeneratorService, histogramService);
 	}
 
 	public MenuBar build(final ImageView imageView, final ImageView imageResultView) {
 		MenuBar menuBar = new MenuBar();
 		Menu fileMenu = createFileMenu(imageView, imageResultView);
 		Menu editionMenu = editionMenuController.createEditionMenu(imageView, imageResultView);
-		Menu histogramMenu = createHistogramMenu(imageView, imageResultView);
+		Menu histogramMenu = histogramMenuController.createHistogramMenu(imageView, imageResultView);
 		menuBar.getMenus().addAll(fileMenu, editionMenu, histogramMenu);
 		return menuBar;
-	}
-
-	private Menu createHistogramMenu(ImageView imageView, ImageView imageResultView) {
-		Menu histogramMenu = new Menu("Histogram");
-		MenuItem create = new MenuItem("create");
-		MenuItem equalize = new MenuItem("Equalize");
-		create.setOnAction(new CreateHistogramHandler(imageView));
-		equalize.setOnAction(new EqualizeHandler(imageView, imageResultView));
-		histogramMenu.getItems().addAll(create, equalize);
-		return histogramMenu;
 	}
 
 	private Menu createFileMenu(ImageView imageView, ImageView imageView2) {
