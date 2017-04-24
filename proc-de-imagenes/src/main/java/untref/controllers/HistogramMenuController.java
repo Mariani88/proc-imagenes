@@ -6,6 +6,7 @@ import javafx.scene.image.ImageView;
 import untref.eventhandlers.CreateHistogramHandler;
 import untref.eventhandlers.EqualizeHandler;
 import untref.eventhandlers.HistogramForExponentialSampleEventHandler;
+import untref.eventhandlers.HistogramForRayleightSampleEventHandler;
 import untref.service.AleatoryNumbersGeneratorService;
 import untref.service.HistogramService;
 
@@ -26,7 +27,9 @@ public class HistogramMenuController {
 		Menu createForDistribution = new Menu("create for distribution");
 		MenuItem createForExponential = new MenuItem("exponential");
 		createForExponential.setOnAction(new HistogramForExponentialSampleEventHandler(aleatoryNumbersGeneratorService, histogramService));
-		createForDistribution.getItems().addAll(createForExponential);
+		MenuItem createForRayleight = new MenuItem("rayleight");
+		createForRayleight.setOnAction(new HistogramForRayleightSampleEventHandler(aleatoryNumbersGeneratorService, histogramService));
+		createForDistribution.getItems().addAll(createForExponential,createForRayleight);
 		create.setOnAction(new CreateHistogramHandler(imageView));
 		equalize.setOnAction(new EqualizeHandler(imageView, imageResultView));
 		histogramMenu.getItems().addAll(create, equalize, createForDistribution);

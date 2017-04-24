@@ -14,7 +14,7 @@ public class AleatoryNumberRayleigh implements AleatoryNumberGenerator {
 
 	@Override
 	public int generate() {
-		return (int)(epsilon * Math.pow(-2 * calculateLogarithm(), 1/2));
+		return (int)(epsilon * Math.sqrt(-2 * calculateLogarithm()));
 	}
 
 	private double calculateLogarithm() {
