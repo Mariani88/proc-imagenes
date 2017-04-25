@@ -3,10 +3,7 @@ package untref.controllers;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.ImageView;
-import untref.eventhandlers.CreateHistogramHandler;
-import untref.eventhandlers.EqualizeHandler;
-import untref.eventhandlers.HistogramForExponentialSampleEventHandler;
-import untref.eventhandlers.HistogramForRayleightSampleEventHandler;
+import untref.eventhandlers.*;
 import untref.service.AleatoryNumbersGeneratorService;
 import untref.service.HistogramService;
 
@@ -29,7 +26,9 @@ public class HistogramMenuController {
 		createForExponential.setOnAction(new HistogramForExponentialSampleEventHandler(aleatoryNumbersGeneratorService, histogramService));
 		MenuItem createForRayleight = new MenuItem("rayleight");
 		createForRayleight.setOnAction(new HistogramForRayleightSampleEventHandler(aleatoryNumbersGeneratorService, histogramService));
-		createForDistribution.getItems().addAll(createForExponential,createForRayleight);
+		MenuItem createForNormalGauss = new MenuItem("normal Gauss");
+		createForNormalGauss.setOnAction(new HistogramForNormalGaussSampleEventHandler(aleatoryNumbersGeneratorService, histogramService));
+		createForDistribution.getItems().addAll(createForExponential,createForRayleight, createForNormalGauss);
 		create.setOnAction(new CreateHistogramHandler(imageView));
 		equalize.setOnAction(new EqualizeHandler(imageView, imageResultView));
 		histogramMenu.getItems().addAll(create, equalize, createForDistribution);

@@ -50,10 +50,20 @@ public class HistogramServiceImpl implements HistogramService {
 	public void sampleHistogramDraw(int[] sample) {
 		BarChartDraw barChartDraw = new BarChartDraw("x", "probability density");
 		int maxKey = calculateMax(sample) / 10;
-		NavigableMap<Integer, Integer> groupedSample = obtainInitializedGroupedSample(maxKey);
+		int minKey = calculateMin(sample) / 10;
+		NavigableMap<Integer, Integer> groupedSample = obtainInitializedGroupedSample(maxKey, minKey);
 		groupedSample = groupSample(sample, groupedSample);
 		setDataToHistogram(sample, barChartDraw, groupedSample);
 		barChartDraw.drawBarChart();
+	}
+
+	private int calculateMin(int[] sample) {
+		int min = Integer.MAX_VALUE;
+
+		for (int index = 0; index < sample.length; index++) {
+			min = Math.min(min, sample[index]);
+		}
+		return min;
 	}
 
 	private void setDataToHistogram(int[] sample, BarChartDraw barChartDraw, NavigableMap<Integer, Integer> groupedSample) {
@@ -75,11 +85,12 @@ public class HistogramServiceImpl implements HistogramService {
 		return (double) groupedSample.floorEntry(index).getValue() / (double) sampleSize;
 	}
 
-	private NavigableMap<Integer, Integer> obtainInitializedGroupedSample(int maxKey) {
+	private NavigableMap<Integer, Integer> obtainInitializedGroupedSample(int maxKey, int minKey) {
+		minKey = minKey*10 - 10;
 		maxKey = maxKey * 10;
 		NavigableMap<Integer, Integer> groupedSample = new TreeMap<>();
 
-		for (int group = 0; group < maxKey + 1; group += 10) {
+		for (int group = Math.min(minKey,0); group < maxKey + 1; group += 10) {
 			groupedSample.put(group, 0);
 		}
 
