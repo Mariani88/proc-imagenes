@@ -10,6 +10,7 @@ import untref.controllers.EditionMenuController;
 import untref.eventhandlers.CreateHistogramHandler;
 import untref.eventhandlers.CreateMediaFilterHandler;
 import untref.eventhandlers.CreateMedianaHandler;
+import untref.eventhandlers.CreateThresholdHandler;
 import untref.eventhandlers.EqualizeHandler;
 import untref.eventhandlers.OpenImageEventHandler;
 import untref.eventhandlers.SaveImageEventHandler;
@@ -48,6 +49,8 @@ public class MenuBarBuilder {
 		Menu editionMenu = editionMenuController.createEditionMenu(imageView, imageResultView);
 		Menu histogramMenu = createHistogramMenu(imageView, imageResultView);
 		Menu filterMenu = createFilterMenu(imageView, imageResultView);
+		Menu thresholdAndContrastMenu = createThresholdAndContrastMenu(imageView, imageResultView);
+		
 		menuBar.getMenus().addAll(fileMenu, editionMenu, histogramMenu,filterMenu);
 		return menuBar;
 	}
@@ -60,6 +63,16 @@ public class MenuBarBuilder {
 		equalize.setOnAction(new EqualizeHandler(imageView, imageResultView));
 		histogramMenu.getItems().addAll(create, equalize);
 		return histogramMenu;
+	}
+	
+	private Menu createThresholdAndContrastMenu(ImageView imageView, ImageView imageResultView) {
+		Menu thresholdAndContrastMenu = new Menu("Threshold/Contrast");
+		MenuItem threshold = new MenuItem("Threshold");
+		MenuItem contrast = new MenuItem("Contrast");
+		//threshold.setOnAction(new CreateThresholdHandler(imageView,imageResultView,5));
+		//equalize.setOnAction(new EqualizeHandler(imageView, imageResultView));
+		thresholdAndContrastMenu.getItems().addAll(threshold, contrast);
+		return thresholdAndContrastMenu;
 	}
 
 	
