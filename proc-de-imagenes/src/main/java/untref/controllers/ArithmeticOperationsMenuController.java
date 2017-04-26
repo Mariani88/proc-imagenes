@@ -4,7 +4,10 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.ImageView;
 import untref.eventhandlers.CreationSpecificImageHandler;
+
 import untref.eventhandlers.MultiplyByScalarEventHandler;
+
+
 import untref.factory.FileImageChooserFactory;
 import untref.service.ImageArithmeticOperationService;
 import untref.service.ImageIOService;

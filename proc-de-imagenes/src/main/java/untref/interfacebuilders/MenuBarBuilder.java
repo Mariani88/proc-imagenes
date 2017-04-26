@@ -8,6 +8,8 @@ import javafx.stage.FileChooser;
 import untref.controllers.ArithmeticOperationsMenuController;
 import untref.controllers.EditionMenuController;
 import untref.controllers.HistogramMenuController;
+import untref.eventhandlers.CreateMediaFilterHandler;
+import untref.eventhandlers.CreateMedianaHandler;
 import untref.eventhandlers.OpenImageEventHandler;
 import untref.eventhandlers.SaveImageEventHandler;
 import untref.factory.FileImageChooserFactory;
@@ -22,9 +24,11 @@ public class MenuBarBuilder {
 
 	private final ArithmeticOperationsMenuController arithmeticOperationsMenuController;
 	private final EditionMenuController editionMenuController;
+
 	private final AleatoryNumbersGeneratorService aleatoryNumbersGeneratorService;
 	private final HistogramService histogramService;
 	private final HistogramMenuController histogramMenuController;
+
 	private CreationImageService creationImageService;
 	private ImageIOService imageIOService;
 	private ImageRepository imageRepository;
@@ -33,11 +37,14 @@ public class MenuBarBuilder {
 	private final ImageEditionService imageEditionService;
 
 	public MenuBarBuilder() {
+
 		this.imageEditionService = new ImageEditionServiceImpl();
+
 		this.imageRepository = new ImageRepositoryImpl();
 		this.creationImageService = new CreationImageServiceImpl();
 		this.imageIOService = new ImageIOServiceImpl(imageRepository);
 		this.fileImageChooserFactory = new FileImageChooserFactory();
+
 		this.imageArithmeticOperationService = new ImageArithmeticOperationServiceImpl();
 		this.arithmeticOperationsMenuController = new ArithmeticOperationsMenuController(imageArithmeticOperationService, imageIOService,
 				fileImageChooserFactory);
@@ -52,9 +59,33 @@ public class MenuBarBuilder {
 		MenuBar menuBar = new MenuBar();
 		Menu fileMenu = createFileMenu(imageView, imageResultView);
 		Menu editionMenu = editionMenuController.createEditionMenu(imageView, imageResultView);
+
 		Menu histogramMenu = histogramMenuController.createHistogramMenu(imageView, imageResultView);
-		menuBar.getMenus().addAll(fileMenu, editionMenu, histogramMenu);
+		Menu filterMenu = createFilterMenu(imageView, imageResultView);
+		Menu thresholdAndContrastMenu = createThresholdAndContrastMenu(imageView, imageResultView);
+
+		menuBar.getMenus().addAll(fileMenu, editionMenu, histogramMenu, filterMenu);
 		return menuBar;
+	}
+
+	private Menu createThresholdAndContrastMenu(ImageView imageView, ImageView imageResultView) {
+		Menu thresholdAndContrastMenu = new Menu("Threshold/Contrast");
+		MenuItem threshold = new MenuItem("Threshold");
+		MenuItem contrast = new MenuItem("Contrast");
+		//threshold.setOnAction(new CreateThresholdHandler(imageView,imageResultView,5));
+		//equalize.setOnAction(new EqualizeHandler(imageView, imageResultView));
+		thresholdAndContrastMenu.getItems().addAll(threshold, contrast);
+		return thresholdAndContrastMenu;
+	}
+
+	private Menu createFilterMenu(ImageView imageView, ImageView imageResultView) {
+		Menu filterMenu = new Menu("Filter");
+		MenuItem media = new MenuItem("media");
+		MenuItem mediana = new MenuItem("mediana");
+		media.setOnAction(new CreateMediaFilterHandler(imageView, imageResultView));
+		mediana.setOnAction(new CreateMedianaHandler(imageView, imageResultView));
+		filterMenu.getItems().addAll(media, mediana);
+		return filterMenu;
 	}
 
 	private Menu createFileMenu(ImageView imageView, ImageView imageView2) {

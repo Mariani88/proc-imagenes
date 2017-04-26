@@ -1,6 +1,6 @@
 INTRODUCCION AL PROCESAMIENTO DIGITAL DE IMAGENES
 
-Las im genes disponibles hasta ahora son:
+Las imï¿½genes disponibles hasta ahora son:
 
 Nombre       Ancho     Alto
 
@@ -9,5 +9,3 @@ BARCO.RAW    290       207
 LENA.RAW     256       256
 GIRL2.RAW    256       256
 FRACTAL.RAW  200       200
-
-

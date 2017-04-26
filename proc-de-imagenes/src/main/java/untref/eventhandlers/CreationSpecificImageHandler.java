@@ -11,6 +11,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import untref.controllers.nodeutils.ImageSetter;
 import untref.factory.FileImageChooserFactory;
 import untref.service.CreationImageService;
 import untref.service.ImageIOService;
@@ -48,9 +49,7 @@ public class CreationSpecificImageHandler implements EventHandler<ActionEvent> {
 
 	private void configImageViewAndSetImage(ImageView imageView, MenuBar menuBar) {
 		imageView.setLayoutY(menuBar.getLayoutY() + 30);
-		imageView.autosize();
-		Image writableImage = creationCenterFigure.get();
-		imageView.setImage(writableImage);
+		ImageSetter.set(imageView,creationCenterFigure.get() );
 	}
 
 	private MenuItem createSaveMenuItem(ImageView imageView) {

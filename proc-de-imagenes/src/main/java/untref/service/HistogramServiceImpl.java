@@ -27,13 +27,15 @@ public class HistogramServiceImpl implements HistogramService {
 		this.totalPixels = this.serviceImageRgb.getTotalPixel();
 		for (int i = 0; i < this.image.getWidth(); i++)
 			for (int j = 0; j < this.image.getHeight(); j++) {
-
 				arrayHistogram[this.serviceImageRgb.getValueRgb(i, j)] += 1;
 			}
 
-		for (int i = 0; i < 256; i++)
+		for (int i = 0; i < 256; i++) {
 			arrayHistogram[i] = arrayHistogram[i] / totalPixels;
+		}
+
 		return arrayHistogram;
+
 	}
 
 	@Override
@@ -67,7 +69,7 @@ public class HistogramServiceImpl implements HistogramService {
 	}
 
 	private void setDataToHistogram(int[] sample, BarChartDraw barChartDraw, NavigableMap<Integer, Integer> groupedSample) {
-		for (int index = 0; index < groupedSample.lastKey(); index++) {
+		for (int index = groupedSample.firstKey(); index < groupedSample.lastKey(); index++) {
 			barChartDraw.setData(String.valueOf(index), calculateEventProportion(sample.length, groupedSample, index));
 		}
 	}
@@ -86,11 +88,11 @@ public class HistogramServiceImpl implements HistogramService {
 	}
 
 	private NavigableMap<Integer, Integer> obtainInitializedGroupedSample(int maxKey, int minKey) {
-		minKey = minKey*10 - 10;
+		minKey = minKey * 10 - 10;
 		maxKey = maxKey * 10;
 		NavigableMap<Integer, Integer> groupedSample = new TreeMap<>();
 
-		for (int group = Math.min(minKey,0); group < maxKey + 1; group += 10) {
+		for (int group = Math.min(minKey, 0); group < maxKey + 1; group += 10) {
 			groupedSample.put(group, 0);
 		}
 
