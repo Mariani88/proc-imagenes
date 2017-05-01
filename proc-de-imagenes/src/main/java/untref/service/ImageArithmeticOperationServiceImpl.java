@@ -63,8 +63,8 @@ public class ImageArithmeticOperationServiceImpl implements ImageArithmeticOpera
 			}
 		}
 
-		return parseToImage(temporalImageData, (int) image.getWidth(), (int) image.getHeight(), () -> obtainDynamicRangeFunctions
-				(temporalImageData));
+		GrayScaleFunctionsContainer grayScaleFunctionsContainer = obtainDynamicRangeFunctions(temporalImageData);
+		return parseToImage(temporalImageData, (int) image.getWidth(), (int) image.getHeight(), grayScaleFunctionsContainer);
 	}
 
 	private GrayScaleFunctionsContainer obtainDynamicRangeFunctions(TemporalColor[][] temporalImageData) {
@@ -88,14 +88,14 @@ public class ImageArithmeticOperationServiceImpl implements ImageArithmeticOpera
 		int maxHeight = (int) Math.max(image.getHeight(), image2.getHeight());
 		int maxWidth = (int) Math.max(image.getWidth(), image2.getWidth());
 		TemporalColor[][] temporalImageData = calculateTemporalImageData(image, image2, arithmeticOperationBetweenImages, maxHeight, maxWidth);
-		return parseToImage(temporalImageData, maxWidth, maxHeight, () -> obtainFunctionsForExceededRGB(temporalImageData));
+		GrayScaleFunctionsContainer grayScaleFunctionsContainer = obtainFunctionsForExceededRGB(temporalImageData);
+		return parseToImage(temporalImageData, maxWidth, maxHeight, grayScaleFunctionsContainer);
 	}
 
 	private WritableImage parseToImage(TemporalColor[][] temporalImageData, int maxWidth, int maxHeight,
-			Supplier<GrayScaleFunctionsContainer> obtentionGrayScaleFunctionsOperation) {
+			GrayScaleFunctionsContainer grayScaleFunctionsContainer) {
 		WritableImage imageResult = new WritableImage(maxWidth, maxHeight);
 		PixelWriter pixelWriter = imageResult.getPixelWriter();
-		GrayScaleFunctionsContainer grayScaleFunctionsContainer = obtentionGrayScaleFunctionsOperation.get();
 
 		for (int row = 0; row < maxHeight; row++) {
 			for (int column = 0; column < maxWidth; column++) {
