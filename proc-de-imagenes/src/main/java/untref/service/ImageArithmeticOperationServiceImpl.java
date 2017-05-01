@@ -110,7 +110,36 @@ public class ImageArithmeticOperationServiceImpl implements ImageArithmeticOpera
 		return imageResult;
 	}
 
-	private GrayScaleFunctionsContainer obtainFunctionsForExceededRGB(TemporalColor[][] temporalImageData) {
+	@Override
+	public WritableImage parseToImageWithNoise(TemporalColor[][] temporalImageData, int maxWidth, int maxHeight,
+			GrayScaleFunctionsContainer grayScaleFunctionsContainer) {
+		WritableImage imageResult = new WritableImage(maxWidth, maxHeight);
+		PixelWriter pixelWriter = imageResult.getPixelWriter();
+
+		for (int row = 0; row < maxHeight; row++) {
+			for (int column = 0; column < maxWidth; column++) {
+				TemporalColor temporalColor = temporalImageData[row][column];
+
+				if (isNotIntoScale(temporalColor.getRed()) || isNotIntoScale(temporalColor.getGreen()) || isNotIntoScale(temporalColor.getBlue())) {
+					int red = grayScaleFunctionsContainer.getRedGrayScaleFunction().apply(temporalColor.getRed());
+					int blue = grayScaleFunctionsContainer.getBlueGrayScaleFunction().apply(temporalColor.getBlue());
+					int green = grayScaleFunctionsContainer.getGreenGrayScaleFunction().apply(temporalColor.getGreen());
+					pixelWriter.setColor(column, row, Color.rgb(red, green, blue));
+				} else {
+					pixelWriter.setColor(column, row, Color.rgb(temporalColor.getRed(), temporalColor.getGreen(), temporalColor.getBlue()));
+				}
+			}
+		}
+
+		return imageResult;
+	}
+
+	private boolean isNotIntoScale(int grayScale) {
+		return grayScale > LIMIT_SCALE || grayScale < 0;
+	}
+
+	@Override
+	public GrayScaleFunctionsContainer obtainFunctionsForExceededRGB(TemporalColor[][] temporalImageData) {
 		int minRed = Integer.MAX_VALUE;
 		int minGreen = Integer.MAX_VALUE;
 		int minBlue = Integer.MAX_VALUE;

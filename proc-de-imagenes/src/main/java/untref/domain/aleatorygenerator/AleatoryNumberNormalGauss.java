@@ -19,6 +19,16 @@ public class AleatoryNumberNormalGauss implements AleatoryNumberGenerator {
 		return (int) ((calculateSQRT() * calculateCos()) * Math.pow(sigma, 2) + mu);
 	}
 
+	@Override
+	public int[] generate(int sampleSize) {
+		int sample [] = new int[sampleSize];
+
+		for (int index = 0; index < sampleSize; index++){
+			sample[index] = generate();
+		}
+		return sample;
+	}
+
 	private double calculateSQRT() {
 		return Math.sqrt(-2 * Math.log(random.nextDouble()));
 	}

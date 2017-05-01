@@ -28,11 +28,16 @@ public class HistogramForExponentialSampleEventHandler implements EventHandler<A
 		TextField lambdaValue = new TextField();
 		Label sampleSize = new Label("sample size");
 		TextField sampleSizeValue = new TextField();
-		parametersWindowsFactory.create(Arrays.asList(lambda, lambdaValue, sampleSize, sampleSizeValue), event1 -> {
+		parametersWindowsFactory.create(Arrays.asList(lambda, lambdaValue, sampleSize, sampleSizeValue),
+				getActionEventEventHandler(lambdaValue, sampleSizeValue));
+	}
+
+	private EventHandler<ActionEvent> getActionEventEventHandler(TextField lambdaValue, TextField sampleSizeValue) {
+		return event1 -> {
 			Double lambda1 = Double.valueOf(lambdaValue.getText());
 			Integer sampleSize1 = Integer.valueOf(sampleSizeValue.getText());
 			int[] sample = aleatoryNumbersGeneratorService.generateExponentialSample(lambda1, sampleSize1);
 			histogramService.sampleHistogramDraw(sample);
-		});
+		};
 	}
 }

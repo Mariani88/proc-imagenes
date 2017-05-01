@@ -19,6 +19,17 @@ public class AleatoryNumberExponential implements AleatoryNumberGenerator {
 		return (int) (coefficient * calculateLogarithm());
 	}
 
+	@Override
+	public int [] generate(int sampleSize){
+		int sample[] = new int[sampleSize];
+
+		for(int index = 0; index < sampleSize; index++){
+			sample[index] = this.generate();
+		}
+
+		return sample;
+	}
+
 	private double calculateLogarithm() {
 		return Math.log(random.nextDouble());
 	}

@@ -39,15 +39,27 @@ public class EditionMenuController {
 				new ChangeColorFromRGBToHSVHandler(imageView, new ImageGetColorRGBImpl(imageView.getImage()), new ImageEditionServiceImpl()));
 		Menu arithmeticOperationsBetweenImages = arithmeticOperationsMenuController
 				.createArithmeticOperationsBetweenImages(imageView, imageViewResult);
+		MenuItem negativeImage = createNegativeImageMenuItem(imageView, imageViewResult);
+		MenuItem powerLawFunction = createPowerLawMenuItem(imageView, imageViewResult);
+		MenuItem addNoise = new MenuItem("add noise");
+		addNoise.setOnAction(new NoiseParametersEventHandler(imageView, imageViewResult));
+		editionMenu.getItems()
+				.addAll(binaryImages, degreeImages, copyImageNewWindows, rgbToHsv, colorBand, arithmeticOperationsBetweenImages, negativeImage,
+						powerLawFunction, addNoise);
+		return editionMenu;
+	}
+
+	private MenuItem createPowerLawMenuItem(ImageView imageView, ImageView imageViewResult) {
+		MenuItem powerLawFunction = new MenuItem("power law function");
+		powerLawFunction.setOnAction(new PowerLawGammaEventHandler(imageEditionService, imageView, imageViewResult));
+		return powerLawFunction;
+	}
+
+	private MenuItem createNegativeImageMenuItem(ImageView imageView, ImageView imageViewResult) {
 		MenuItem negativeImage = new MenuItem("Negative image");
 		negativeImage.setOnAction(new EditionImageEventHandler(imageViewResult, () -> imageEditionService.transformToNegative(imageView.getImage()
 		)));
-		MenuItem powerLawFunction = new MenuItem("power law function");
-		powerLawFunction.setOnAction(new PowerLawGammaEventHandler(imageEditionService, imageView, imageViewResult));
-		editionMenu.getItems()
-				.addAll(binaryImages, degreeImages, copyImageNewWindows, rgbToHsv, colorBand, arithmeticOperationsBetweenImages, negativeImage,
-						powerLawFunction);
-		return editionMenu;
+		return negativeImage;
 	}
 
 	private Menu createColorBandMenu(ImageView imageView) {
