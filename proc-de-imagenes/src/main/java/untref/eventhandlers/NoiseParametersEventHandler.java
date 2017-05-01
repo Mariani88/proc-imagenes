@@ -6,35 +6,33 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import untref.controllers.nodeutils.ImageSetter;
 import untref.controllers.nodeutils.ParametersWindowsFactory;
-import untref.domain.aleatorygenerator.AleatoryNumberExponential;
 import untref.domain.aleatorygenerator.AleatoryNumberGenerator;
-import untref.domain.aleatorygenerator.AleatoryNumberNormalGauss;
-import untref.domain.aleatorygenerator.AleatoryNumberRayleigh;
 import untref.domain.noisetypes.AdditiveNoise;
 import untref.domain.noisetypes.MultiplicativeNoise;
 import untref.domain.noisetypes.NoiseType;
 import untref.eventhandlers.noiseventHandlers.NoiseTypeController;
 import untref.eventhandlers.noiseventHandlers.NoiseTypeSelectionEventHandler;
+import untref.service.NoiseService;
 import untref.service.NoiseServiceImpl;
 import untref.service.arithmeticoperations.noise.AdditiveNoiseAdder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 public class NoiseParametersEventHandler implements EventHandler<ActionEvent> {
 
 	private ImageView imageView;
 	private ImageView imageViewResult;
+	private NoiseService noiseService;
 	private ParametersWindowsFactory parametersWindowsFactory;
 
-	public NoiseParametersEventHandler(ImageView imageView, ImageView imageViewResult) {
+	public NoiseParametersEventHandler(ImageView imageView, ImageView imageViewResult, NoiseService noiseService) {
 		this.imageView = imageView;
 		this.imageViewResult = imageViewResult;
+		this.noiseService = noiseService;
 		parametersWindowsFactory = new ParametersWindowsFactory();
 	}
 
@@ -45,7 +43,8 @@ public class NoiseParametersEventHandler implements EventHandler<ActionEvent> {
 		MenuButton noiseDistributionsButton = new NoiseTypeController(aleatoryNumberGenerator).create();
 		RadioButton additiveButton = new RadioButton("additive");
 		RadioButton multiplicativeButton = new RadioButton("multiplicative");
-		additiveButton.setOnMouseClicked(new NoiseTypeSelectionEventHandler(multiplicativeButton, noiseType, new AdditiveNoise(new AdditiveNoiseAdder())));
+		additiveButton
+				.setOnMouseClicked(new NoiseTypeSelectionEventHandler(multiplicativeButton, noiseType, new AdditiveNoise(new AdditiveNoiseAdder())));
 		multiplicativeButton.setOnMouseClicked(new NoiseTypeSelectionEventHandler(additiveButton, noiseType, new MultiplicativeNoise()));
 		Label contaminationPercentLabel = new Label("contamination percent");
 		TextField contaminationPercentValue = new TextField();
@@ -53,7 +52,7 @@ public class NoiseParametersEventHandler implements EventHandler<ActionEvent> {
 		parametersNodes.add(noiseDistributionsButton);
 		parametersNodes.addAll(Arrays.asList(additiveButton, multiplicativeButton, contaminationPercentLabel, contaminationPercentValue));
 		parametersWindowsFactory.create(parametersNodes, event1 -> {
-			Image imageWithNoise = new NoiseServiceImpl()
+			Image imageWithNoise = noiseService
 					.addNoiseToImage(imageView.getImage(), toDouble(contaminationPercentValue), aleatoryNumberGenerator[0], noiseType[0]);
 			ImageSetter.set(imageViewResult, imageWithNoise);
 		});

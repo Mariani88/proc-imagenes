@@ -17,6 +17,7 @@ public class EditionMenuController {
 	private ImageIOService imageIOService;
 	private FileImageChooserFactory fileImageChooserFactory;
 	private CreationImageService creationImageService;
+	private final NoiseService noiseService;
 
 	public EditionMenuController(ArithmeticOperationsMenuController arithmeticOperationsMenuController, ImageEditionService imageEditionService,
 			ImageIOService imageIOService, FileImageChooserFactory fileImageChooserFactory, CreationImageService creationImageService) {
@@ -25,6 +26,7 @@ public class EditionMenuController {
 		this.imageIOService = imageIOService;
 		this.fileImageChooserFactory = fileImageChooserFactory;
 		this.creationImageService = creationImageService;
+		noiseService = new NoiseServiceImpl(new ImageArithmeticOperationServiceImpl());
 	}
 
 	public Menu createEditionMenu(ImageView imageView, ImageView imageViewResult) {
@@ -42,7 +44,7 @@ public class EditionMenuController {
 		MenuItem negativeImage = createNegativeImageMenuItem(imageView, imageViewResult);
 		MenuItem powerLawFunction = createPowerLawMenuItem(imageView, imageViewResult);
 		MenuItem addNoise = new MenuItem("add noise");
-		addNoise.setOnAction(new NoiseParametersEventHandler(imageView, imageViewResult));
+		addNoise.setOnAction(new NoiseParametersEventHandler(imageView, imageViewResult, noiseService));
 		editionMenu.getItems()
 				.addAll(binaryImages, degreeImages, copyImageNewWindows, rgbToHsv, colorBand, arithmeticOperationsBetweenImages, negativeImage,
 						powerLawFunction, addNoise);

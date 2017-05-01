@@ -13,8 +13,10 @@ import java.util.List;
 public class NoiseServiceImpl implements NoiseService {
 
 	private final UniformDistributionRandom uniformDistributionRandom;
+	private ImageArithmeticOperationServiceImpl imageArithmeticOperationService;
 
-	public NoiseServiceImpl() {
+	public NoiseServiceImpl(ImageArithmeticOperationServiceImpl imageArithmeticOperationService) {
+		this.imageArithmeticOperationService = imageArithmeticOperationService;
 		uniformDistributionRandom = new UniformDistributionRandom();
 	}
 
@@ -25,7 +27,7 @@ public class NoiseServiceImpl implements NoiseService {
 		int[] noise = aleatoryNumberGenerator.generate(amountPositionsToAddNoise);
 		List<ImagePosition> imagePositions = createImagePositionsList(image, allPositions);
 		TemporalColor[][] noiseMatrix = generateNoiseMatrix(image, noiseType, amountPositionsToAddNoise, noise, imagePositions);
-		return noiseType.applyNoise(image, noiseMatrix);
+		return noiseType.applyNoise(image, noiseMatrix, imageArithmeticOperationService);
 	}
 
 	private TemporalColor[][] generateNoiseMatrix(Image image, NoiseType noiseType, int amountPositionsToAddNoise, int[] noise,
