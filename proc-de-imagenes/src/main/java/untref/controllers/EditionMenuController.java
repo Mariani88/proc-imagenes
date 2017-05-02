@@ -3,6 +3,7 @@ package untref.controllers;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.ImageView;
+import untref.controllers.nodeutils.ImageSetter;
 import untref.eventhandlers.*;
 import untref.factory.FileImageChooserFactory;
 import untref.service.*;
@@ -12,6 +13,7 @@ import untref.service.colorbands.RedBand;
 
 public class EditionMenuController {
 
+	private final ContrastService contrastService;
 	private ArithmeticOperationsMenuController arithmeticOperationsMenuController;
 	private ImageEditionService imageEditionService;
 	private ImageIOService imageIOService;
@@ -27,6 +29,7 @@ public class EditionMenuController {
 		this.fileImageChooserFactory = fileImageChooserFactory;
 		this.creationImageService = creationImageService;
 		noiseService = new NoiseServiceImpl(new ImageArithmeticOperationServiceImpl());
+		this.contrastService = new ContrastServiceImpl(new ImageStatisticServiceImpl());
 	}
 
 	public Menu createEditionMenu(ImageView imageView, ImageView imageViewResult) {
@@ -43,11 +46,13 @@ public class EditionMenuController {
 				.createArithmeticOperationsBetweenImages(imageView, imageViewResult);
 		MenuItem negativeImage = createNegativeImageMenuItem(imageView, imageViewResult);
 		MenuItem powerLawFunction = createPowerLawMenuItem(imageView, imageViewResult);
+		MenuItem contrast = new MenuItem("add contrast");
+		contrast.setOnAction(event -> ImageSetter.set(imageViewResult, contrastService.addContrast(imageView.getImage())));
 		MenuItem addNoise = new MenuItem("add noise");
 		addNoise.setOnAction(new NoiseParametersEventHandler(imageView, imageViewResult, noiseService));
 		editionMenu.getItems()
 				.addAll(binaryImages, degreeImages, copyImageNewWindows, rgbToHsv, colorBand, arithmeticOperationsBetweenImages, negativeImage,
-						powerLawFunction, addNoise);
+						contrast, powerLawFunction, addNoise);
 		return editionMenu;
 	}
 

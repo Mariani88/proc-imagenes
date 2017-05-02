@@ -59,23 +59,10 @@ public class MenuBarBuilder {
 		MenuBar menuBar = new MenuBar();
 		Menu fileMenu = createFileMenu(imageView, imageResultView);
 		Menu editionMenu = editionMenuController.createEditionMenu(imageView, imageResultView);
-
 		Menu histogramMenu = histogramMenuController.createHistogramMenu(imageView, imageResultView);
 		Menu filterMenu = createFilterMenu(imageView, imageResultView);
-		Menu thresholdAndContrastMenu = createThresholdAndContrastMenu(imageView, imageResultView);
-
 		menuBar.getMenus().addAll(fileMenu, editionMenu, histogramMenu, filterMenu);
 		return menuBar;
-	}
-
-	private Menu createThresholdAndContrastMenu(ImageView imageView, ImageView imageResultView) {
-		Menu thresholdAndContrastMenu = new Menu("Threshold/Contrast");
-		MenuItem threshold = new MenuItem("Threshold");
-		MenuItem contrast = new MenuItem("Contrast");
-		//threshold.setOnAction(new CreateThresholdHandler(imageView,imageResultView,5));
-		//equalize.setOnAction(new EqualizeHandler(imageView, imageResultView));
-		thresholdAndContrastMenu.getItems().addAll(threshold, contrast);
-		return thresholdAndContrastMenu;
 	}
 
 	private Menu createFilterMenu(ImageView imageView, ImageView imageResultView) {

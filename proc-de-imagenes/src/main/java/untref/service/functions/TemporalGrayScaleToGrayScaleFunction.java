@@ -2,6 +2,13 @@ package untref.service.functions;
 
 import java.util.function.Function;
 
+/**
+ * linear transformation that transform
+ * minValue -> 0
+ * maxValue -> 255
+ *
+ * it's a linear function
+ */
 public class TemporalGrayScaleToGrayScaleFunction implements Function<Integer, Integer> {
 
 	private static final double MIN_GRAY_SCALE = 0;
