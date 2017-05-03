@@ -48,8 +48,12 @@ public class EditionMenuController {
 		MenuItem powerLawFunction = createPowerLawMenuItem(imageView, imageViewResult);
 		MenuItem contrast = new MenuItem("add contrast");
 		contrast.setOnAction(event -> ImageSetter.set(imageViewResult, contrastService.addContrast(imageView.getImage())));
-		MenuItem addNoise = new MenuItem("add noise");
-		addNoise.setOnAction(new NoiseParametersEventHandler(imageView, imageViewResult, noiseService));
+		Menu addNoise = new Menu("add noise");
+		MenuItem withDistribution = new MenuItem("with distribution");
+		MenuItem saltAndPepper = new MenuItem("salt and pepper");
+		withDistribution.setOnAction(new NoiseDistributionParametersEventHandler(imageView, imageViewResult, noiseService));
+		saltAndPepper.setOnAction(new NoiseSaltAndPepperEventHandler(imageView, imageViewResult, noiseService));
+		addNoise.getItems().addAll(withDistribution, saltAndPepper);
 		editionMenu.getItems()
 				.addAll(binaryImages, degreeImages, copyImageNewWindows, rgbToHsv, colorBand, arithmeticOperationsBetweenImages, negativeImage,
 						contrast, powerLawFunction, addNoise);

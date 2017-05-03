@@ -22,14 +22,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class NoiseParametersEventHandler implements EventHandler<ActionEvent> {
+public class NoiseDistributionParametersEventHandler implements EventHandler<ActionEvent> {
 
 	private ImageView imageView;
 	private ImageView imageViewResult;
 	private NoiseService noiseService;
 	private ParametersWindowsFactory parametersWindowsFactory;
 
-	public NoiseParametersEventHandler(ImageView imageView, ImageView imageViewResult, NoiseService noiseService) {
+	public NoiseDistributionParametersEventHandler(ImageView imageView, ImageView imageViewResult, NoiseService noiseService) {
 		this.imageView = imageView;
 		this.imageViewResult = imageViewResult;
 		this.noiseService = noiseService;
