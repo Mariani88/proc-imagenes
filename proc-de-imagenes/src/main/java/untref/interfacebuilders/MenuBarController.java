@@ -25,6 +25,7 @@ public class MenuBarController {
 	private final HistogramService histogramService;
 	private final HistogramMenuController histogramMenuController;
 	private final EdgeMenuController edgeMenuController;
+	private final EdgeDetectionService edgeDetectionService;
 
 	private CreationImageService creationImageService;
 	private ImageIOService imageIOService;
@@ -36,6 +37,7 @@ public class MenuBarController {
 	private MultiplesImageOpenMenuController multiplesImageOpenMenuController;
 
 	public MenuBarController() {
+		this.edgeDetectionService = new EdgeDetectionServiceImpl();
 		this.imageEditionService = new ImageEditionServiceImpl();
 		this.imageRepository = new ImageRepositoryImpl();
 		this.creationImageService = new CreationImageServiceImpl();
@@ -49,7 +51,7 @@ public class MenuBarController {
 		this.aleatoryNumbersGeneratorService = new AleatoryNumbersGeneratorServiceImpl(new Random());
 		histogramService = new HistogramServiceImpl();
 		histogramMenuController = new HistogramMenuController(aleatoryNumbersGeneratorService, histogramService);
-		edgeMenuController = new EdgeMenuController();
+		edgeMenuController = new EdgeMenuController(edgeDetectionService);
 		filterMenuController = new FilterMenuController();
 		multiplesImageOpenMenuController = new MultiplesImageOpenMenuController(fileImageChooserFactory, imageIOService);
 	}
