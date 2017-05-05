@@ -5,11 +5,7 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
-import untref.controllers.ArithmeticOperationsMenuController;
-import untref.controllers.EditionMenuController;
-import untref.controllers.HistogramMenuController;
-import untref.eventhandlers.CreateMediaFilterHandler;
-import untref.eventhandlers.CreateMedianaHandler;
+import untref.controllers.*;
 import untref.eventhandlers.OpenImageEventHandler;
 import untref.eventhandlers.SaveImageEventHandler;
 import untref.factory.FileImageChooserFactory;
@@ -20,7 +16,7 @@ import untref.service.functions.AleatoryNumbersGeneratorServiceImpl;
 
 import java.util.Random;
 
-public class MenuBarBuilder {
+public class MenuBarController {
 
 	private final ArithmeticOperationsMenuController arithmeticOperationsMenuController;
 	private final EditionMenuController editionMenuController;
@@ -28,6 +24,7 @@ public class MenuBarBuilder {
 	private final AleatoryNumbersGeneratorService aleatoryNumbersGeneratorService;
 	private final HistogramService histogramService;
 	private final HistogramMenuController histogramMenuController;
+	private final EdgeMenuController edgeMenuController;
 
 	private CreationImageService creationImageService;
 	private ImageIOService imageIOService;
@@ -35,16 +32,15 @@ public class MenuBarBuilder {
 	private FileImageChooserFactory fileImageChooserFactory;
 	private final ImageArithmeticOperationService imageArithmeticOperationService;
 	private final ImageEditionService imageEditionService;
+	private FilterMenuController filterMenuController;
+	private MultiplesImageOpenMenuController multiplesImageOpenMenuController;
 
-	public MenuBarBuilder() {
-
+	public MenuBarController() {
 		this.imageEditionService = new ImageEditionServiceImpl();
-
 		this.imageRepository = new ImageRepositoryImpl();
 		this.creationImageService = new CreationImageServiceImpl();
 		this.imageIOService = new ImageIOServiceImpl(imageRepository);
 		this.fileImageChooserFactory = new FileImageChooserFactory();
-
 		this.imageArithmeticOperationService = new ImageArithmeticOperationServiceImpl();
 		this.arithmeticOperationsMenuController = new ArithmeticOperationsMenuController(imageArithmeticOperationService, imageIOService,
 				fileImageChooserFactory);
@@ -53,6 +49,9 @@ public class MenuBarBuilder {
 		this.aleatoryNumbersGeneratorService = new AleatoryNumbersGeneratorServiceImpl(new Random());
 		histogramService = new HistogramServiceImpl();
 		histogramMenuController = new HistogramMenuController(aleatoryNumbersGeneratorService, histogramService);
+		edgeMenuController = new EdgeMenuController();
+		filterMenuController = new FilterMenuController();
+		multiplesImageOpenMenuController = new MultiplesImageOpenMenuController(fileImageChooserFactory, imageIOService);
 	}
 
 	public MenuBar build(final ImageView imageView, final ImageView imageResultView) {
@@ -60,38 +59,19 @@ public class MenuBarBuilder {
 		Menu fileMenu = createFileMenu(imageView, imageResultView);
 		Menu editionMenu = editionMenuController.createEditionMenu(imageView, imageResultView);
 		Menu histogramMenu = histogramMenuController.createHistogramMenu(imageView, imageResultView);
-		Menu filterMenu = createFilterMenu(imageView, imageResultView);
-		menuBar.getMenus().addAll(fileMenu, editionMenu, histogramMenu, filterMenu);
+		Menu filterMenu = filterMenuController.createFilterMenu(imageView, imageResultView);
+		Menu EdgeMenu = edgeMenuController.createEdgeMenu(imageView, imageResultView);
+		menuBar.getMenus().addAll(fileMenu, editionMenu, histogramMenu, filterMenu, EdgeMenu);
 		return menuBar;
-	}
-
-	private Menu createFilterMenu(ImageView imageView, ImageView imageResultView) {
-		Menu filterMenu = new Menu("Filter");
-		MenuItem media = new MenuItem("media");
-		MenuItem mediana = new MenuItem("mediana");
-		media.setOnAction(new CreateMediaFilterHandler(imageView, imageResultView));
-		mediana.setOnAction(new CreateMedianaHandler(imageView, imageResultView));
-		filterMenu.getItems().addAll(media, mediana);
-		return filterMenu;
 	}
 
 	private Menu createFileMenu(ImageView imageView, ImageView imageView2) {
 		Menu fileMenu = new Menu("File");
 		MenuItem fileMenuItemOpen = createOpenMenuItem(imageView);
-		Menu multiplesImagesOpen = createMultiplesImagesOpenMenu(imageView, imageView2);
+		Menu multiplesImagesOpen = multiplesImageOpenMenuController.createMultiplesImagesOpenMenu(imageView, imageView2);
 		MenuItem fileMenuItemSave = createSaveMenuItem(imageView);
 		fileMenu.getItems().addAll(fileMenuItemOpen, multiplesImagesOpen, fileMenuItemSave);
 		return fileMenu;
-	}
-
-	private Menu createMultiplesImagesOpenMenu(ImageView imageView, ImageView imageView2) {
-		Menu openMultiplesImages = new Menu("open multiples images");
-		MenuItem addToFirstViewer = new MenuItem("add to first viewer");
-		addToFirstViewer.setOnAction(new OpenImageEventHandler(fileImageChooserFactory.create("Open image"), imageView, imageIOService));
-		MenuItem addToSecondViewer = new MenuItem("add to second viewer");
-		addToSecondViewer.setOnAction(new OpenImageEventHandler(fileImageChooserFactory.create("Open image"), imageView2, imageIOService));
-		openMultiplesImages.getItems().addAll(addToFirstViewer, addToSecondViewer);
-		return openMultiplesImages;
 	}
 
 	private MenuItem createOpenMenuItem(ImageView imageView) {

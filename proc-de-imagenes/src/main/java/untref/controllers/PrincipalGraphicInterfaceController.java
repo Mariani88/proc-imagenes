@@ -1,7 +1,6 @@
 package untref.controllers;
 
 
-import javafx.scene.control.Label;
 
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -12,23 +11,10 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 
-import javafx.scene.control.Slider;
-
 import untref.eventhandlers.ButtonSwitchImageViewHandler;
 import untref.eventhandlers.ClickImagePixelValues;
 import untref.interfacebuilders.ImageViewBuilder;
-import untref.interfacebuilders.MenuBarBuilder;
-
-import untref.interfacebuilders.SliderBuilder;
-
-
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.geometry.Insets;
-import javafx.scene.Group;
-import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
+import untref.interfacebuilders.MenuBarController;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -56,7 +42,7 @@ public class PrincipalGraphicInterfaceController {
 		principalPane = new AnchorPane();
 		imageView = createImageView(principalPane);
 		imageResultView = createImageResultView(imageView);
-		menuBar = new MenuBarBuilder().build(imageView, imageResultView);
+		menuBar = new MenuBarController().build(imageView, imageResultView);
 		imageData = imageDataController.build(imageView, imageResultView);
 		principalPaneChildrens = new ArrayList<>();
 		principalPaneChildrens.addAll(Arrays.asList(menuBar, imageView, imageResultView, imageData, createButtonSwitchImageView()));

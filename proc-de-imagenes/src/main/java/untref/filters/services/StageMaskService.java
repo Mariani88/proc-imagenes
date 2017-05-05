@@ -11,6 +11,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import untref.controllers.DrawingSelect;
+import untref.edge.service.EdgeHighPass;
+
 
 public class StageMaskService {
 	int sizeMask = 0;
@@ -19,7 +22,7 @@ public class StageMaskService {
 		return sizeMask;
 	}
 
-	public void startMedia(boolean mediana, Image image, ImageView imageResultView) {
+	public void startMedia(boolean mediana, Image image, ImageView imageResultView, boolean isMedianWeighted, boolean isHighPass, boolean isGaussian) {
 		Stage secondaryStage = new Stage();
 		Group root = new Group();
 		Scene scene = new Scene(root, 100, 100, Color.WHITE);
@@ -50,8 +53,35 @@ field.resize(5, 5);
 			public void handle(ActionEvent event) {
 				sizeMask = Integer.parseInt(field.getText());
 				secondaryStage.close();
+
+				
+				if(isGaussian){
+					
+					GaussFilterService gaussianFilter=new GaussFilterService();
+					
+					imageResultView.setImage(gaussianFilter.getImageFilterGussian(image, sizeMask));
+				}
+				else
+				
+				if (isHighPass){
+					
+					EdgeHighPass highPass=new EdgeHighPass();
+					imageResultView.setImage(highPass.startBorde(image, sizeMask));
+				}
+				else
+				
+				if (isMedianWeighted){
+					 
+					
+					WeightedMedian medianaFilter= new WeightedMedian();
+					imageResultView.setImage(medianaFilter.getImageMediana(image, sizeMask));
+					
+					}
+					
+				else
 				if (mediana){
-					MedianaFilterService medianaFilter = new MedianaFilterService();
+					 MedianFilterService medianaFilter = new MedianFilterService();
+
 					imageResultView.setImage(medianaFilter.getImageMediana(image, sizeMask));
 					
 					}else

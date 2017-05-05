@@ -7,6 +7,7 @@ import javafx.scene.control.TextField;
 import untref.controllers.nodeutils.ParametersWindowsFactory;
 import untref.service.AleatoryNumbersGeneratorService;
 import untref.service.HistogramService;
+
 import untref.service.HistogramServiceImpl;
 
 import java.util.Arrays;

@@ -16,8 +16,7 @@ public class CreateMedianaHandler implements EventHandler<ActionEvent> {
 
 	@Override
 	public void handle(ActionEvent arg0) {
-
 		StageMaskService medianaFilter = new StageMaskService();
-		medianaFilter.startMedia(true, imageView.getImage(), imageResultView);
+		medianaFilter.startMedia(true, imageView.getImage(), imageResultView,false,false,false);
 	}
 }

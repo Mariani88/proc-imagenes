@@ -3,7 +3,9 @@ package untref.eventhandlers;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.image.ImageView;
+
 import untref.controllers.DrawingSelect;
+
 import untref.service.EcualizeService;
 import untref.service.HistogramService;
 import untref.service.HistogramServiceImpl;
