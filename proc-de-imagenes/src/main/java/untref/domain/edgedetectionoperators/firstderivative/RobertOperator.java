@@ -1,10 +1,10 @@
-package untref.domain.edgedetectionoperators;
+package untref.domain.edgedetectionoperators.firstderivative;
 
 import javafx.scene.image.Image;
 import untref.service.MaskApplicationService;
 import untref.service.MaskApplicationServiceImpl;
 
-public class RobertOperator implements EdgeDetectionOperator {
+public class RobertOperator implements EdgeDetectionFirstDerivativeOperator {
 
 	private static final int[][] ROBERT_OPERATOR_Fx = { { 1, 0 }, { 0, -1 } };
 	private static final int[][] ROBERT_OPERATOR_Fy = { { 0, 1 }, { -1, 0 } };

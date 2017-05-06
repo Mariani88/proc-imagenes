@@ -1,10 +1,10 @@
-package untref.domain.edgedetectionoperators;
+package untref.domain.edgedetectionoperators.firstderivative;
 
 import javafx.scene.image.Image;
 import untref.service.MaskApplicationService;
 import untref.service.MaskApplicationServiceImpl;
 
-public class SobelOperator implements EdgeDetectionOperator {
+public class SobelOperator implements EdgeDetectionFirstDerivativeOperator {
 
 	private static final int[][] SOBEL_OPERATOR_Fx = { { -1, -2, -1 }, { 0, 0, 0 }, { 1, 2, 1 } };
 	private static final int[][] SOBEL_OPERATOR_Fy = { { -1, 0, 1 }, { -2, 0, 2 }, { -1, 0, 1 } };

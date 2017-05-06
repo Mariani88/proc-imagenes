@@ -2,11 +2,9 @@ package untref.service;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
-import javafx.scene.paint.Color;
 import untref.domain.TemporalColor;
 
-import static untref.domain.utils.ImageValuesTransformer.toRGBScale;
-import static untref.utils.ImageValidator.existPosition;
+import static untref.domain.utils.ImageValuesTransformer.getPositionColorOrEmpty;
 
 public class MaskApplicationServiceImpl implements MaskApplicationService {
 
@@ -18,23 +16,12 @@ public class MaskApplicationServiceImpl implements MaskApplicationService {
 
 		for (int i = 0; i < mask.length; i++) {
 			for (int j = 0; j < mask[i].length; j++) {
-				TemporalColor positionColor = getPositionColor(row - offsetI + i, column - offsetJ + j, image, pixelReader);
+				TemporalColor positionColor = getPositionColorOrEmpty(row - offsetI + i, column - offsetJ + j, image, pixelReader);
 				red += mask[i][j] * positionColor.getRed();
 				green += mask[i][j] * positionColor.getGreen();
 				blue += mask[i][j] * positionColor.getBlue();
 			}
 		}
 		return new TemporalColor(red, green, blue);
-	}
-
-	private TemporalColor getPositionColor(int row, int column, Image image, PixelReader pixelReader) {
-		TemporalColor temporalColor = new TemporalColor(0, 0, 0);
-
-		if (existPosition(image, row, column)) {
-			Color color = pixelReader.getColor(column, row);
-			temporalColor = new TemporalColor(toRGBScale(color.getRed()), toRGBScale(color.getGreen()), toRGBScale(color.getBlue()));
-		}
-
-		return temporalColor;
 	}
 }

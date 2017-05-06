@@ -1,10 +1,10 @@
-package untref.domain.edgedetectionoperators;
+package untref.domain.edgedetectionoperators.firstderivative;
 
 import javafx.scene.image.Image;
 import untref.service.MaskApplicationService;
 import untref.service.MaskApplicationServiceImpl;
 
-public class PrewittOperator implements EdgeDetectionOperator {
+public class PrewittOperator implements EdgeDetectionFirstDerivativeOperator {
 
 	private static final int[][] PREWITH_OPERATOR_Fx = { { -1, -1, -1 }, { 0, 0, 0 }, { 1, 1, 1 } };
 	private static final int[][] PREWITH_OPERATOR_Fy = { { -1, 0, 1 }, { -1, 0, 1 }, { -1, 0, 1 } };

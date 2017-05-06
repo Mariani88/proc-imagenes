@@ -1,4 +1,4 @@
-package untref.domain.edgedetectionoperators;
+package untref.domain.edgedetectionoperators.firstderivative;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
@@ -9,8 +9,6 @@ import untref.domain.TemporalColor;
 import untref.service.MaskApplicationService;
 
 import static untref.domain.utils.ImageValuesTransformer.toInt;
-import static untref.domain.utils.ImageValuesTransformer.toRGBScale;
-import static untref.utils.ImageValidator.existPosition;
 
 public class EdgeDetectionAplicator {
 

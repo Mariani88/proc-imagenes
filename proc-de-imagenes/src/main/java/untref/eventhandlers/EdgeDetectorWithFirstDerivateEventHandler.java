@@ -8,10 +8,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import untref.controllers.nodeutils.ImageSetter;
 import untref.controllers.nodeutils.ParametersWindowsFactory;
-import untref.domain.edgedetectionoperators.EdgeDetectionOperator;
+import untref.domain.edgedetectionoperators.firstderivative.EdgeDetectionFirstDerivativeOperator;
 import untref.service.EdgeDetectionService;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 public class EdgeDetectorWithFirstDerivateEventHandler implements EventHandler<ActionEvent>{
@@ -19,14 +18,14 @@ public class EdgeDetectorWithFirstDerivateEventHandler implements EventHandler<A
 	private final ImageView imageView;
 	private final ImageView imageResultView;
 	private final EdgeDetectionService edgeDetectionService;
-	private final EdgeDetectionOperator edgeDetectionOperator;
+	private final EdgeDetectionFirstDerivativeOperator edgeDetectionOperator;
 
 	public EdgeDetectorWithFirstDerivateEventHandler(ImageView imageView, ImageView imageResultView, EdgeDetectionService edgeDetectionService,
-			EdgeDetectionOperator edgeDetectionOperator) {
+			EdgeDetectionFirstDerivativeOperator edgeDetectionFirstDerivativeOperator) {
 		this.imageView = imageView;
 		this.imageResultView = imageResultView;
 		this.edgeDetectionService = edgeDetectionService;
-		this.edgeDetectionOperator = edgeDetectionOperator;
+		this.edgeDetectionOperator = edgeDetectionFirstDerivativeOperator;
 	}
 
 	@Override
