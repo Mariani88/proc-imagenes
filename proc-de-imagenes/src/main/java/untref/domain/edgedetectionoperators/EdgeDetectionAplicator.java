@@ -6,12 +6,19 @@ import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import untref.domain.TemporalColor;
+import untref.service.MaskApplicationService;
 
 import static untref.domain.utils.ImageValuesTransformer.toInt;
 import static untref.domain.utils.ImageValuesTransformer.toRGBScale;
 import static untref.utils.ImageValidator.existPosition;
 
 public class EdgeDetectionAplicator {
+
+	private MaskApplicationService maskApplicationService;
+
+	public EdgeDetectionAplicator(MaskApplicationService maskApplicationService) {
+		this.maskApplicationService = maskApplicationService;
+	}
 
 	public Image applyEdgeDetectionOperator(Image image, int operatorFx[][], int operatorFy[][], int limitThresholdForGradientMagnitude, int offsetI,
 			int offsetJ) {
@@ -57,29 +64,6 @@ public class EdgeDetectionAplicator {
 
 	private TemporalColor calculateDerivative(Image image, int row, int column, PixelReader pixelReader, int prewittOperator[][], int offsetI,
 			int offsetJ) {
-		int fxRed = 0;
-		int fxGreen = 0;
-		int fxBlue = 0;
-
-		for (int i = 0; i < prewittOperator.length; i++) {
-			for (int j = 0; j < prewittOperator[i].length; j++) {
-				TemporalColor positionColor = getPositionColor(row - offsetI + i, column - offsetJ + j, image, pixelReader);
-				fxRed += prewittOperator[i][j] * positionColor.getRed();
-				fxGreen += prewittOperator[i][j] * positionColor.getGreen();
-				fxBlue += prewittOperator[i][j] * positionColor.getBlue();
-			}
-		}
-		return new TemporalColor(fxRed, fxGreen, fxBlue);
-	}
-
-	private TemporalColor getPositionColor(int row, int column, Image image, PixelReader pixelReader) {
-		TemporalColor temporalColor = new TemporalColor(0, 0, 0);
-
-		if (existPosition(image, row, column)) {
-			Color color = pixelReader.getColor(column, row);
-			temporalColor = new TemporalColor(toRGBScale(color.getRed()), toRGBScale(color.getGreen()), toRGBScale(color.getBlue()));
-		}
-
-		return temporalColor;
+		return maskApplicationService.applyMask(image, row, column, pixelReader, prewittOperator, offsetI, offsetJ);
 	}
 }
