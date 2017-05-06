@@ -3,7 +3,9 @@ package untref.controllers;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.ImageView;
+import untref.domain.edgedetectionoperators.PrewittOperator;
 import untref.domain.edgedetectionoperators.RobertOperator;
+import untref.domain.edgedetectionoperators.SobelOperator;
 import untref.eventhandlers.CreateHighPassEdgeHandler;
 import untref.eventhandlers.EdgeDetectorWithFirstDerivateEventHandler;
 import untref.service.EdgeDetectionService;
@@ -25,7 +27,11 @@ public class EdgeMenuController {
 		byRobertOperator
 				.setOnAction(new EdgeDetectorWithFirstDerivateEventHandler(imageView, imageResultView, edgeDetectionService, new RobertOperator()));
 		MenuItem byPrewittOperator = new MenuItem(" by Prewitt operator");
+		byPrewittOperator
+				.setOnAction(new EdgeDetectorWithFirstDerivateEventHandler(imageView, imageResultView, edgeDetectionService, new PrewittOperator()));
 		MenuItem bySobelOperator = new MenuItem(" by Sobel operator");
+		bySobelOperator
+				.setOnAction(new EdgeDetectorWithFirstDerivateEventHandler(imageView, imageResultView, edgeDetectionService, new SobelOperator()));
 		edgeDetection.getItems().addAll(byRobertOperator, byPrewittOperator, bySobelOperator);
 		edgeMenu.getItems().addAll(highPass, edgeDetection);
 		return edgeMenu;
