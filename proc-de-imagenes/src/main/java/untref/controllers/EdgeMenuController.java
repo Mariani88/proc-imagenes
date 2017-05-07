@@ -6,10 +6,10 @@ import javafx.scene.image.ImageView;
 import untref.domain.edgedetectionoperators.firstderivative.PrewittOperator;
 import untref.domain.edgedetectionoperators.firstderivative.RobertOperator;
 import untref.domain.edgedetectionoperators.firstderivative.SobelOperator;
-import untref.domain.edgedetectionoperators.secondderivative.LaplacianOperator;
-import untref.domain.edgedetectionoperators.secondderivative.LaplacianWithVarianceEvaluationOperator;
+import untref.domain.edgedetectionoperators.secondderivative.LaplacianWithZeroDetectorOperator;
 import untref.domain.edgedetectionoperators.secondderivative.MarrHildrethOperator;
 import untref.eventhandlers.CreateHighPassEdgeHandler;
+import untref.eventhandlers.EdgeDetectionWithLaplacianSlopeEvaluationEventHandler;
 import untref.eventhandlers.EdgeDetectorWithFirstDerivateEventHandler;
 import untref.eventhandlers.EditionImageEventHandler;
 import untref.service.EdgeDetectionService;
@@ -37,12 +37,12 @@ public class EdgeMenuController {
 	private Menu createBySecondDerivativeMenu(ImageView imageView, ImageView imageResultView) {
 		Menu bySecondDerivative = new Menu("by second derivative");
 		MenuItem laplacianMethod = new MenuItem("laplacian method");
-		MenuItem laplacianMethodWithVarianceEvaluation = new MenuItem("laplacian method with vaciance evaluation");
+		MenuItem laplacianMethodWithVarianceEvaluation = new MenuItem("laplacian method with slope evaluation");
 		MenuItem marrHildrethMethod = new MenuItem("Gaussian laplacian method (Marr Hildreth)");
 		laplacianMethod.setOnAction(
-				new EditionImageEventHandler(imageResultView, () -> edgeDetectionService.detectEdge(imageView.getImage(), new LaplacianOperator())));
-		laplacianMethodWithVarianceEvaluation.setOnAction(new EditionImageEventHandler(imageResultView,
-				() -> edgeDetectionService.detectEdge(imageView.getImage(), new LaplacianWithVarianceEvaluationOperator())));
+				new EditionImageEventHandler(imageResultView, () -> edgeDetectionService.detectEdge(imageView.getImage(), new LaplacianWithZeroDetectorOperator())));
+		laplacianMethodWithVarianceEvaluation
+				.setOnAction(new EdgeDetectionWithLaplacianSlopeEvaluationEventHandler(imageView, imageResultView, edgeDetectionService));
 		marrHildrethMethod.setOnAction(new EditionImageEventHandler(imageResultView,
 				() -> edgeDetectionService.detectEdge(imageView.getImage(), new MarrHildrethOperator())));
 		bySecondDerivative.getItems().addAll(laplacianMethod, laplacianMethodWithVarianceEvaluation, marrHildrethMethod);

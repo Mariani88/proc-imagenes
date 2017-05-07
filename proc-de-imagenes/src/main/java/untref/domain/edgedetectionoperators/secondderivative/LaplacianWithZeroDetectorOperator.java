@@ -1,42 +1,33 @@
 package untref.domain.edgedetectionoperators.secondderivative;
 
 import javafx.scene.image.Image;
-import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import untref.domain.TemporalColor;
+import untref.service.ImageDerivativeServiceImpl;
 import untref.service.MaskApplicationService;
 import untref.service.MaskApplicationServiceImpl;
 
 import static untref.domain.utils.ImageValuesTransformer.getOrEmpty;
 import static untref.domain.utils.ImageValuesTransformer.toInt;
 
-public class LaplacianOperator implements EdgeDetectionSecondDerivativeOperator {
+public class LaplacianWithZeroDetectorOperator implements EdgeDetectionSecondDerivativeOperator {
 
-	private static final int LAPLACIAN_OPERATOR[][] = { { 0, -1, 0 }, { -1, 4, -1 }, { 0, -1, 0 } };
 	private final MaskApplicationService maskApplicationService;
+	private final ImageDerivativeServiceImpl imageDerivativeService;
 
-	public LaplacianOperator() {
+	public LaplacianWithZeroDetectorOperator() {
 		maskApplicationService = new MaskApplicationServiceImpl();
+		imageDerivativeService = new ImageDerivativeServiceImpl(maskApplicationService);
 	}
 
 	@Override
 	public Image detectEdges(Image image) {
 		int width = toInt(image.getWidth());
 		int height = toInt(image.getHeight());
+		TemporalColor[][] imageLaplacian = imageDerivativeService.calculateLaplacian(image, width, height);
 		WritableImage imageWithEdges = new WritableImage(width, height);
-		PixelReader pixelReader = image.getPixelReader();
-		TemporalColor imageLaplacian[][] = new TemporalColor[height][width];
-		int offsetI = 1;
-		int offsetJ = 1;
-
-		for (int row = 0; row < height; row++) {
-			for (int column = 0; column < width; column++) {
-				imageLaplacian[row][column] = maskApplicationService.applyMask(image, row, column, pixelReader, LAPLACIAN_OPERATOR, offsetI,
-						offsetJ);
-			}
-		}
 		detectEdgesByRow(imageWithEdges, imageLaplacian, width, height);
 		detectEdgesByColumn(imageWithEdges, imageLaplacian, width, height);
 		return imageWithEdges;
