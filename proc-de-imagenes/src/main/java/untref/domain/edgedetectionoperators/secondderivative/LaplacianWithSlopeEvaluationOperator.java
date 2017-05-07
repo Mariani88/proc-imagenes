@@ -1,6 +1,7 @@
 package untref.domain.edgedetectionoperators.secondderivative;
 
 import javafx.scene.image.Image;
+import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
@@ -11,6 +12,7 @@ import untref.service.MaskApplicationServiceImpl;
 
 import static untref.domain.utils.ImageValuesTransformer.getOrEmpty;
 import static untref.domain.utils.ImageValuesTransformer.toInt;
+import static untref.domain.utils.ImageValuesTransformer.toRGBScale;
 
 public class LaplacianWithSlopeEvaluationOperator implements EdgeDetectionSecondDerivativeOperator {
 
@@ -33,8 +35,38 @@ public class LaplacianWithSlopeEvaluationOperator implements EdgeDetectionSecond
 		int width = toInt(image.getWidth());
 		int height = toInt(image.getHeight());
 		TemporalColor[][] imageLaplacian = imageDerivativeService.calculateLaplacian(image, width, height);
-		TemporalColor[][] slopes = calculateSlopes(imageLaplacian, width, height);
-		return applyEdges(slopes, width, height);
+		//TemporalColor[][] slopes = calculateSlopes(imageLaplacian, width, height);
+		TemporalColor slopes[][] = new TemporalColor[height][width];
+		calculateSlopesByRow(imageLaplacian, slopes);
+		WritableImage imageWithEdges = new WritableImage(width, height);
+		PixelWriter pixelWriter = imageWithEdges.getPixelWriter();
+		applyEdges(slopes, width, height, pixelWriter);
+		//return applyEdges(slopes, width, height);
+		calculateSlopesByColumn(imageLaplacian, slopes);
+		applyEdgesWithCondition(slopes, width, height, pixelWriter, imageWithEdges.getPixelReader());
+
+
+		return imageWithEdges;
+	}
+
+	private void applyEdgesWithCondition(TemporalColor[][] slopes, int width, int height, PixelWriter pixelWriter, PixelReader pixelReader) {
+
+		for (int row = 0; row < height; row++) {
+			for (int column = 0; column < width; column++) {
+				int red = applyEdge(slopes[row][column].getRed(), calculateThreshold(maxRedSlope));
+				int green = applyEdge(slopes[row][column].getGreen(), calculateThreshold(maxGreenSlope));
+				int blue = applyEdge(slopes[row][column].getBlue(), calculateThreshold(maxBlueSlope));
+
+				Color color = pixelReader.getColor(column, row);
+				TemporalColor temporalColor = new TemporalColor(toRGBScale(color.getRed()), toRGBScale(color.getGreen()),toRGBScale(color.getBlue()));
+
+
+				if(temporalColor.getRed() != 255 || temporalColor.getGreen() !=255 || temporalColor.getBlue()!=255){
+					pixelWriter.setColor(column, row, Color.rgb(red, green, blue));
+				}
+			}
+		}
+
 	}
 
 	private TemporalColor[][] calculateSlopes(TemporalColor[][] imageLaplacian, int width, int height) {
@@ -100,9 +132,7 @@ public class LaplacianWithSlopeEvaluationOperator implements EdgeDetectionSecond
 		return slope;
 	}
 
-	private Image applyEdges(TemporalColor[][] slopes, int width, int height) {
-		WritableImage imageWithEdges = new WritableImage(width, height);
-		PixelWriter pixelWriter = imageWithEdges.getPixelWriter();
+	private void applyEdges(TemporalColor[][] slopes, int width, int height, PixelWriter pixelWriter) {
 
 		for (int row = 0; row < height; row++) {
 			for (int column = 0; column < width; column++) {
@@ -113,7 +143,7 @@ public class LaplacianWithSlopeEvaluationOperator implements EdgeDetectionSecond
 			}
 		}
 
-		return imageWithEdges;
+
 	}
 
 	private int calculateThreshold(int maxGraySlope) {
