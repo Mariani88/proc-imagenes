@@ -6,5 +6,5 @@ import untref.domain.TemporalColor;
 
 public interface MaskApplicationService {
 
-	TemporalColor applyMask(Image image, int row, int column, PixelReader pixelReader, int prewittOperator[][], int offsetI, int offsetJ);
+	TemporalColor applyMask(Image image, int row, int column, PixelReader pixelReader, int mask[][], int offsetI, int offsetJ);
 }
