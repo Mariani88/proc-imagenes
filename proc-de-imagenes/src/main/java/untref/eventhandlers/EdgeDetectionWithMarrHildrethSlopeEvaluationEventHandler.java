@@ -13,13 +13,13 @@ import untref.service.EdgeDetectionService;
 
 import java.util.Arrays;
 
-public class EdgeDetectionWithLaplacianSlopeEvaluationEventHandler implements EventHandler<ActionEvent> {
+public class EdgeDetectionWithMarrHildrethSlopeEvaluationEventHandler implements EventHandler<ActionEvent> {
 
 	private final ImageView imageView;
 	private final ImageView imageResultView;
 	private final EdgeDetectionService edgeDetectionService;
 
-	public EdgeDetectionWithLaplacianSlopeEvaluationEventHandler(ImageView imageView, ImageView imageResultView,
+	public EdgeDetectionWithMarrHildrethSlopeEvaluationEventHandler(ImageView imageView, ImageView imageResultView,
 			EdgeDetectionService edgeDetectionService) {
 		this.imageView = imageView;
 		this.imageResultView = imageResultView;
@@ -32,8 +32,9 @@ public class EdgeDetectionWithLaplacianSlopeEvaluationEventHandler implements Ev
 		TextField maxSlopePercentValue = new TextField();
 		new ParametersWindowsFactory().create(Arrays.asList(maxSlopePercent, maxSlopePercentValue), event1 -> {
 			Double maxSlopePercent1 = Double.valueOf(maxSlopePercentValue.getText());
-			Image imageWithEdges = edgeDetectionService.detectEdgeWithLaplacian(imageView.getImage(), new SlopesDetector(maxSlopePercent1));
+			Image imageWithEdges = edgeDetectionService.detectEdgeWithMarrHildreth(imageView.getImage(), new SlopesDetector(maxSlopePercent1));
 			ImageSetter.set(imageResultView, imageWithEdges);
 		});
 	}
+
 }

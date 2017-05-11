@@ -2,13 +2,14 @@ package untref.service;
 
 import javafx.scene.image.Image;
 import untref.domain.edgedetectionoperators.firstderivative.EdgeDetectionFirstDerivativeOperator;
-import untref.domain.edgedetectionoperators.secondderivative.EdgeDetectionSecondDerivativeOperator;
-import untref.domain.edgedetectionoperators.secondderivative.LaplacianWithSlopeEvaluationOperator;
+import untref.domain.edgedetectionoperators.secondderivative.detectors.EdgeDetector;
 
 public interface EdgeDetectionService {
 
-	Image detectEdge(Image image, EdgeDetectionFirstDerivativeOperator firstDerivativeOperator,
+	Image detectEdgeWithFirstDerivative(Image image, EdgeDetectionFirstDerivativeOperator firstDerivativeOperator,
 			Integer limitThresholdForGradientMagnitude);
 
-	Image detectEdge(Image image, EdgeDetectionSecondDerivativeOperator secondDerivativeOperator);
+	Image detectEdgeWithLaplacian(Image image, EdgeDetector edgeDetector);
+
+	Image detectEdgeWithMarrHildreth(Image image, EdgeDetector edgeDetector);
 }

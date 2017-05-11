@@ -6,19 +6,21 @@ import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import untref.domain.TemporalColor;
+import untref.service.ImageDerivativeService;
+import untref.service.ImageDerivativeServiceImpl;
 import untref.service.MaskApplicationService;
 
 import static untref.domain.utils.ImageValuesTransformer.toInt;
 
 public class EdgeDetectionAplicator {
 
-	private MaskApplicationService maskApplicationService;
+	private final ImageDerivativeService imageDerivativeService;
 
 	public EdgeDetectionAplicator(MaskApplicationService maskApplicationService) {
-		this.maskApplicationService = maskApplicationService;
+		imageDerivativeService = new ImageDerivativeServiceImpl(maskApplicationService);
 	}
 
-	public Image applyEdgeDetectionOperator(Image image, int operatorFx[][], int operatorFy[][], int limitThresholdForGradientMagnitude, int offsetI,
+	public Image applyEdgeDetectionOperator(Image image, int operatorFx[][], int operatorFy[][], int thresholdForGradientMagnitude, int offsetI,
 			int offsetJ) {
 		int width = toInt(image.getWidth());
 		int height = toInt(image.getHeight());
@@ -28,10 +30,10 @@ public class EdgeDetectionAplicator {
 
 		for (int row = 0; row < height; row++) {
 			for (int column = 0; column < width; column++) {
-				TemporalColor fx = calculateDerivative(image, row, column, pixelReader, operatorFx, offsetI, offsetJ);
-				TemporalColor fy = calculateDerivative(image, row, column, pixelReader, operatorFy, offsetI, offsetJ);
+				TemporalColor fx = imageDerivativeService.calculateDerivative(image, row, column, pixelReader, operatorFx, offsetI, offsetJ);
+				TemporalColor fy = imageDerivativeService.calculateDerivative(image, row, column, pixelReader, operatorFy, offsetI, offsetJ);
 				TemporalColor gradientMagnitude = calculateGradientMagnitude(fx, fy);
-				pixelWriter.setColor(column, row, assignColor(gradientMagnitude, limitThresholdForGradientMagnitude));
+				pixelWriter.setColor(column, row, assignColor(gradientMagnitude, thresholdForGradientMagnitude));
 			}
 		}
 
@@ -58,10 +60,5 @@ public class EdgeDetectionAplicator {
 		} else {
 			return 255;
 		}
-	}
-
-	private TemporalColor calculateDerivative(Image image, int row, int column, PixelReader pixelReader, int prewittOperator[][], int offsetI,
-			int offsetJ) {
-		return maskApplicationService.applyMask(image, row, column, pixelReader, prewittOperator, offsetI, offsetJ);
 	}
 }

@@ -34,7 +34,7 @@ public class EdgeDetectorWithFirstDerivateEventHandler implements EventHandler<A
 		TextField limitThresholdValue = new TextField();
 		new ParametersWindowsFactory().create(Arrays.asList(limitThreshold, limitThresholdValue), event1 -> {
 			Image imageWithEdge = edgeDetectionService
-					.detectEdge(imageView.getImage(), edgeDetectionOperator, Integer.valueOf(limitThresholdValue.getText()));
+					.detectEdgeWithFirstDerivative(imageView.getImage(), edgeDetectionOperator, Integer.valueOf(limitThresholdValue.getText()));
 			ImageSetter.set(imageResultView, imageWithEdge);
 		});
 	}

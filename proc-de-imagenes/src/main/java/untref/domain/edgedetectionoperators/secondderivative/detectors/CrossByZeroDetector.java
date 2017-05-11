@@ -1,4 +1,4 @@
-package untref.domain.edgedetectionoperators.secondderivative;
+package untref.domain.edgedetectionoperators.secondderivative.detectors;
 
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
@@ -7,11 +7,13 @@ import untref.domain.TemporalColor;
 
 import static untref.domain.utils.ImageValuesTransformer.getOrEmpty;
 
-public class CrossByZeroDetector {
+public class CrossByZeroDetector implements EdgeDetector {
 
-	public void detectEdges(WritableImage imageWithEdges, TemporalColor[][] imageLaplacian, int width, int height) {
+	public WritableImage detectEdges(TemporalColor[][] imageLaplacian, int width, int height) {
+		WritableImage imageWithEdges = new WritableImage(width, height);
 		detectEdgesByRow(imageWithEdges, imageLaplacian, width, height);
 		detectEdgesByColumn(imageWithEdges, imageLaplacian, width, height);
+		return imageWithEdges;
 	}
 
 	private void detectEdgesByColumn(WritableImage imageWithEdges, TemporalColor[][] imageLaplacian, int width, int height) {
