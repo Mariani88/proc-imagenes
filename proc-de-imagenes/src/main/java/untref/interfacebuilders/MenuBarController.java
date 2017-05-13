@@ -35,6 +35,7 @@ public class MenuBarController {
 	private final ImageEditionService imageEditionService;
 	private FilterMenuController filterMenuController;
 	private MultiplesImageOpenMenuController multiplesImageOpenMenuController;
+	private ThresholdingMenuController thresholdingMenuController;
 
 	public MenuBarController() {
 		this.edgeDetectionService = new EdgeDetectionServiceImpl();
@@ -54,6 +55,7 @@ public class MenuBarController {
 		edgeMenuController = new EdgeMenuController(edgeDetectionService);
 		filterMenuController = new FilterMenuController();
 		multiplesImageOpenMenuController = new MultiplesImageOpenMenuController(fileImageChooserFactory, imageIOService);
+		thresholdingMenuController = new ThresholdingMenuController();
 	}
 
 	public MenuBar build(final ImageView imageView, final ImageView imageResultView) {
@@ -63,7 +65,8 @@ public class MenuBarController {
 		Menu histogramMenu = histogramMenuController.createHistogramMenu(imageView, imageResultView);
 		Menu filterMenu = filterMenuController.createFilterMenu(imageView, imageResultView);
 		Menu EdgeMenu = edgeMenuController.createEdgeMenu(imageView, imageResultView);
-		menuBar.getMenus().addAll(fileMenu, editionMenu, histogramMenu, filterMenu, EdgeMenu);
+		Menu thresholdingMenu = thresholdingMenuController.createThresholdingMenu(imageView, imageResultView);
+		menuBar.getMenus().addAll(fileMenu, editionMenu, histogramMenu, filterMenu, EdgeMenu, thresholdingMenu);
 		return menuBar;
 	}
 
