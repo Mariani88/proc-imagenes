@@ -36,11 +36,17 @@ public class ImageValuesTransformer {
 	}
 
 	public static TemporalColor getOrEmpty(TemporalColor[][] temporalColors, int row, int column) {
-
 		if (existPosition(temporalColors, row, column)) {
 			return temporalColors[row][column];
 		} else {
 			return DEFAULT_TEMPORAL_COLOR;
 		}
+	}
+
+	public static int toGrayScale(Color color) {
+		int red = toRGBScale(color.getRed());
+		int green = toRGBScale(color.getGreen());
+		int blue = toRGBScale(color.getBlue());
+		return (red + green + blue) / 3;
 	}
 }
