@@ -6,7 +6,10 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import untref.controllers.nodeutils.ParametersWindowsFactory;
+import untref.eventhandlers.threshold.OtsuMethodEventHandler;
 import untref.eventhandlers.threshold.ThresholdBasicMethodEventHandler;
+import untref.service.ImageStatisticService;
+import untref.service.ImageStatisticServiceImpl;
 import untref.service.ThresholdingService;
 import untref.service.ThresholdingServiceImpl;
 
@@ -18,7 +21,7 @@ public class ThresholdingMenuController {
 	private ParametersWindowsFactory parametersWindowsFactory;
 
 	public ThresholdingMenuController() {
-		thresholdingService = new ThresholdingServiceImpl();
+		thresholdingService = new ThresholdingServiceImpl(new ImageStatisticServiceImpl());
 		parametersWindowsFactory = new ParametersWindowsFactory();
 	}
 
@@ -34,6 +37,8 @@ public class ThresholdingMenuController {
 				.create(Arrays.asList(initialThreshold, initialThresholdValue, deltaThreshold, deltaThresholdValue),
 						new ThresholdBasicMethodEventHandler(thresholdingService, imageView, imageResultView, initialThresholdValue,
 								deltaThresholdValue, parametersWindowsFactory)));
+		thresholdAutomaticEstimation
+				.setOnAction(new OtsuMethodEventHandler(parametersWindowsFactory, imageResultView, thresholdingService, imageView));
 		thresholdingMenu.getItems().addAll(basicGlobalThresholding, thresholdAutomaticEstimation);
 		return thresholdingMenu;
 	}

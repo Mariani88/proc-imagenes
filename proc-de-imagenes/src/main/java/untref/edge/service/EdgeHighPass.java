@@ -41,7 +41,7 @@ public class EdgeHighPass {
 			for(int j =0; j <= image.getHeight()-sizeMask; j++){
 				for (int k=0; k < sizeMask; k++){
 					for(int m =0; m < sizeMask; m++){
-						grey = grey + (colorService.getValueRgb(i+k, j+m))*matrizMascara[k][m];  
+						grey = grey + (colorService.getGrayAverage(i+k, j+m))*matrizMascara[k][m];
 					}
 				}
 				matrizAux[i+ sizeMask/2][j+ sizeMask/2]=grey/divisor;

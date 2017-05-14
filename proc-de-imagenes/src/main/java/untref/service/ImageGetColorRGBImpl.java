@@ -110,7 +110,7 @@ public class ImageGetColorRGBImpl implements ImageGetColorRGB {
 	}
 
 	@Override
-	public int getValueRgb(int x, int y) {
+	public int getGrayAverage(int x, int y) {
 		int promedio;
 		promedio = (int) ((this.getValueChannelB(x, y) * 255 + this.getValueChannelG(x, y) * 255
 				+ this.getValueChannelR(x, y) * 255) / 3);

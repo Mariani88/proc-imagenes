@@ -23,6 +23,6 @@ public class ClickImagePixelValues implements EventHandler<MouseEvent> {
 		;
 		ImageGetColorRGB rgb= new ImageGetColorRGBImpl(imageView.getImage());
 		 
-		imageDataController.setPixelValueText(x, y,  rgb.getValueRgb(x, y) );
+		imageDataController.setPixelValueText(x, y,  rgb.getGrayAverage(x, y) );
 	}
 }

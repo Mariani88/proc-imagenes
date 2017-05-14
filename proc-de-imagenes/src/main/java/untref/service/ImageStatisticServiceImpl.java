@@ -3,8 +3,13 @@ package untref.service;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
 import javafx.scene.paint.Color;
+import untref.domain.GrayProbability;
 import untref.domain.TemporalColor;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import static untref.domain.utils.ImageValuesTransformer.toGrayScale;
 import static untref.domain.utils.ImageValuesTransformer.toInt;
 
 public class ImageStatisticServiceImpl implements ImageStatisticService {
@@ -52,5 +57,35 @@ public class ImageStatisticServiceImpl implements ImageStatisticService {
 		int greenStandardDeviation = toInt(Math.sqrt(greenSummary / amountPixels));
 		int blueStandardDeviation = toInt(Math.sqrt(blueSummary / amountPixels));
 		return new TemporalColor(redStandardDeviation, greenStandardDeviation, blueStandardDeviation);
+	}
+
+	@Override
+	public Map<Integer, GrayProbability> calculateGrayProbabilityByGray(Image image) {
+		int width = toInt(image.getWidth());
+		int height = toInt(image.getHeight());
+		PixelReader pixelReader = image.getPixelReader();
+		int totalPixels = width * height;
+		Map<Integer, GrayProbability> grayProbabilityByGray = createGrayProbabilityByGray(totalPixels);
+
+		for (int row = 0; row < height; row++) {
+			for (int column = 0; column < width; column++) {
+				int gray = toGrayScale(pixelReader.getColor(column, row));
+				GrayProbability grayProbability = grayProbabilityByGray.get(gray);
+				grayProbability.updatePixelsAndProbability();
+				grayProbabilityByGray.put(gray, grayProbability);
+			}
+		}
+
+		return grayProbabilityByGray;
+	}
+
+	private HashMap<Integer, GrayProbability> createGrayProbabilityByGray(int totalPixels) {
+		HashMap<Integer, GrayProbability> grayProbabilityByGray = new HashMap<>(LIMIT_SCALE_GRAY + 1);
+
+		for (int gray = 0; gray <= LIMIT_SCALE_GRAY; gray++) {
+			grayProbabilityByGray.put(gray, new GrayProbability(gray, totalPixels, 0));
+		}
+
+		return grayProbabilityByGray;
 	}
 }

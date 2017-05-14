@@ -2,6 +2,7 @@ package untref.eventhandlers;
 
 import javafx.scene.image.ImageView;
 import untref.controllers.nodeutils.ImageSetter;
+import untref.service.ImageStatisticServiceImpl;
 import untref.service.ThresholdingService;
 import untref.service.ThresholdingServiceImpl;
 
@@ -18,7 +19,7 @@ public class CreateThresholdHandler {
 	}
 
 	public void handle() {
-		ThresholdingService threshold = new ThresholdingServiceImpl();
+		ThresholdingService threshold = new ThresholdingServiceImpl(new ImageStatisticServiceImpl());
 		ImageSetter.set(imageResultView, threshold.getImageThreshold(imageView.getImage(), value));
 	}
 }

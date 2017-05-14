@@ -27,7 +27,7 @@ public class HistogramServiceImpl implements HistogramService {
 		this.totalPixels = this.serviceImageRgb.getTotalPixel();
 		for (int i = 0; i < this.image.getWidth(); i++)
 			for (int j = 0; j < this.image.getHeight(); j++) {
-				arrayHistogram[this.serviceImageRgb.getValueRgb(i, j)] += 1;
+				arrayHistogram[this.serviceImageRgb.getGrayAverage(i, j)] += 1;
 			}
 
 		for (int i = 0; i < 256; i++) {

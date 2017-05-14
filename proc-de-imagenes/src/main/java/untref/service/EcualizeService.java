@@ -25,7 +25,7 @@ public class EcualizeService {
 		
 		for(int i=0;i<image.getWidth();i++ ){
 			for(int j=0;j<image.getHeight();j++) {
-				Summation=  (int) ((255)*(addPixel(histograma, (imageService.getValueRgb(i, j)))));
+				Summation=  (int) ((255)*(addPixel(histograma, (imageService.getGrayAverage(i, j)))));
 			Color colorRGB=Color.rgb(Summation,Summation,Summation);
 				
 			PixelWriter pixelWriter = imageOut.getPixelWriter();
