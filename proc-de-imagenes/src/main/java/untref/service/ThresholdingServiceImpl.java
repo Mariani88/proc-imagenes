@@ -17,8 +17,10 @@ import static untref.domain.utils.ImageValuesTransformer.toInt;
 
 public class ThresholdingServiceImpl implements ThresholdingService {
 
+	private static final int ZERO = 0;
 	private final ImageStatisticService imageStatisticService;
 	private static final int LIMIT_SCALE_GRAY = 255;
+	private static final int TOTAL_COLORS = 256;
 
 	public ThresholdingServiceImpl(ImageStatisticService imageStatisticService) {
 		this.imageStatisticService = imageStatisticService;
@@ -30,8 +32,8 @@ public class ThresholdingServiceImpl implements ThresholdingService {
 		WritableImage imageOut = new WritableImage((int) image.getWidth(), (int) image.getHeight());
 		PixelWriter pixelWriter = imageOut.getPixelWriter();
 
-		for (int i = 0; i < image.getWidth(); i++) {
-			for (int j = 0; j < image.getHeight(); j++) {
+		for (int i = ZERO; i < image.getWidth(); i++) {
+			for (int j = ZERO; j < image.getHeight(); j++) {
 				if (colorRgb.getGrayAverage(i, j) < valueThreshold) {
 					pixelWriter.setColor(i, j, Color.BLACK);
 				} else {
@@ -44,9 +46,9 @@ public class ThresholdingServiceImpl implements ThresholdingService {
 
 	@Override
 	public ThresholdingResult obtainThresholdByBasicGlobalMethod(Image image, Double initialThreshold, Double deltaThreshold) {
-		double beforeThreshold = 0;
+		double beforeThreshold = ZERO;
 		double actualThreshold = beforeThreshold + deltaThreshold + 1;
-		int iterations = 0;
+		int iterations = ZERO;
 
 		while (!isLowerOrEqualsToDelta(beforeThreshold, actualThreshold, deltaThreshold)) {
 			beforeThreshold = actualThreshold;
@@ -61,21 +63,21 @@ public class ThresholdingServiceImpl implements ThresholdingService {
 	@Override
 	public OtsuMethodResult obtainThresholdByOtsuMethod(Image image) {
 		Map<Integer, GrayProbability> grayProbabilityByGray = imageStatisticService.calculateGrayProbabilityByGray(image);
-		int optimalThreshold = 0;
-		double maxStandardDesviation = 0;
+		int optimalThreshold = ZERO;
+		double maxStandardDesviation = ZERO;
 
-		for (int threshold = 0; threshold < 256; threshold++) {
-			Map<Integer, GrayProbability> c1 = calculateC(0, threshold, grayProbabilityByGray);
-			Map<Integer, GrayProbability> c2 = calculateC(threshold, LIMIT_SCALE_GRAY + 1, grayProbabilityByGray);
-			double w1 = calculateW(c1);
-			double w2 = calculateW(c2);
-			double c1Average = calculateAverage(c1, w1);
-			double c2Average = calculateAverage(c2, w2);
-			double totalAverage = w1 * c1Average + w2 * c2Average;
-			double standardDesviation = calculateStandardDesviation(c1Average, w1, c2Average, w2, totalAverage);
+		for (int threshold = ZERO; threshold < TOTAL_COLORS; threshold++) {
+			Map<Integer, GrayProbability> class1 = calculateC(ZERO, threshold, grayProbabilityByGray);
+			Map<Integer, GrayProbability> class2 = calculateC(threshold, TOTAL_COLORS, grayProbabilityByGray);
+			double w1 = calculateW(class1);
+			double w2 = calculateW(class2);
+			double class1Average = calculateAverage(class1, w1);
+			double class2Average = calculateAverage(class2, w2);
+			double totalAverage = w1 * class1Average + w2 * class2Average;
+			double standardDeviation = calculateStandardDesviation(class1Average, w1, class2Average, w2, totalAverage);
 
-			if (maxStandardDesviation < standardDesviation) {
-				maxStandardDesviation = standardDesviation;
+			if (maxStandardDesviation < standardDeviation) {
+				maxStandardDesviation = standardDeviation;
 				optimalThreshold = threshold;
 			}
 		}
@@ -88,9 +90,9 @@ public class ThresholdingServiceImpl implements ThresholdingService {
 	}
 
 	private double calculateAverage(Map<Integer, GrayProbability> clazz, double w) {
-		double average = 0;
+		double average = ZERO;
 
-		for (int gray = 256 - clazz.size(); gray < clazz.size(); gray++) {
+		for (int gray = TOTAL_COLORS - clazz.size(); gray < clazz.size(); gray++) {
 			GrayProbability grayProbability = clazz.get(gray);
 			average += grayProbability.getProbability() * grayProbability.getPixels() / w;
 		}
@@ -108,9 +110,9 @@ public class ThresholdingServiceImpl implements ThresholdingService {
 	}
 
 	private double calculateW(Map<Integer, GrayProbability> clazz) {
-		double w = 0;
+		double w = ZERO;
 
-		for (int index = 256 - clazz.size(); index < clazz.size(); index++) {
+		for (int index = TOTAL_COLORS - clazz.size(); index < clazz.size(); index++) {
 			w += clazz.get(index).getProbability();
 		}
 
@@ -121,13 +123,13 @@ public class ThresholdingServiceImpl implements ThresholdingService {
 		int width = toInt(image.getWidth());
 		int height = toInt(image.getHeight());
 		PixelReader pixelReader = image.getPixelReader();
-		int sumG1 = 0;
-		int sumG2 = 0;
-		int totalG1 = 0;
-		int totalG2 = 0;
+		int sumG1 = ZERO;
+		int sumG2 = ZERO;
+		int totalG1 = ZERO;
+		int totalG2 = ZERO;
 
-		for (int row = 0; row < height; row++) {
-			for (int column = 0; column < width; column++) {
+		for (int row = ZERO; row < height; row++) {
+			for (int column = ZERO; column < width; column++) {
 				int grayValue = toGrayScale(pixelReader.getColor(column, row));
 				if (grayValue < actualThreshold) {
 					sumG1 += grayValue;
@@ -143,14 +145,14 @@ public class ThresholdingServiceImpl implements ThresholdingService {
 	}
 
 	private int average(int sumG, int totalG) {
-		if (totalG == 0) {
-			return 0;
+		if (totalG == ZERO) {
+			return ZERO;
 		}
 
 		return sumG / totalG;
 	}
 
 	private boolean isLowerOrEqualsToDelta(double beforeThreshold, double actualThreshold, Double deltaThreshold) {
-		return deltaThreshold.compareTo(Math.abs(actualThreshold - beforeThreshold)) >= 0;
+		return deltaThreshold.compareTo(Math.abs(actualThreshold - beforeThreshold)) >= ZERO;
 	}
 }
