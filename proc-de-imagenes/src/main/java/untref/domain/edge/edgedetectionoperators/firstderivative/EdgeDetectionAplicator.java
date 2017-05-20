@@ -1,4 +1,4 @@
-package untref.domain.edgedetectionoperators.firstderivative;
+package untref.domain.edge.edgedetectionoperators.firstderivative;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
@@ -14,6 +14,8 @@ import static untref.domain.utils.ImageValuesTransformer.toInt;
 
 public class EdgeDetectionAplicator {
 
+	private static final int EDGE = 255;
+	private static final int NOT_EDGE = 0;
 	private final ImageDerivativeService imageDerivativeService;
 
 	public EdgeDetectionAplicator(MaskApplicationService maskApplicationService) {
@@ -28,12 +30,47 @@ public class EdgeDetectionAplicator {
 		PixelReader pixelReader = image.getPixelReader();
 		PixelWriter pixelWriter = imageWithEdges.getPixelWriter();
 
-		for (int row = 0; row < height; row++) {
-			for (int column = 0; column < width; column++) {
+		for (int row = NOT_EDGE; row < height; row++) {
+			for (int column = NOT_EDGE; column < width; column++) {
 				TemporalColor fx = imageDerivativeService.calculateDerivative(image, row, column, pixelReader, operatorFx, offsetI, offsetJ);
 				TemporalColor fy = imageDerivativeService.calculateDerivative(image, row, column, pixelReader, operatorFy, offsetI, offsetJ);
 				TemporalColor gradientMagnitude = calculateGradientMagnitude(fx, fy);
 				pixelWriter.setColor(column, row, assignColor(gradientMagnitude, thresholdForGradientMagnitude));
+			}
+		}
+
+		return imageWithEdges;
+	}
+
+	public Image applyEdgeDetectionForHorizontalEdge(Image image, int[][] operatorFx, Integer limitThresholdForDerivative, int offsetI, int
+			offsetJ) {
+		int width = toInt(image.getWidth());
+		int height = toInt(image.getHeight());
+		WritableImage imageWithEdges = new WritableImage(width, height);
+		PixelReader pixelReader = image.getPixelReader();
+		PixelWriter pixelWriter = imageWithEdges.getPixelWriter();
+
+		for (int row = NOT_EDGE; row < height; row++) {
+			for (int column = NOT_EDGE; column < width; column++) {
+				TemporalColor fx = imageDerivativeService.calculateDerivative(image, row, column, pixelReader, operatorFx, offsetI, offsetJ);
+				pixelWriter.setColor(column, row, assignColor(fx, limitThresholdForDerivative));
+			}
+		}
+
+		return imageWithEdges;
+	}
+
+	public Image applyEdgeDetectionForVerticalEdge(Image image, int[][] operatorFy, Integer limitThresholdForDerivative, int offsetI, int offsetJ) {
+		int width = toInt(image.getWidth());
+		int height = toInt(image.getHeight());
+		WritableImage imageWithEdges = new WritableImage(width, height);
+		PixelReader pixelReader = image.getPixelReader();
+		PixelWriter pixelWriter = imageWithEdges.getPixelWriter();
+
+		for (int row = NOT_EDGE; row < height; row++) {
+			for (int column = NOT_EDGE; column < width; column++) {
+				TemporalColor fy = imageDerivativeService.calculateDerivative(image, row, column, pixelReader, operatorFy, offsetI, offsetJ);
+				pixelWriter.setColor(column, row, assignColor(fy, limitThresholdForDerivative));
 			}
 		}
 
@@ -56,9 +93,9 @@ public class EdgeDetectionAplicator {
 
 	private int assignGrayValue(int gradientMagnitudeForChannel, Integer limitThresholdForGradientMagnitude) {
 		if (gradientMagnitudeForChannel <= limitThresholdForGradientMagnitude) {
-			return 0;
+			return NOT_EDGE;
 		} else {
-			return 255;
+			return EDGE;
 		}
 	}
 }

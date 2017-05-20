@@ -8,7 +8,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import untref.controllers.nodeutils.ImageSetter;
 import untref.controllers.nodeutils.ParametersWindowsFactory;
-import untref.domain.edgedetectionoperators.secondderivative.detectors.SlopesDetector;
+import untref.domain.edge.edgedetectionoperators.secondderivative.detectors.SlopesDetector;
 import untref.service.EdgeDetectionService;
 
 import java.util.Arrays;

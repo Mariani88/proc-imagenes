@@ -1,4 +1,4 @@
-package untref.domain.edgedetectionoperators.secondderivative.detectors;
+package untref.domain.edge.edgedetectionoperators.secondderivative.detectors;
 
 import javafx.scene.image.WritableImage;
 import untref.domain.TemporalColor;

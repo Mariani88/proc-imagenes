@@ -1,4 +1,4 @@
-package untref.domain.edgedetectionoperators.firstderivative;
+package untref.domain.edge.edgedetectionoperators.firstderivative;
 
 import javafx.scene.image.Image;
 import untref.service.MaskApplicationService;

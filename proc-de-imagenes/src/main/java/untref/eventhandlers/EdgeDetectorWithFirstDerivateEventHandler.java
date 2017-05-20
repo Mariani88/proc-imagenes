@@ -8,7 +8,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import untref.controllers.nodeutils.ImageSetter;
 import untref.controllers.nodeutils.ParametersWindowsFactory;
-import untref.domain.edgedetectionoperators.firstderivative.EdgeDetectionFirstDerivativeOperator;
+import untref.domain.edge.detectors.EdgeDetector;
+import untref.domain.edge.edgedetectionoperators.firstderivative.EdgeDetectionFirstDerivativeOperator;
 import untref.service.EdgeDetectionService;
 
 import java.util.Arrays;
@@ -17,15 +18,12 @@ public class EdgeDetectorWithFirstDerivateEventHandler implements EventHandler<A
 
 	private final ImageView imageView;
 	private final ImageView imageResultView;
-	private final EdgeDetectionService edgeDetectionService;
-	private final EdgeDetectionFirstDerivativeOperator edgeDetectionOperator;
+	private final EdgeDetector edgeDetector;
 
-	public EdgeDetectorWithFirstDerivateEventHandler(ImageView imageView, ImageView imageResultView, EdgeDetectionService edgeDetectionService,
-			EdgeDetectionFirstDerivativeOperator edgeDetectionFirstDerivativeOperator) {
+	public EdgeDetectorWithFirstDerivateEventHandler(ImageView imageView, ImageView imageResultView, EdgeDetector edgeDetector) {
 		this.imageView = imageView;
 		this.imageResultView = imageResultView;
-		this.edgeDetectionService = edgeDetectionService;
-		this.edgeDetectionOperator = edgeDetectionFirstDerivativeOperator;
+		this.edgeDetector = edgeDetector;
 	}
 
 	@Override
@@ -33,8 +31,7 @@ public class EdgeDetectorWithFirstDerivateEventHandler implements EventHandler<A
 		Label limitThreshold = new Label("limit threshold");
 		TextField limitThresholdValue = new TextField();
 		new ParametersWindowsFactory().create(Arrays.asList(limitThreshold, limitThresholdValue), event1 -> {
-			Image imageWithEdge = edgeDetectionService
-					.detectEdgeWithFirstDerivative(imageView.getImage(), edgeDetectionOperator, Integer.valueOf(limitThresholdValue.getText()));
+			Image imageWithEdge = this.edgeDetector.detectEdge(imageView.getImage(), Integer.valueOf(limitThresholdValue.getText()));
 			ImageSetter.set(imageResultView, imageWithEdge);
 		});
 	}
