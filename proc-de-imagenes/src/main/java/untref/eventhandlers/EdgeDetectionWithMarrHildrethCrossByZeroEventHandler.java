@@ -8,18 +8,18 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import untref.controllers.nodeutils.ImageSetter;
 import untref.controllers.nodeutils.ParametersWindowsFactory;
-import untref.domain.edge.edgedetectionoperators.secondderivative.detectors.SlopesDetector;
+import untref.domain.edge.edgedetectionoperators.secondderivative.detectors.CrossByZeroDetector;
 import untref.service.EdgeDetectionService;
 
 import java.util.Arrays;
 
-public class EdgeDetectionWithMarrHildrethSlopeEvaluationEventHandler implements EventHandler<ActionEvent> {
+public class EdgeDetectionWithMarrHildrethCrossByZeroEventHandler implements EventHandler<ActionEvent> {
 
 	private final ImageView imageView;
 	private final ImageView imageResultView;
 	private final EdgeDetectionService edgeDetectionService;
 
-	public EdgeDetectionWithMarrHildrethSlopeEvaluationEventHandler(ImageView imageView, ImageView imageResultView,
+	public EdgeDetectionWithMarrHildrethCrossByZeroEventHandler(ImageView imageView, ImageView imageResultView,
 			EdgeDetectionService edgeDetectionService) {
 		this.imageView = imageView;
 		this.imageResultView = imageResultView;
@@ -30,12 +30,9 @@ public class EdgeDetectionWithMarrHildrethSlopeEvaluationEventHandler implements
 	public void handle(ActionEvent event) {
 		Label sigma = new Label("sigma");
 		TextField sigmaValue = new TextField();
-		Label maxSlopePercent = new Label(" max slope percent");
-		TextField maxSlopePercentValue = new TextField();
-		new ParametersWindowsFactory().create(Arrays.asList(sigma, sigmaValue, maxSlopePercent, maxSlopePercentValue), event1 -> {
-			Double maxSlopePercent1 = Double.valueOf(maxSlopePercentValue.getText());
+		new ParametersWindowsFactory().create(Arrays.asList(sigma, sigmaValue), event1 -> {
 			Image imageWithEdges = edgeDetectionService
-					.detectEdgeWithMarrHildreth(imageView.getImage(), new SlopesDetector(maxSlopePercent1), Double.valueOf(sigmaValue.getText()));
+					.detectEdgeWithMarrHildreth(imageView.getImage(), new CrossByZeroDetector(), Double.valueOf(sigmaValue.getText()));
 			ImageSetter.set(imageResultView, imageWithEdges);
 		});
 	}

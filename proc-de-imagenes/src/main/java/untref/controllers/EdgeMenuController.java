@@ -43,8 +43,7 @@ public class EdgeMenuController {
 				() -> edgeDetectionService.detectEdgeWithLaplacian(imageView.getImage(), new CrossByZeroDetector())));
 		laplacianMethodWithVarianceSlope
 				.setOnAction(new EdgeDetectionWithLaplacianSlopeEvaluationEventHandler(imageView, imageResultView, edgeDetectionService));
-		marrHildrethMethod.setOnAction(new EditionImageEventHandler(imageResultView,
-				() -> edgeDetectionService.detectEdgeWithMarrHildreth(imageView.getImage(), new CrossByZeroDetector())));
+		marrHildrethMethod.setOnAction(new EdgeDetectionWithMarrHildrethCrossByZeroEventHandler(imageView, imageResultView, edgeDetectionService));
 		marrHildrethMethodWithVarianceSlope
 				.setOnAction(new EdgeDetectionWithMarrHildrethSlopeEvaluationEventHandler(imageView, imageResultView, edgeDetectionService));
 		bySecondDerivative.getItems()
@@ -55,20 +54,22 @@ public class EdgeMenuController {
 	private Menu createByFirstDerivativeMenu(ImageView imageView, ImageView imageResultView) {
 		Menu byFirstDerivative = new Menu("by first derivative");
 		MenuItem byRobertOperator = new MenuItem("by Robert operator");
-		byRobertOperator
-				.setOnAction(new EdgeDetectorWithFirstDerivateEventHandler(imageView, imageResultView, new AllEdges(edgeDetectionService, new RobertOperator())));
+		byRobertOperator.setOnAction(
+				new EdgeDetectorWithFirstDerivateEventHandler(imageView, imageResultView, new AllEdges(edgeDetectionService, new RobertOperator())));
 		MenuItem byPrewittOperator = new MenuItem(" by Prewitt operator");
-		byPrewittOperator
-				.setOnAction(new EdgeDetectorWithFirstDerivateEventHandler(imageView, imageResultView, new AllEdges(edgeDetectionService, new PrewittOperator())));
+		byPrewittOperator.setOnAction(
+				new EdgeDetectorWithFirstDerivateEventHandler(imageView, imageResultView, new AllEdges(edgeDetectionService, new PrewittOperator()
+				)));
 		MenuItem bySobelOperator = new MenuItem(" by Sobel operator");
-		bySobelOperator
-				.setOnAction(new EdgeDetectorWithFirstDerivateEventHandler(imageView, imageResultView, new AllEdges(edgeDetectionService, new SobelOperator())));
-		Menu uniqueEdge = new Menu ("Unique edge");
+		bySobelOperator.setOnAction(
+				new EdgeDetectorWithFirstDerivateEventHandler(imageView, imageResultView, new AllEdges(edgeDetectionService, new SobelOperator())));
+		Menu uniqueEdge = new Menu("Unique edge");
 		MenuItem horizontalEdge = new MenuItem("horizontal edge");
-		horizontalEdge.setOnAction(new EdgeDetectorWithFirstDerivateEventHandler(imageView, imageResultView, new HorizontalEdge(edgeDetectionService, new PrewittOperator())));
+		horizontalEdge.setOnAction(new EdgeDetectorWithFirstDerivateEventHandler(imageView, imageResultView,
+				new HorizontalEdge(edgeDetectionService, new PrewittOperator())));
 		MenuItem verticalEdge = new MenuItem("vertical edge");
-		verticalEdge.setOnAction(new EdgeDetectorWithFirstDerivateEventHandler(imageView, imageResultView, new VerticalEdge(edgeDetectionService, new
-				PrewittOperator())));
+		verticalEdge.setOnAction(new EdgeDetectorWithFirstDerivateEventHandler(imageView, imageResultView,
+				new VerticalEdge(edgeDetectionService, new PrewittOperator())));
 		uniqueEdge.getItems().addAll(horizontalEdge, verticalEdge);
 		byFirstDerivative.getItems().addAll(byRobertOperator, byPrewittOperator, bySobelOperator, uniqueEdge);
 		return byFirstDerivative;

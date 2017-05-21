@@ -10,8 +10,6 @@ import static untref.domain.utils.ImageValuesTransformer.toInt;
 
 public class EdgeDetectionServiceImpl implements EdgeDetectionService {
 
-	private static final int[][] GAUSSEAN_LAPLACIAN_OPERATOR = { { 0, 0, -1, 0, 0 }, { 0, -1, -2, -1, 0 }, { -1, -2, 16, -1, -2 },
-			{ 0, -1, -2, -1, 0 }, { 0, 0, -1, 0, 0 } };
 	private final ImageDerivativeService imageDerivativeService;
 	private final ImageConvolutionService imageConvolutionService;
 
@@ -46,10 +44,35 @@ public class EdgeDetectionServiceImpl implements EdgeDetectionService {
 	}
 
 	@Override
-	public Image detectEdgeWithMarrHildreth(Image image, EdgeDetector edgeDetector) {
+	public Image detectEdgeWithMarrHildreth(Image image, EdgeDetector edgeDetector, double sigma) {
 		int width = toInt(image.getWidth());
 		int height = toInt(image.getHeight());
-		TemporalColor[][] convolution = imageConvolutionService.calculateConvolution(GAUSSEAN_LAPLACIAN_OPERATOR, image, width, height);
+		double[][] gasseanLaplacianOperator = calculateMarrHildrethOperator(sigma);
+		TemporalColor[][] convolution = imageConvolutionService.calculateConvolution(gasseanLaplacianOperator, image, width, height);
 		return edgeDetector.detectEdges(convolution, width, height);
 	}
+
+	private double[][] calculateMarrHildrethOperator(double sigma) {
+		int dimension = toInt(2 * sigma + 1);
+		double marrHildrethOperator[][] = new double[dimension][dimension];
+		int offsetI = dimension / 2;
+		int offsetJ = dimension / 2;
+
+		for (int row = 0; row < dimension; row++) {
+			for (int column = 0; column < dimension; column++) {
+				marrHildrethOperator[row][column] = calculateValue(row - offsetI, column - offsetJ, sigma);
+			}
+		}
+
+		return marrHildrethOperator;
+	}
+
+	private double calculateValue(int row, int column, double sigma) {
+		double r2 = Math.pow(row, 2) + Math.pow(column, 2);
+		double sigmaQuadrate = Math.pow(sigma, 2);
+		double coefficient = -((r2 - sigmaQuadrate) / Math.pow(sigma, 4));
+		double exponent = -r2 / 2 * sigmaQuadrate;
+		return coefficient * Math.exp(exponent);
+	}
+
 }

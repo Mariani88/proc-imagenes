@@ -13,7 +13,7 @@ public class ImageConvolutionServiceImpl implements ImageConvolutionService {
 	}
 
 	@Override
-	public TemporalColor[][] calculateConvolution(int[][] convolutionOperator, Image image, int width, int height) {
+	public TemporalColor[][] calculateConvolution(double[][] convolutionOperator, Image image, int width, int height) {
 		PixelReader pixelReader = image.getPixelReader();
 		TemporalColor imageLaplacian[][] = new TemporalColor[height][width];
 		int offsetI = 1;

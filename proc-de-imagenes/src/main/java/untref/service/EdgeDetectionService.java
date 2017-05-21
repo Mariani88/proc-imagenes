@@ -12,7 +12,7 @@ public interface EdgeDetectionService {
 
 	Image detectEdgeWithLaplacian(Image image, EdgeDetector edgeDetector);
 
-	Image detectEdgeWithMarrHildreth(Image image, EdgeDetector edgeDetector);
+	Image detectEdgeWithMarrHildreth(Image image, EdgeDetector edgeDetector, double sigma);
 
 	Image detectHorizontalEdgeWithFirstDerivative(Image image, PrewittOperator prewittOperator, Integer limitThresholdForGradientMagnitude);
 
