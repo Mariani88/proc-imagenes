@@ -57,10 +57,21 @@ public class EdgeDetectionServiceImpl implements EdgeDetectionService {
 		double marrHildrethOperator[][] = new double[dimension][dimension];
 		int offsetI = dimension / 2;
 		int offsetJ = dimension / 2;
+		double min = Double.MAX_VALUE;
 
 		for (int row = 0; row < dimension; row++) {
 			for (int column = 0; column < dimension; column++) {
 				marrHildrethOperator[row][column] = calculateValue(row - offsetI, column - offsetJ, sigma);
+
+				if (marrHildrethOperator[row][column] != 0) {
+					min = Math.min(min, Math.abs(marrHildrethOperator[row][column]));
+				}
+			}
+		}
+
+		for (int row = 0; row < dimension; row++) {
+			for (int column = 0; column < dimension; column++) {
+				marrHildrethOperator[row][column] = marrHildrethOperator[row][column] / min;
 			}
 		}
 
@@ -70,8 +81,8 @@ public class EdgeDetectionServiceImpl implements EdgeDetectionService {
 	private double calculateValue(int row, int column, double sigma) {
 		double r2 = Math.pow(row, 2) + Math.pow(column, 2);
 		double sigmaQuadrate = Math.pow(sigma, 2);
-		double coefficient = -((r2 - sigmaQuadrate) / Math.pow(sigma, 4));
-		double exponent = -r2 / 2 * sigmaQuadrate;
+		double coefficient = (1.0 / (2 * Math.PI + sigmaQuadrate))* ((r2 - sigmaQuadrate) / Math.pow(sigma, 4));
+		double exponent = (-r2) / (2 * sigmaQuadrate);
 		return coefficient * Math.exp(exponent);
 	}
 

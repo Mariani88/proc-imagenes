@@ -16,8 +16,8 @@ public class ImageConvolutionServiceImpl implements ImageConvolutionService {
 	public TemporalColor[][] calculateConvolution(double[][] convolutionOperator, Image image, int width, int height) {
 		PixelReader pixelReader = image.getPixelReader();
 		TemporalColor imageLaplacian[][] = new TemporalColor[height][width];
-		int offsetI = 1;
-		int offsetJ = 1;
+		int offsetI = convolutionOperator.length/2;
+		int offsetJ = convolutionOperator.length/2;
 
 		for (int row = 0; row < height; row++) {
 			for (int column = 0; column < width; column++) {
