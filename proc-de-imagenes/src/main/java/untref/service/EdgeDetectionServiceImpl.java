@@ -69,6 +69,8 @@ public class EdgeDetectionServiceImpl implements EdgeDetectionService {
 			}
 		}
 
+		//Se reescalan los valores dividiendo por el numero de menor valor absoluto
+		//para evitar trabajar con doubles, ya que sino los valores son con coma
 		for (int row = 0; row < dimension; row++) {
 			for (int column = 0; column < dimension; column++) {
 				marrHildrethOperator[row][column] = marrHildrethOperator[row][column] / min;
