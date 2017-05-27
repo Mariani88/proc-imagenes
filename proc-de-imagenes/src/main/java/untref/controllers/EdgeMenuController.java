@@ -3,6 +3,7 @@ package untref.controllers;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.ImageView;
+import untref.controllers.nodeutils.ParametersWindowsFactory;
 import untref.domain.edge.detectors.AllEdges;
 import untref.domain.edge.detectors.HorizontalEdge;
 import untref.domain.edge.detectors.VerticalEdge;
@@ -10,15 +11,21 @@ import untref.domain.edge.edgedetectionoperators.firstderivative.PrewittOperator
 import untref.domain.edge.edgedetectionoperators.firstderivative.RobertOperator;
 import untref.domain.edge.edgedetectionoperators.firstderivative.SobelOperator;
 import untref.domain.edge.edgedetectionoperators.secondderivative.detectors.CrossByZeroDetector;
+import untref.domain.susan.SusanCorner;
+import untref.domain.susan.SusanEdge;
 import untref.eventhandlers.*;
 import untref.service.EdgeDetectionService;
+import untref.service.boundary.BoundaryDetectionBySusanService;
+import untref.service.boundary.BoundaryDetectionBySusanServiceImpl;
 
 public class EdgeMenuController {
 
 	private final EdgeDetectionService edgeDetectionService;
+	private final BoundaryDetectionBySusanService boundaryDetectionBySusanService;
 
 	public EdgeMenuController(EdgeDetectionService edgeDetectionService) {
 		this.edgeDetectionService = edgeDetectionService;
+		this.boundaryDetectionBySusanService = new BoundaryDetectionBySusanServiceImpl();
 	}
 
 	public Menu createEdgeMenu(ImageView imageView, ImageView imageResultView) {
@@ -28,9 +35,20 @@ public class EdgeMenuController {
 		Menu edgeDetection = new Menu("edges detection");
 		Menu byFirstDerivative = createByFirstDerivativeMenu(imageView, imageResultView);
 		Menu bySecondDerivative = createBySecondDerivativeMenu(imageView, imageResultView);
-		edgeDetection.getItems().addAll(byFirstDerivative, bySecondDerivative);
+		Menu susanDetector = createSusanMenu(imageView, imageResultView);
+		edgeDetection.getItems().addAll(byFirstDerivative, bySecondDerivative, susanDetector);
 		edgeMenu.getItems().addAll(highPass, edgeDetection);
 		return edgeMenu;
+	}
+
+	private Menu createSusanMenu(ImageView imageView, ImageView imageResultView) {
+		Menu susanDetector = new Menu("SUSAN detector");
+		MenuItem detectEdges = new MenuItem("detect edges");
+		MenuItem detectCorners = new MenuItem("detect corners");
+		detectEdges.setOnAction(new SusanEventHandler(imageView, imageResultView, boundaryDetectionBySusanService, new SusanEdge()));
+		detectCorners.setOnAction(new SusanEventHandler(imageView, imageResultView, boundaryDetectionBySusanService, new SusanCorner()));
+		susanDetector.getItems().addAll(detectEdges,detectCorners);
+		return susanDetector;
 	}
 
 	private Menu createBySecondDerivativeMenu(ImageView imageView, ImageView imageResultView) {

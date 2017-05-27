@@ -49,4 +49,14 @@ public class ImageValuesTransformer {
 		int blue = toRGBScale(color.getBlue());
 		return (red + green + blue) / 3;
 	}
+
+	public static int toGrayScaleOrEmpty(int row, int column, Image image) {
+		int gray = 0;
+		PixelReader pixelReader = image.getPixelReader();
+
+		if (existPosition(image, row, column)) {
+			gray = toGrayScale(pixelReader.getColor(column, row));
+		}
+		return gray;
+	}
 }
