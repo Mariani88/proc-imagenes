@@ -31,13 +31,15 @@ public class EdgeMenuController {
 	public Menu createEdgeMenu(ImageView imageView, ImageView imageResultView) {
 		Menu edgeMenu = new Menu("Edge");
 		MenuItem highPass = new MenuItem("high Pass");
-		highPass.setOnAction(new CreateHighPassEdgeHandler(imageView, imageResultView));
+		highPass.setOnAction(new CreateHighPassEdgeHandler(imageView, imageResultView));		
+		MenuItem canny = new MenuItem("Canny");
+		canny.setOnAction(new CreateCannyEdgeHandler(imageView, imageResultView));
 		Menu edgeDetection = new Menu("edges detection");
 		Menu byFirstDerivative = createByFirstDerivativeMenu(imageView, imageResultView);
 		Menu bySecondDerivative = createBySecondDerivativeMenu(imageView, imageResultView);
 		Menu susanDetector = createSusanMenu(imageView, imageResultView);
 		edgeDetection.getItems().addAll(byFirstDerivative, bySecondDerivative, susanDetector);
-		edgeMenu.getItems().addAll(highPass, edgeDetection);
+		edgeMenu.getItems().addAll(highPass, edgeDetection,canny);
 		return edgeMenu;
 	}
 
