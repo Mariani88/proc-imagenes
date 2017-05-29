@@ -70,18 +70,8 @@ public class DrawingSelect {
 
 		final ContextMenu contextMenu = new ContextMenu();
 
-		//MenuItem cropFileMenuItem = new MenuItem("Copy in new file");
 		MenuItem cropWindowsMenuItem = new MenuItem("Copy in new windows");
 		MenuItem averangeColorMenuItem = new MenuItem("Averange RGB and Gray");
-
-	/*	cropFileMenuItem.setOnAction(new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent e) {
-
-				Bounds selectionBounds = seccionSelection.getBounds();
-				cropSaveImage(selectionBounds);
-
-			}
-		});*/
 
 		cropWindowsMenuItem.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent e) {
@@ -186,65 +176,4 @@ public class DrawingSelect {
 
 		return image;
 	}
-
-	/*private void cropSaveImage(Bounds bounds) {
-
-	/*	FileChooser fileChooser = new FileChooser();
-		fileChooser.setTitle("Save Image");
-
-		fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("JPG", "*.jpg"));
-
-		File file = fileChooser.showSaveDialog(secondaryStage);
-		if (file == null)
-			return;
-
-		int width = (int) bounds.getWidth();
-		int height = (int) bounds.getHeight();
-
-		SnapshotParameters parameters = new SnapshotParameters();
-		parameters.setFill(Color.TRANSPARENT);
-		parameters.setViewport(new Rectangle2D(bounds.getMinX(), bounds.getMinY(), width, height));
-
-		WritableImage image = new WritableImage(width, height);
-		imageView.snapshot(parameters, image);
-		
-		 FileChooser fileChooser;
-	
-	 ImageIOService imageIOService=new ImageIOServiceImpl();
-	 imageIOService.saveImage(fileChooser,image);
-		
-	//	ImageRepository saveImage=new ImageRepositoryImpl();
-		//saveImage.storeImage(image, file);
-
-		BufferedImage bufImageARGB = SwingFXUtils.fromFXImage(image, null);
-		BufferedImage bufImageRGB = new BufferedImage(bufImageARGB.getWidth(), bufImageARGB.getHeight(),
-				BufferedImage.OPAQUE);
-
-	/*	Graphics2D graphics = bufImageRGB.createGraphics();
-		graphics.drawImage(bufImageARGB, 0, 0, null);
-
-		try {
-
-			String extension = "";
-
-			int i = file.getName().lastIndexOf('.');
-			int p = Math.max(file.getName().lastIndexOf('/'), file.getName().lastIndexOf('\\'));
-
-			if (i > p) {
-				extension = file.getName().substring(i + 1);
-			}
-
-			ImageIO.write(bufImageRGB, extension, file);
-
-			System.out.println("Imagen guardada en ojeteeee " + file.getAbsolutePath());
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		graphics.dispose();
-
-	}
-*/
-
 }
