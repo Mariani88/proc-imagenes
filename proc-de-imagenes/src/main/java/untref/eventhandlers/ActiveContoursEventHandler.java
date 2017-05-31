@@ -6,6 +6,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
@@ -15,6 +16,8 @@ import untref.controllers.OpenMenuController;
 import untref.controllers.PixelPaneController;
 import untref.controllers.nodeutils.ImageSetter;
 import untref.interfacebuilders.ImageViewBuilder;
+import untref.service.activecontours.ActiveContoursService;
+import untref.service.activecontours.ActiveContoursServiceImpl;
 
 import static untref.domain.utils.ImageValuesTransformer.toInt;
 
@@ -25,11 +28,15 @@ public class ActiveContoursEventHandler implements EventHandler<ActionEvent> {
 	private final OpenMenuController openMenuController;
 	private final PixelPaneController firstPixelPaneController;
 	private final PixelPaneController secondPixelPaneController;
+	private final ActiveContoursService activeContoursService;
+	private Image originalImage;
 
 	public ActiveContoursEventHandler(OpenMenuController openMenuController) {
 		this.openMenuController = openMenuController;
 		firstPixelPaneController = new PixelPaneController(FIRST_PIXEL);
 		secondPixelPaneController = new PixelPaneController(SECOND_PIXEL);
+		activeContoursService = new ActiveContoursServiceImpl();
+		originalImage = null;
 	}
 
 	@Override
@@ -53,13 +60,22 @@ public class ActiveContoursEventHandler implements EventHandler<ActionEvent> {
 				int x = toInt(event.getX());
 				int y = toInt(event.getY());
 
+				if(originalImage == null){
+					originalImage = imageView.getImage();
+				}
+
 				if (!firstPixelPaneController.setedValues()) {
 					firstPixelPaneController.setValues(x, y);
-				}else if(!secondPixelPaneController.setedValues()){
+				} else if (!secondPixelPaneController.setedValues()) {
 					secondPixelPaneController.setValues(x, y);
-				}else{
+					Image imageWithContours = activeContoursService
+							.initializeActiveContours(imageView.getImage(), firstPixelPaneController.getPosition(),
+									secondPixelPaneController.getPosition());
+					ImageSetter.set(imageView, imageWithContours);
+				} else {
 					firstPixelPaneController.clearValues();
 					secondPixelPaneController.clearValues();
+					ImageSetter.set(imageView, originalImage);
 				}
 			}
 		});

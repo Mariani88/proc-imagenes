@@ -3,6 +3,7 @@ package untref.controllers;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
+import untref.domain.ImagePosition;
 
 public class PixelPaneController {
 
@@ -41,5 +42,9 @@ public class PixelPaneController {
 	public void clearValues() {
 		xValue.setText(EMPTY_VALUE);
 		yValue.setText(EMPTY_VALUE);
+	}
+
+	public ImagePosition getPosition(){
+		return new ImagePosition(Integer.valueOf(yValue.getText()), Integer.valueOf(xValue.getText()));
 	}
 }
