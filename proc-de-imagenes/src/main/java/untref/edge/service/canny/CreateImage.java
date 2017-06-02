@@ -13,7 +13,7 @@ public class CreateImage {
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
 				if (matrixEdge[i][j] > 0) {
-					pixelWriter.setColor(i, j, Color.RED);
+					pixelWriter.setColor(i, j, Color.WHITE);
 				} else {
 					pixelWriter.setColor(i, j, Color.BLACK);
 				}

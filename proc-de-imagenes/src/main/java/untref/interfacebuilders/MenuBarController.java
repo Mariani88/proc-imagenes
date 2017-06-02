@@ -37,6 +37,7 @@ public class MenuBarController {
 	private MultiplesImageOpenMenuController multiplesImageOpenMenuController;
 	private ThresholdingMenuController thresholdingMenuController;
 	private final DiffusionMenuControler diffusionMenuControler;
+	private RawImage rawImage;
 
 	public MenuBarController() {
 		this.diffusionMenuControler=new DiffusionMenuControler();
@@ -56,13 +57,14 @@ public class MenuBarController {
 		histogramMenuController = new HistogramMenuController(aleatoryNumbersGeneratorService, histogramService);
 		edgeMenuController = new EdgeMenuController(edgeDetectionService);
 		filterMenuController = new FilterMenuController();
-		multiplesImageOpenMenuController = new MultiplesImageOpenMenuController(fileImageChooserFactory, imageIOService);
+		multiplesImageOpenMenuController = new MultiplesImageOpenMenuController(fileImageChooserFactory, imageIOService,rawImage);
 		thresholdingMenuController = new ThresholdingMenuController();
 	}
 
-	public MenuBar build(final ImageView imageView, final ImageView imageResultView) {
+	public MenuBar build(final ImageView imageView, final ImageView imageResultView, RawImage rawImage) {
+		this.rawImage=rawImage;
 		MenuBar menuBar = new MenuBar();
-		Menu fileMenu = createFileMenu(imageView, imageResultView);
+		Menu fileMenu = createFileMenu(imageView, imageResultView,rawImage);
 		Menu editionMenu = editionMenuController.createEditionMenu(imageView, imageResultView);
 		Menu histogramMenu = histogramMenuController.createHistogramMenu(imageView, imageResultView);
 		Menu filterMenu = filterMenuController.createFilterMenu(imageView, imageResultView);
@@ -73,19 +75,19 @@ public class MenuBarController {
 		return menuBar;
 	}
 
-	private Menu createFileMenu(ImageView imageView, ImageView imageView2) {
+	private Menu createFileMenu(ImageView imageView, ImageView imageView2,RawImage rawImage) {
 		Menu fileMenu = new Menu("File");
-		MenuItem fileMenuItemOpen = createOpenMenuItem(imageView);
+		MenuItem fileMenuItemOpen = createOpenMenuItem(imageView,rawImage);
 		Menu multiplesImagesOpen = multiplesImageOpenMenuController.createMultiplesImagesOpenMenu(imageView, imageView2);
 		MenuItem fileMenuItemSave = createSaveMenuItem(imageView);
 		fileMenu.getItems().addAll(fileMenuItemOpen, multiplesImagesOpen, fileMenuItemSave);
 		return fileMenu;
 	}
 
-	private MenuItem createOpenMenuItem(ImageView imageView) {
+	private MenuItem createOpenMenuItem(ImageView imageView,RawImage rawImage) {
 		MenuItem fileMenuItem = new MenuItem("open...");
 		final FileChooser fileChooser = fileImageChooserFactory.create("open image");
-		setOpenEvent(imageView, fileMenuItem, fileChooser);
+		setOpenEvent(imageView, fileMenuItem, fileChooser,rawImage);
 		return fileMenuItem;
 	}
 
@@ -96,8 +98,8 @@ public class MenuBarController {
 		return fileMenuItem;
 	}
 
-	private void setOpenEvent(final ImageView imageView, MenuItem fileMenuItem, final FileChooser fileChooser) {
-		fileMenuItem.setOnAction(new OpenImageEventHandler(fileChooser, imageView, imageIOService));
+	private void setOpenEvent(final ImageView imageView, MenuItem fileMenuItem, final FileChooser fileChooser,RawImage rawImage) {
+		fileMenuItem.setOnAction(new OpenImageEventHandler(fileChooser, imageView, imageIOService, rawImage));
 	}
 
 	private void setSaveEvent(final ImageView imageView, MenuItem fileMenuItem, final FileChooser fileChooser) {
