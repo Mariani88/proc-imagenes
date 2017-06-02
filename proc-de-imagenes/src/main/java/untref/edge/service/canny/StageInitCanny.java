@@ -1,5 +1,6 @@
 package untref.edge.service.canny;
 
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
@@ -16,7 +17,7 @@ import javafx.stage.Stage;
 public class StageInitCanny {
 	
 	
-	double sigma = 0;
+	float sigma = 0;
 	int thresholdLow = 0;
 	int thresholdHigh = 0;
 	Image image;
@@ -66,16 +67,26 @@ WritableImage resutl;
 
 			@Override
 			public void handle(ActionEvent event) {
-				sigma = Double.parseDouble(fieldSigma.getText());
+				sigma = Float.parseFloat(fieldSigma.getText());
 				thresholdLow = Integer.parseInt(fieldThresholdLow.getText());
 				thresholdHigh = Integer.parseInt(fieldThresholdHigh.getText());
+				CannyEdgeDetector canny= new CannyEdgeDetector();
+				canny.setSourceImage(image);
+				canny.setGaussianKernelRadius(sigma);
+				canny.setHighThreshold(thresholdHigh);
+				canny.setLowThreshold(thresholdLow);
+			
+				canny.process();
+				Image imageOut =SwingFXUtils.toFXImage(canny.getEdgesImage(), null);
 				
-				Canny canny=new Canny();
-				imageViewResult.setImage(canny.startCanny(image, (int) sigma,thresholdLow,thresholdHigh));
+				//Canny canny=new Canny();
+				imageViewResult.setImage(imageOut);//canny.startCanny(image, (int) sigma,thresholdLow,thresholdHigh));
 				secondaryStage.close();
 				
 
 			}
+
+			
 		});
 
 		root.getChildren().addAll(sigmaLabel, fieldSigma, labelThresholdLow, fieldThresholdLow, labelThresholdHigh, fieldThresholdHigh, buttonAccept);
