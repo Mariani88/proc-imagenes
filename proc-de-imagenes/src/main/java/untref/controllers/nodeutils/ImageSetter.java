@@ -16,4 +16,9 @@ public class ImageSetter {
 		imageView.setImage(image);
 	}
 
+	public static void setWithImageSize(ImageView imageView, Image image) {
+		imageView.setFitHeight(image.getHeight());
+		imageView.setFitWidth(image.getWidth());
+		imageView.setImage(image);
+	}
 }

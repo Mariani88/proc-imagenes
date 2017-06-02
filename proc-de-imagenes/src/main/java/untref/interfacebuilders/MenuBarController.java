@@ -6,6 +6,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import untref.controllers.*;
+import untref.controllers.nodeutils.settertype.SetterAdjustToView;
 import untref.eventhandlers.SaveImageEventHandler;
 import untref.factory.FileImageChooserFactory;
 import untref.repository.ImageRepository;
@@ -79,7 +80,7 @@ public class MenuBarController {
 
 	private Menu createFileMenu(ImageView imageView, ImageView imageView2) {
 		Menu fileMenu = new Menu("File");
-		MenuItem fileMenuItemOpen = openMenuController.createOpenMenuItem(imageView);
+		MenuItem fileMenuItemOpen = openMenuController.createOpenMenuItem(imageView, new SetterAdjustToView());
 		Menu multiplesImagesOpen = multiplesImageOpenMenuController.createMultiplesImagesOpenMenu(imageView, imageView2);
 		MenuItem fileMenuItemSave = createSaveMenuItem(imageView);
 		fileMenu.getItems().addAll(fileMenuItemOpen, multiplesImagesOpen, fileMenuItemSave);

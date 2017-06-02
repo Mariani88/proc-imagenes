@@ -1,6 +1,7 @@
 package untref.interfacebuilders;
 
 import javafx.scene.image.ImageView;
+import untref.controllers.nodeutils.ImageSetter;
 
 public class ImageViewBuilder {
 	private ImageView imageView;
@@ -41,6 +42,11 @@ public class ImageViewBuilder {
 
 	public ImageViewBuilder withY(double y) {
 		imageView.setLayoutY(y);
+		return this;
+	}
+
+	public ImageViewBuilder withImageSize(){
+		ImageSetter.setWithImageSize(imageView, imageView.getImage());
 		return this;
 	}
 

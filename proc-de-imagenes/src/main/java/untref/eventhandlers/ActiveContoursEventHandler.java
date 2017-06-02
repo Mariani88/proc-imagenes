@@ -15,6 +15,7 @@ import javafx.stage.Stage;
 import untref.controllers.OpenMenuController;
 import untref.controllers.PixelPaneController;
 import untref.controllers.nodeutils.ImageSetter;
+import untref.controllers.nodeutils.settertype.FullSetter;
 import untref.interfacebuilders.ImageViewBuilder;
 import untref.service.activecontours.ActiveContoursService;
 import untref.service.activecontours.ActiveContoursServiceImpl;
@@ -29,14 +30,12 @@ public class ActiveContoursEventHandler implements EventHandler<ActionEvent> {
 	private final PixelPaneController firstPixelPaneController;
 	private final PixelPaneController secondPixelPaneController;
 	private final ActiveContoursService activeContoursService;
-	private Image originalImage;
 
 	public ActiveContoursEventHandler(OpenMenuController openMenuController) {
 		this.openMenuController = openMenuController;
 		firstPixelPaneController = new PixelPaneController(FIRST_PIXEL);
 		secondPixelPaneController = new PixelPaneController(SECOND_PIXEL);
 		activeContoursService = new ActiveContoursServiceImpl();
-		originalImage = null;
 	}
 
 	@Override
@@ -51,18 +50,13 @@ public class ActiveContoursEventHandler implements EventHandler<ActionEvent> {
 		pane.setMinWidth(700);
 		pane.setMinHeight(800);
 
-		ImageView imageView = new ImageViewBuilder("default.jpg").withPreserveRatio(true).withAutosize().withVisible(true).withFitWidth(500)
-				.withFitHeight(500).build();
+		ImageView imageView = new ImageViewBuilder("default.jpg").withPreserveRatio(true).withAutosize().withVisible(true).withImageSize().build();
 
 		imageView.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
 				int x = toInt(event.getX());
 				int y = toInt(event.getY());
-
-				if(originalImage == null){
-					originalImage = imageView.getImage();
-				}
 
 				if (!firstPixelPaneController.setedValues()) {
 					firstPixelPaneController.setValues(x, y);
@@ -71,17 +65,16 @@ public class ActiveContoursEventHandler implements EventHandler<ActionEvent> {
 					Image imageWithContours = activeContoursService
 							.initializeActiveContours(imageView.getImage(), firstPixelPaneController.getPosition(),
 									secondPixelPaneController.getPosition());
-					ImageSetter.set(imageView, imageWithContours);
+					ImageSetter.setWithImageSize(imageView, imageWithContours);
 				} else {
 					firstPixelPaneController.clearValues();
 					secondPixelPaneController.clearValues();
-					ImageSetter.set(imageView, originalImage);
 				}
 			}
 		});
 
 		Menu openImage = new Menu("open");
-		openImage.getItems().addAll(openMenuController.createOpenMenuItem(imageView));
+		openImage.getItems().addAll(openMenuController.createOpenMenuItem(imageView, new FullSetter()));
 		MenuBar menuBar = new MenuBar(openImage);
 
 		HBox cordinates = new HBox();

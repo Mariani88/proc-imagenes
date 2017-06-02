@@ -6,27 +6,29 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import untref.controllers.nodeutils.ImageSetter;
+import untref.controllers.nodeutils.settertype.SetterType;
 import untref.service.ImageIOService;
 
 import java.util.Optional;
 
-import java.util.function.Consumer;
-
+import static untref.controllers.nodeutils.ImageSetter.set;
 
 public class OpenImageEventHandler implements EventHandler<ActionEvent> {
 
 	private FileChooser fileChooser;
 	private ImageView imageView;
 	private ImageIOService imageIOService;
+	private final SetterType setterType;
 
-	public OpenImageEventHandler(FileChooser fileChooser, ImageView imageView, ImageIOService imageIOService) {
+	public OpenImageEventHandler(FileChooser fileChooser, ImageView imageView, ImageIOService imageIOService, SetterType setterType) {
 		this.fileChooser = fileChooser;
 		this.imageView = imageView;
 		this.imageIOService = imageIOService;
+		this.setterType = setterType;
 	}
 
 	public void handle(ActionEvent event) {
 		Optional<Image> image = imageIOService.openImage(fileChooser);
-		image.ifPresent(image1 -> ImageSetter.set(imageView, image1));
+		image.ifPresent(image1 -> setterType.setImage(imageView, image1));
 	}
 }

@@ -3,6 +3,7 @@ package untref.controllers;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
+import untref.controllers.nodeutils.settertype.SetterType;
 import untref.eventhandlers.OpenImageEventHandler;
 import untref.factory.FileImageChooserFactory;
 import untref.service.ImageIOService;
@@ -17,14 +18,14 @@ public class OpenMenuController {
 		this.imageIOService = imageIOService;
 	}
 
-	public MenuItem createOpenMenuItem(ImageView imageView) {
+	public MenuItem createOpenMenuItem(ImageView imageView, SetterType setterType) {
 		MenuItem fileMenuItem = new MenuItem("open...");
 		final FileChooser fileChooser = fileImageChooserFactory.create("open image");
-		setOpenEvent(imageView, fileMenuItem, fileChooser);
+		setOpenEvent(imageView, fileMenuItem, fileChooser, setterType);
 		return fileMenuItem;
 	}
 
-	private void setOpenEvent(final ImageView imageView, MenuItem fileMenuItem, final FileChooser fileChooser) {
-		fileMenuItem.setOnAction(new OpenImageEventHandler(fileChooser, imageView, imageIOService));
+	private void setOpenEvent(final ImageView imageView, MenuItem fileMenuItem, final FileChooser fileChooser, SetterType setterType) {
+		fileMenuItem.setOnAction(new OpenImageEventHandler(fileChooser, imageView, imageIOService, setterType));
 	}
 }
