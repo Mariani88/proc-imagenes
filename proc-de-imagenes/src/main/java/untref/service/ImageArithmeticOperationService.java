@@ -5,7 +5,7 @@ import javafx.scene.image.WritableImage;
 import untref.domain.GrayScaleFunctionsContainer;
 import untref.domain.TemporalColor;
 
-import java.util.function.Supplier;
+
 
 public interface ImageArithmeticOperationService {
 

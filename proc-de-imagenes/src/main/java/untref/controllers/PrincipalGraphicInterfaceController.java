@@ -28,27 +28,31 @@ public class PrincipalGraphicInterfaceController {
 	private ImageView imageResultView;
 
 	private VBox imageData;
-	private VBox slider;
+	private VBox slider,rawImageBox;
 	private List<Node> principalPaneChildrens;
 	private ImageDataController imageDataController;
 	private ThresholdController thresholdController;
+	private RawImage rawImage;
 
 	public PrincipalGraphicInterfaceController() {
 		imageDataController = new ImageDataController();
 		thresholdController=new ThresholdController();
+		rawImage=new RawImage();
+		
 	}
 
 	public AnchorPane initInterfaceElements() {
 		principalPane = new AnchorPane();
 		imageView = createImageView(principalPane);
 		imageResultView = createImageResultView(imageView);
-		menuBar = new MenuBarController().build(imageView, imageResultView);
+		menuBar = new MenuBarController().build(imageView, imageResultView,rawImage);
 		imageData = imageDataController.build(imageView, imageResultView);
 		principalPaneChildrens = new ArrayList<>();
 		principalPaneChildrens.addAll(Arrays.asList(menuBar, imageView, imageResultView, imageData, createButtonSwitchImageView()));
 		slider= thresholdController.build(imageView, imageResultView);
+		rawImageBox=rawImage.buildBoxRaw(imageView, imageResultView);
 		principalPaneChildrens = new ArrayList<>();
-		principalPaneChildrens.addAll(Arrays.asList(menuBar, imageView, imageResultView, imageData,slider, createButtonSwitchImageView()));
+		principalPaneChildrens.addAll(Arrays.asList(menuBar, imageView, imageResultView, imageData,slider,rawImageBox, createButtonSwitchImageView()));
 		principalPane.getChildren().addAll(principalPaneChildrens);
 		imageView.addEventHandler(MouseEvent.MOUSE_CLICKED, new ClickImagePixelValues(imageView, imageDataController));
 		imageResultView.addEventHandler(MouseEvent.MOUSE_CLICKED,

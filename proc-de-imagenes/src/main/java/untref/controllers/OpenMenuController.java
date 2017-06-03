@@ -18,14 +18,15 @@ public class OpenMenuController {
 		this.imageIOService = imageIOService;
 	}
 
-	public MenuItem createOpenMenuItem(ImageView imageView, SetterType setterType) {
+	public MenuItem createOpenMenuItem(ImageView imageView, RawImage rawImage, SetterType setterType) {
 		MenuItem fileMenuItem = new MenuItem("open...");
 		final FileChooser fileChooser = fileImageChooserFactory.create("open image");
-		setOpenEvent(imageView, fileMenuItem, fileChooser, setterType);
+		setOpenEvent(imageView, fileMenuItem, fileChooser, setterType, rawImage);
 		return fileMenuItem;
 	}
 
-	private void setOpenEvent(final ImageView imageView, MenuItem fileMenuItem, final FileChooser fileChooser, SetterType setterType) {
-		fileMenuItem.setOnAction(new OpenImageEventHandler(fileChooser, imageView, imageIOService, setterType));
+	private void setOpenEvent(final ImageView imageView, MenuItem fileMenuItem, final FileChooser fileChooser, SetterType setterType,
+			RawImage rawImage) {
+		fileMenuItem.setOnAction(new OpenImageEventHandler(fileChooser, imageView, imageIOService, rawImage, setterType));
 	}
 }

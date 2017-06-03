@@ -17,4 +17,25 @@ public class ImagePosition {
 	public int getColumn() {
 		return column;
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+
+		ImagePosition that = (ImagePosition) o;
+
+		if (row != that.row)
+			return false;
+		return column == that.column;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = row;
+		result = 31 * result + column;
+		return result;
+	}
 }
