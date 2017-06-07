@@ -10,8 +10,10 @@ import untref.domain.ImagePosition;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import static untref.domain.utils.ImageValuesTransformer.toInt;
+import static untref.domain.utils.ImageValuesTransformer.toRGBScale;
 
 public class ActiveContoursServiceImpl implements ActiveContoursService {
 
@@ -24,38 +26,52 @@ public class ActiveContoursServiceImpl implements ActiveContoursService {
 	@Override
 	public Contour adjustContours(Contour contour) {
 		List<ImagePosition> lOut = contour.getlOut();
-		Image image = contour.getImage();
 		List<ImagePosition> lIn = contour.getlIn();
-		for (ImagePosition imagePosition : lOut) {
-			ImagePosition backgroundNeighboring = contour.getBackgroundNeighboring(imagePosition);
-			ImagePosition insideNeighboring = contour.getInsideNeighboring(imagePosition);
-			boolean isPositive = applyFd(backgroundNeighboring, insideNeighboring, imagePosition, contour.getOriginalImage());
-			expandContours(isPositive, contour, imagePosition, lOut);
+
+		for (int index = 0; index < lOut.size(); index++) {
+			ImagePosition imagePosition = lOut.get(index);
+			boolean isPositive = applyFd(imagePosition, contour.getOriginalImage(), contour.getObjectColorAverage());
+			expandContours(isPositive, contour, imagePosition);
 		}
 
-		return null;
+		contour.moveInvalidLinToObject();
+
+		for (int index = 0; index < lIn.size(); index++) {
+			ImagePosition imagePosition = lIn.get(index);
+			boolean isPositive = applyFd(imagePosition, contour.getOriginalImage(), contour.getObjectColorAverage());
+			shortenContour(isPositive, contour, imagePosition);
+		}
+
+		contour.moveInvalidLoutToBackground();
+		contour.updateImage();
+		return contour;
 	}
 
-	private void expandContours(boolean isPositive, Contour contour) {
-
-
-
+	private void shortenContour(boolean isPositive, Contour contour, ImagePosition imagePosition) {
+		if (!isPositive) {
+			contour.moveFromLinToLout(imagePosition);
+			Set<ImagePosition> objectNeighborings = contour.getAllObjectNeighboring(imagePosition);
+			contour.addToLin(objectNeighborings);
+		}
 	}
 
-	private boolean applyFd(ImagePosition backgroundNeighboring, ImagePosition insideNeighboring, ImagePosition lOutPosition, Image originalImage) {
+	private void expandContours(boolean isPositive, Contour contour, ImagePosition imagePosition) {
+		if (isPositive) {
+			contour.removeFromLout(imagePosition);
+			contour.addToLIn(imagePosition);
+			Set<ImagePosition> backgroundNeighborings = contour.getAllBackgroundNeighboring(imagePosition);
+			contour.addToLout(backgroundNeighborings);
+		}
+	}
+
+	private boolean applyFd(ImagePosition imagePosition, Image originalImage, Color objectColorAverage) {
 		PixelReader pixelReader = originalImage.getPixelReader();
-		Color backgroundNeighboringColor = pixelReader.getColor(backgroundNeighboring.getColumn(), backgroundNeighboring.getRow());
-		Color lOutPositionColor = pixelReader.getColor(lOutPosition.getColumn(), lOutPosition.getRow());
-		Color insideNeighboringColor = pixelReader.getColor(insideNeighboring.getColumn(), insideNeighboring.getRow());
-		double fdForRed = applyFdForChannel(backgroundNeighboringColor.getRed(), lOutPositionColor.getRed(), insideNeighboringColor.getRed());
-		double fdForGreen = applyFdForChannel(backgroundNeighboringColor.getGreen(), lOutPositionColor.getGreen(), insideNeighboringColor.getGreen());
-		double fdForBlue = applyFdForChannel(backgroundNeighboringColor.getBlue(), lOutPositionColor.getBlue(), insideNeighboringColor.getBlue());
-		return fdForRed < 0 && fdForGreen < 0 && fdForBlue < 0;
-	}
-
-	private double applyFdForChannel(double backgroundNeighboringGray, double lOutPositionGray, double insideNeighboringGray) {
-		return Math.log((backgroundNeighboringGray - lOutPositionGray)/(insideNeighboringGray - lOutPositionGray));
-
+		Color imagePositionColor = pixelReader.getColor(imagePosition.getColumn(), imagePosition.getRow());
+		int difRed = toRGBScale(imagePositionColor.getRed() - objectColorAverage.getRed());
+		int difGreen = toRGBScale(imagePositionColor.getGreen() - objectColorAverage.getGreen());
+		int difBlue = toRGBScale(imagePositionColor.getBlue() - objectColorAverage.getBlue());
+		double norma = Math.sqrt(Math.pow(difRed, 2) + Math.pow(difGreen, 2) + Math.pow(difBlue, 2));
+		return !(norma >= 0.1);
 	}
 
 	private Contour paintExternalContours(WritableImage imageWithContours, ImagePosition imagePosition, ImagePosition imagePosition2, Image image) {
@@ -95,7 +111,7 @@ public class ActiveContoursServiceImpl implements ActiveContoursService {
 			lIn.add(new ImagePosition(secondRow - 1, index));
 		}
 
-		return new Contour(imageWithContours, lIn, lOut, image);
+		return new Contour(imageWithContours, lIn, lOut, image, firstRow + 2, firstColumn + 2, secondRow - 2, secondColumn - 2);
 	}
 
 	private WritableImage replicateImage(Image image) {

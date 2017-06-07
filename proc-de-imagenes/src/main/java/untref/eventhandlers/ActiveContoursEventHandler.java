@@ -83,7 +83,10 @@ public class ActiveContoursEventHandler implements EventHandler<ActionEvent> {
 		VBox firstPixelPane = firstPixelPaneController.getPane();
 		VBox secondPixelPane = secondPixelPaneController.getPane();
 		Button applyContours = new Button(" apply contours");
-		applyContours.setOnAction(event -> contour[0] = activeContoursService.adjustContours(contour[0]));
+		applyContours.setOnAction(event -> {
+			contour[0] = activeContoursService.adjustContours(contour[0]);
+			ImageSetter.setWithImageSize(imageView, contour[0].getImage());
+		});
 		cordinates.getChildren().addAll(firstPixelPane, secondPixelPane);
 		pane.getChildren().addAll(menuBar, imageView, cordinates, applyContours);
 		Scene scene = new Scene(pane);
