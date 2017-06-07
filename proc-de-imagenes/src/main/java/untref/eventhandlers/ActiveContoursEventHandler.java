@@ -3,9 +3,7 @@ package untref.eventhandlers;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -22,6 +20,8 @@ import untref.interfacebuilders.ImageViewBuilder;
 import untref.service.activecontours.ActiveContoursService;
 import untref.service.activecontours.ActiveContoursServiceImpl;
 
+import java.util.function.Consumer;
+
 import static untref.domain.utils.ImageValuesTransformer.toInt;
 
 public class ActiveContoursEventHandler implements EventHandler<ActionEvent> {
@@ -32,6 +32,7 @@ public class ActiveContoursEventHandler implements EventHandler<ActionEvent> {
 	private final PixelPaneController firstPixelPaneController;
 	private final PixelPaneController secondPixelPaneController;
 	private final ActiveContoursService activeContoursService;
+	private Image imageToShow;
 
 	public ActiveContoursEventHandler(OpenMenuController openMenuController) {
 		this.openMenuController = openMenuController;
@@ -53,6 +54,7 @@ public class ActiveContoursEventHandler implements EventHandler<ActionEvent> {
 		pane.setMinHeight(800);
 
 		ImageView imageView = new ImageViewBuilder("default.jpg").withPreserveRatio(true).withAutosize().withVisible(true).withImageSize().build();
+		imageToShow = imageView.getImage();
 		final Contour[] contour = new Contour[1];
 		imageView.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
@@ -70,25 +72,37 @@ public class ActiveContoursEventHandler implements EventHandler<ActionEvent> {
 				} else {
 					firstPixelPaneController.clearValues();
 					secondPixelPaneController.clearValues();
+					contour[0] = null;
+					ImageSetter.setWithImageSize(imageView, imageToShow);
 				}
 			}
 		});
 
 		Menu openImage = new Menu("open");
-		openImage.getItems().addAll(openMenuController.createOpenMenuItem(imageView, new RawImage(), new FullSetter()));
+		openImage.getItems().addAll(openMenuController.createOpenMenuItemWithSpecificEvent(imageView, new RawImage(), new FullSetter(), o -> {
+			contour[0] = null;
+			firstPixelPaneController.clearValues();
+			secondPixelPaneController.clearValues();
+			imageToShow = imageView.getImage();
+		}));
 		MenuBar menuBar = new MenuBar(openImage);
 
+		Label objectColorDelta = new Label("object color delta");
+		TextField objectColorDeltaValue = new TextField();
+		objectColorDeltaValue.setMaxWidth(60);
 		HBox cordinates = new HBox();
 
 		VBox firstPixelPane = firstPixelPaneController.getPane();
 		VBox secondPixelPane = secondPixelPaneController.getPane();
 		Button applyContours = new Button(" apply contours");
 		applyContours.setOnAction(event -> {
-			contour[0] = activeContoursService.adjustContours(contour[0]);
-			ImageSetter.setWithImageSize(imageView, contour[0].getImage());
+			if (contour[0] != null) {
+				contour[0] = activeContoursService.adjustContours(contour[0], Double.valueOf(objectColorDeltaValue.getText()));
+				ImageSetter.setWithImageSize(imageView, contour[0].getImage());
+			}
 		});
 		cordinates.getChildren().addAll(firstPixelPane, secondPixelPane);
-		pane.getChildren().addAll(menuBar, imageView, cordinates, applyContours);
+		pane.getChildren().addAll(menuBar, imageView, cordinates, objectColorDelta, objectColorDeltaValue, applyContours);
 		Scene scene = new Scene(pane);
 		stage.setScene(scene);
 		stage.show();

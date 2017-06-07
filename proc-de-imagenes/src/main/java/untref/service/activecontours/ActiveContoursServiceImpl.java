@@ -24,13 +24,13 @@ public class ActiveContoursServiceImpl implements ActiveContoursService {
 	}
 
 	@Override
-	public Contour adjustContours(Contour contour) {
+	public Contour adjustContours(Contour contour, Double colorDelta) {
 		List<ImagePosition> lOut = contour.getlOut();
 		List<ImagePosition> lIn = contour.getlIn();
 
 		for (int index = 0; index < lOut.size(); index++) {
 			ImagePosition imagePosition = lOut.get(index);
-			boolean isPositive = applyFd(imagePosition, contour.getOriginalImage(), contour.getObjectColorAverage());
+			boolean isPositive = applyFd(imagePosition, contour.getOriginalImage(), contour.getObjectColorAverage(), colorDelta);
 			expandContours(isPositive, contour, imagePosition);
 		}
 
@@ -38,7 +38,7 @@ public class ActiveContoursServiceImpl implements ActiveContoursService {
 
 		for (int index = 0; index < lIn.size(); index++) {
 			ImagePosition imagePosition = lIn.get(index);
-			boolean isPositive = applyFd(imagePosition, contour.getOriginalImage(), contour.getObjectColorAverage());
+			boolean isPositive = applyFd(imagePosition, contour.getOriginalImage(), contour.getObjectColorAverage(), colorDelta);
 			shortenContour(isPositive, contour, imagePosition);
 		}
 
@@ -64,14 +64,14 @@ public class ActiveContoursServiceImpl implements ActiveContoursService {
 		}
 	}
 
-	private boolean applyFd(ImagePosition imagePosition, Image originalImage, Color objectColorAverage) {
+	private boolean applyFd(ImagePosition imagePosition, Image originalImage, Color objectColorAverage, Double colorDelta) {
 		PixelReader pixelReader = originalImage.getPixelReader();
 		Color imagePositionColor = pixelReader.getColor(imagePosition.getColumn(), imagePosition.getRow());
 		int difRed = toRGBScale(imagePositionColor.getRed() - objectColorAverage.getRed());
 		int difGreen = toRGBScale(imagePositionColor.getGreen() - objectColorAverage.getGreen());
 		int difBlue = toRGBScale(imagePositionColor.getBlue() - objectColorAverage.getBlue());
-		double norma = Math.sqrt(Math.pow(difRed, 2) + Math.pow(difGreen, 2) + Math.pow(difBlue, 2));
-		return !(norma >= 0.1);
+		double module = Math.sqrt(Math.pow(difRed, 2) + Math.pow(difGreen, 2) + Math.pow(difBlue, 2));
+		return !(module >= colorDelta);
 	}
 
 	private Contour paintExternalContours(WritableImage imageWithContours, ImagePosition imagePosition, ImagePosition imagePosition2, Image image) {

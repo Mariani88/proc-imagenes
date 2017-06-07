@@ -7,5 +7,5 @@ import untref.domain.ImagePosition;
 public interface ActiveContoursService {
 	Contour initializeActiveContours(Image image, ImagePosition imagePosition, ImagePosition imagePosition2);
 
-	Contour adjustContours(Contour contour);
+	Contour adjustContours(Contour contour, Double colorDelta);
 }

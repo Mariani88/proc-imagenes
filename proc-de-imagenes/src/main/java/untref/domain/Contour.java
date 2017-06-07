@@ -26,7 +26,7 @@ public class Contour {
 	private int matrix[][];
 	private CopyOnWriteArrayList<ImagePosition> lIn;
 	private CopyOnWriteArrayList<ImagePosition> lOut;
-	private final Image originalImage;
+	private Image originalImage;
 
 	public Contour(Image image, List<ImagePosition> lIn, List<ImagePosition> lOut, Image originalImage, int fromRowObject, int fromColumnObject,
 			int toRowObject, int toColumnObject) {
