@@ -82,36 +82,31 @@ public class ActiveContoursServiceImpl implements ActiveContoursService {
 		PixelWriter pixelWriter = imageWithContours.getPixelWriter();
 		List<ImagePosition> lIn = new ArrayList<>();
 		List<ImagePosition> lOut = new ArrayList<>();
-
-		for (int index = firstRow; index <= secondRow; index++) {
-			pixelWriter.setColor(firstColumn, index, Color.BLUE);
-			pixelWriter.setColor(secondColumn, index, Color.BLUE);
-			lOut.add(new ImagePosition(index, firstColumn));
-			lOut.add(new ImagePosition(index, secondColumn));
-		}
-
-		for (int index = firstColumn; index <= secondColumn; index++) {
-			pixelWriter.setColor(index, firstRow, Color.BLUE);
-			pixelWriter.setColor(index, secondRow, Color.BLUE);
-			lOut.add(new ImagePosition(firstRow, index));
-			lOut.add(new ImagePosition(secondRow, index));
-		}
-
-		for (int index = firstRow + 1; index <= secondRow - 1; index++) {
-			pixelWriter.setColor(firstColumn + 1, index, Color.RED);
-			pixelWriter.setColor(secondColumn - 1, index, Color.RED);
-			lIn.add(new ImagePosition(index, firstColumn + 1));
-			lIn.add(new ImagePosition(index, secondColumn - 1));
-		}
-
-		for (int index = firstColumn + 1; index <= secondColumn - 1; index++) {
-			pixelWriter.setColor(index, firstRow + 1, Color.RED);
-			pixelWriter.setColor(index, secondRow - 1, Color.RED);
-			lIn.add(new ImagePosition(firstRow + 1, index));
-			lIn.add(new ImagePosition(secondRow - 1, index));
-		}
-
+		paintContourColumns(lOut, firstRow, secondRow, firstColumn, secondColumn, Color.BLUE, pixelWriter);
+		paintContourColumns(lIn, firstRow + 1, secondRow - 1, firstColumn + 1, secondColumn - 1, Color.RED, pixelWriter);
+		paintContourRows(lOut, firstColumn, secondColumn, firstRow, secondRow, pixelWriter, Color.BLUE);
+		paintContourRows(lIn, firstColumn + 1, secondColumn - 1, firstRow + 1, secondRow - 1, pixelWriter, Color.RED);
 		return new Contour(imageWithContours, lIn, lOut, image, firstRow + 2, firstColumn + 2, secondRow - 2, secondColumn - 2);
+	}
+
+	private void paintContourRows(List<ImagePosition> contourEdgePositions, int fromIndex, int toIndex, int firstRow, int secondRow,
+			PixelWriter pixelWriter, Color color) {
+		for (int index = fromIndex; index <= toIndex; index++) {
+			pixelWriter.setColor(index, firstRow, color);
+			pixelWriter.setColor(index, secondRow, color);
+			contourEdgePositions.add(new ImagePosition(firstRow, index));
+			contourEdgePositions.add(new ImagePosition(secondRow, index));
+		}
+	}
+
+	private void paintContourColumns(List<ImagePosition> contourEdgePositions, int fromIndex, int toIndex, int firstColumn, int secondColumn,
+			Color color, PixelWriter pixelWriter) {
+		for (int index = fromIndex; index <= toIndex; index++) {
+			pixelWriter.setColor(firstColumn, index, color);
+			pixelWriter.setColor(secondColumn, index, color);
+			contourEdgePositions.add(new ImagePosition(index, firstColumn));
+			contourEdgePositions.add(new ImagePosition(index, secondColumn));
+		}
 	}
 
 	private WritableImage replicateImage(Image image) {
