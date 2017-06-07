@@ -104,15 +104,7 @@ public class Contour {
 	private boolean hasAllNeighboringWithValueLowerThanZero(ImagePosition imagePosition) {
 		int row = imagePosition.getRow();
 		int column = imagePosition.getColumn();
-		boolean hasPositiveNeighboring =
-				matrix[row - 1][column] < 0 && matrix[row + 1][column] < 0 && matrix[row][column - 1] < 0 && matrix[row][column + 1] < 0;
-
-		if (!hasPositiveNeighboring) {
-
-			System.out.println("row = " + row + " column = " + column);
-		}
-
-		return hasPositiveNeighboring;
+		return matrix[row - 1][column] < 0 && matrix[row + 1][column] < 0 && matrix[row][column - 1] < 0 && matrix[row][column + 1] < 0;
 	}
 
 	public void addToLout(Set<ImagePosition> backgroundNeighborings) {
@@ -183,24 +175,17 @@ public class Contour {
 		Set<ImagePosition> elementNeighborings = new HashSet<>();
 		int row = imagePosition.getRow();
 		int column = imagePosition.getColumn();
-
-		if (matrix[row - 1][column] == element) {
-			elementNeighborings.add(new ImagePosition(row - 1, column));
-		}
-
-		if (matrix[row + 1][column] == element) {
-			elementNeighborings.add(new ImagePosition(row + 1, column));
-		}
-
-		if (matrix[row][column - 1] == element) {
-			elementNeighborings.add(new ImagePosition(row, column - 1));
-		}
-
-		if (matrix[row][column + 1] == element) {
-			elementNeighborings.add(new ImagePosition(row, column + 1));
-		}
-
+		addPositionToSetIfContainsElement(row - 1, column, element, elementNeighborings);
+		addPositionToSetIfContainsElement(row + 1, column, element, elementNeighborings);
+		addPositionToSetIfContainsElement(row, column - 1, element, elementNeighborings);
+		addPositionToSetIfContainsElement(row, column + 1, element, elementNeighborings);
 		return elementNeighborings;
+	}
+
+	private void addPositionToSetIfContainsElement(int row, int column, int element, Set<ImagePosition> elementNeighborings) {
+		if (matrix[row][column] == element) {
+			elementNeighborings.add(new ImagePosition(row, column));
+		}
 	}
 
 	private void initializeMatrix(int fromRowObject, int fromColumnObject, int toRowObject, int toColumnObject) {
