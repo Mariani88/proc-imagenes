@@ -5,6 +5,7 @@ import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
+import untref.utils.ImageValidator;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -22,15 +23,15 @@ public class Contour {
 	private static int L_IN = -1;
 	private static int OBJECT = -3;
 	private final Color objectColorAverage;
-	private Image image;
+	private Image imageWithContour;
 	private int matrix[][];
 	private CopyOnWriteArrayList<ImagePosition> lIn;
 	private CopyOnWriteArrayList<ImagePosition> lOut;
 	private Image originalImage;
 
-	public Contour(Image image, List<ImagePosition> lIn, List<ImagePosition> lOut, Image originalImage, int fromRowObject, int fromColumnObject,
-			int toRowObject, int toColumnObject) {
-		this.image = image;
+	public Contour(Image imageWithContour, List<ImagePosition> lIn, List<ImagePosition> lOut, Image originalImage, int fromRowObject,
+			int fromColumnObject, int toRowObject, int toColumnObject) {
+		this.imageWithContour = imageWithContour;
 		this.lIn = new CopyOnWriteArrayList<>(lIn);
 		this.lOut = new CopyOnWriteArrayList<>(lOut);
 		this.originalImage = originalImage;
@@ -44,10 +45,10 @@ public class Contour {
 
 	private Color calculateObjectColorAverage() {
 		List<Color> objectColors = new ArrayList<>();
-		PixelReader pixelReader = image.getPixelReader();
+		PixelReader pixelReader = imageWithContour.getPixelReader();
 
-		for (int row = 0; row < image.getHeight(); row++) {
-			for (int column = 0; column < image.getWidth(); column++) {
+		for (int row = 0; row < imageWithContour.getHeight(); row++) {
+			for (int column = 0; column < imageWithContour.getWidth(); column++) {
 				if (matrix[row][column] == OBJECT) {
 					objectColors.add(pixelReader.getColor(column, row));
 				}
@@ -78,8 +79,8 @@ public class Contour {
 		return lOut;
 	}
 
-	public Image getImage() {
-		return image;
+	public Image getImageWithContour() {
+		return imageWithContour;
 	}
 
 	public Image getOriginalImage() {
@@ -104,7 +105,17 @@ public class Contour {
 	private boolean hasAllNeighboringWithValueLowerThanZero(ImagePosition imagePosition) {
 		int row = imagePosition.getRow();
 		int column = imagePosition.getColumn();
-		return matrix[row - 1][column] < 0 && matrix[row + 1][column] < 0 && matrix[row][column - 1] < 0 && matrix[row][column + 1] < 0;
+		return hasValueLowerThanZero(matrix, row - 1, column) && hasValueLowerThanZero(matrix, row + 1, column) && hasValueLowerThanZero(matrix, row,
+				column - 1) && hasValueLowerThanZero(matrix, row, column + 1);
+	}
+
+	private boolean hasValueLowerThanZero(int[][] matrix, int row, int column) {
+		boolean has = true;
+
+		if (ImageValidator.existPosition(originalImage, row, column)) {
+			has = matrix[row][column] < 0;
+		}
+		return has;
 	}
 
 	public void addToLout(Set<ImagePosition> backgroundNeighborings) {
@@ -119,7 +130,9 @@ public class Contour {
 	}
 
 	public Set<ImagePosition> getAllBackgroundNeighboring(ImagePosition imagePosition) {
-		return getNeighborings(imagePosition, BACKGROUND);
+		Set<ImagePosition> neighborings = getNeighborings(imagePosition, BACKGROUND);
+		return neighborings.stream().filter(imagePosition1 -> ImageValidator.existPosition(originalImage, imagePosition1))
+				.collect(Collectors.toSet());
 	}
 
 	public void updateImage() {
@@ -141,7 +154,7 @@ public class Contour {
 			}
 		}
 
-		image = writableImage;
+		imageWithContour = writableImage;
 	}
 
 	public void moveFromLinToLout(ImagePosition imagePosition) {
@@ -168,7 +181,17 @@ public class Contour {
 	private boolean hasAllNeighboringWithValueHigherThanZero(ImagePosition imagePosition) {
 		int row = imagePosition.getRow();
 		int column = imagePosition.getColumn();
-		return matrix[row - 1][column] > 0 && matrix[row + 1][column] > 0 && matrix[row][column - 1] > 0 && matrix[row][column + 1] > 0;
+		return hasValueHigherThanZero(matrix, row - 1, column) && hasValueHigherThanZero(matrix, row + 1, column) && hasValueHigherThanZero(matrix,
+				row, column - 1) && hasValueHigherThanZero(matrix, row, column + 1);
+	}
+
+	private boolean hasValueHigherThanZero(int[][] matrix, int row, int column) {
+		boolean has = true;
+
+		if (ImageValidator.existPosition(originalImage, row, column)) {
+			has = matrix[row][column] > 0;
+		}
+		return has;
 	}
 
 	private Set<ImagePosition> getNeighborings(ImagePosition imagePosition, int element) {
@@ -183,7 +206,7 @@ public class Contour {
 	}
 
 	private void addPositionToSetIfContainsElement(int row, int column, int element, Set<ImagePosition> elementNeighborings) {
-		if (matrix[row][column] == element) {
+		if (ImageValidator.existPosition(originalImage, row, column) && matrix[row][column] == element) {
 			elementNeighborings.add(new ImagePosition(row, column));
 		}
 	}

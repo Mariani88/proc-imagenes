@@ -20,8 +20,6 @@ import untref.interfacebuilders.ImageViewBuilder;
 import untref.service.activecontours.ActiveContoursService;
 import untref.service.activecontours.ActiveContoursServiceImpl;
 
-import java.util.function.Consumer;
-
 import static untref.domain.utils.ImageValuesTransformer.toInt;
 
 public class ActiveContoursEventHandler implements EventHandler<ActionEvent> {
@@ -68,7 +66,7 @@ public class ActiveContoursEventHandler implements EventHandler<ActionEvent> {
 					secondPixelPaneController.setValues(x, y);
 					contour[0] = activeContoursService.initializeActiveContours(imageView.getImage(), firstPixelPaneController.getPosition(),
 							secondPixelPaneController.getPosition());
-					ImageSetter.setWithImageSize(imageView, contour[0].getImage());
+					ImageSetter.setWithImageSize(imageView, contour[0].getImageWithContour());
 				} else {
 					firstPixelPaneController.clearValues();
 					secondPixelPaneController.clearValues();
@@ -98,7 +96,7 @@ public class ActiveContoursEventHandler implements EventHandler<ActionEvent> {
 		applyContours.setOnAction(event -> {
 			if (contour[0] != null) {
 				contour[0] = activeContoursService.adjustContours(contour[0], Double.valueOf(objectColorDeltaValue.getText()));
-				ImageSetter.setWithImageSize(imageView, contour[0].getImage());
+				ImageSetter.setWithImageSize(imageView, contour[0].getImageWithContour());
 			}
 		});
 		cordinates.getChildren().addAll(firstPixelPane, secondPixelPane);

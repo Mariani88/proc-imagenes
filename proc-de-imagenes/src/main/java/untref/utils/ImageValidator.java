@@ -1,6 +1,7 @@
 package untref.utils;
 
 import javafx.scene.image.Image;
+import untref.domain.ImagePosition;
 import untref.domain.TemporalColor;
 
 import static untref.domain.utils.ImageValuesTransformer.toInt;
@@ -17,5 +18,11 @@ public class ImageValidator {
 		boolean columnIsValid = column < toInt(temporalColors[0].length) && 0 <= column;
 		boolean rowIsValid = row < toInt(temporalColors.length) && 0 <= row;
 		return columnIsValid && rowIsValid;
+	}
+
+	public static boolean existPosition(Image image, ImagePosition imagePosition) {
+		int row = imagePosition.getRow();
+		int column = imagePosition.getColumn();
+		return existPosition(image, row, column);
 	}
 }
