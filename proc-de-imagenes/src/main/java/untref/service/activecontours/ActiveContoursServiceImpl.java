@@ -5,8 +5,8 @@ import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
-import untref.domain.Contour;
 import untref.domain.ImagePosition;
+import untref.domain.activecontours.Contour;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +44,22 @@ public class ActiveContoursServiceImpl implements ActiveContoursService {
 
 		contour.moveInvalidLoutToBackground();
 		contour.updateImage();
+		return contour;
+	}
+
+	@Override
+	public Contour applyContourToNewImage(Contour contour, Image image) {
+		return contour.applyToNewImage(image);
+	}
+
+	@Override
+	public Contour adjustContoursAutomatically(Contour contour, Double colorDelta) {
+		int iterations = 20;
+
+		for (int index = 0; index < iterations; index++) {
+			contour = adjustContours(contour, colorDelta);
+		}
+
 		return contour;
 	}
 

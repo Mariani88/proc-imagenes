@@ -6,6 +6,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import untref.controllers.*;
+import untref.controllers.activecotours.ActiveContoursController;
 import untref.controllers.nodeutils.settertype.SetterAdjustToView;
 import untref.eventhandlers.SaveImageEventHandler;
 import untref.factory.FileImageChooserFactory;

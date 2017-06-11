@@ -1,10 +1,11 @@
-package untref.domain;
+package untref.domain.activecontours;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
+import untref.domain.ImagePosition;
 import untref.utils.ImageValidator;
 
 import java.util.ArrayList;
@@ -41,6 +42,12 @@ public class Contour {
 
 	public Color getObjectColorAverage() {
 		return objectColorAverage;
+	}
+
+	public Contour applyToNewImage(Image image) {
+		originalImage = image;
+		updateImage();
+		return this;
 	}
 
 	private Color calculateObjectColorAverage() {

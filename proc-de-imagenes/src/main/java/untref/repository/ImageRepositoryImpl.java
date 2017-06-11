@@ -1,5 +1,7 @@
 package untref.repository;
 
+import ij.ImagePlus;
+import ij.io.Opener;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import untref.controllers.RawImage;
@@ -12,35 +14,27 @@ import java.nio.file.Path;
 
 import javax.imageio.ImageIO;
 
-import ij.ImagePlus;
-import ij.io.Opener;
+import static untref.domain.utils.ImageValuesTransformer.toInt;
 
 public class ImageRepositoryImpl implements ImageRepository {
 
 	@Override
-	public Image findImage(File file,RawImage rawImage) {
-		BufferedImage bufferedImage = null;
-		Imagen imagenRawOut = null;
-
+	public Image findImage(File file, RawImage rawImage) {
 		if (!getFileExtension(file).equalsIgnoreCase("RAW")) {
-			Opener opener = new Opener();
-
-			Path path = file.toPath();
-
-			ImagePlus img = opener.openImage(path.toString());
-
-			bufferedImage = img.getBufferedImage();
-
+			return findImageWithFormat(file);
 		} else {
-
-			ImageRaw imageRaw = new ImageRaw();
-
-			imagenRawOut = imageRaw.cargarUnaImagenRawDesdeArchivo(rawImage.getValueFieldAncho(),rawImage.getValueFieldAlto(), file.toPath().toString());
-			bufferedImage = imagenRawOut.getBufferedImage();
+			return findImageRaw(file, rawImage);
 		}
+	}
 
+	@Override
+	public Image findImageWithFormat(File file) {
+		BufferedImage bufferedImage;
+		Opener opener = new Opener();
+		Path path = file.toPath();
+		ImagePlus img = opener.openImage(path.toString());
+		bufferedImage = img.getBufferedImage();
 		return SwingFXUtils.toFXImage(bufferedImage, null);
-
 	}
 
 	@Override
@@ -50,8 +44,7 @@ public class ImageRepositoryImpl implements ImageRepository {
 				BufferedImage bufferedImage = SwingFXUtils.fromFXImage(image, null);
 
 				// Remove alpha-channel from buffered image:
-				BufferedImage imageRGB = new BufferedImage(toInt(image.getWidth()), toInt(image.getHeight()),
-						BufferedImage.OPAQUE);
+				BufferedImage imageRGB = new BufferedImage(toInt(image.getWidth()), toInt(image.getHeight()), BufferedImage.OPAQUE);
 				Graphics2D graphics = imageRGB.createGraphics();
 				graphics.drawImage(bufferedImage, 0, 0, null);
 				ImageIO.write(imageRGB, "jpg", file);
@@ -62,8 +55,26 @@ public class ImageRepositoryImpl implements ImageRepository {
 		}
 	}
 
-	private int toInt(double value) {
-		return (int) value;
+	private Image findImageRaw(File file, RawImage rawImage) {
+		Imagen imagenRawOut;
+		BufferedImage bufferedImage;
+		ImageRaw imageRaw = new ImageRaw();
+		imagenRawOut = imageRaw.cargarUnaImagenRawDesdeArchivo(rawImage.getValueFieldAncho(), rawImage.getValueFieldAlto(), file.toPath().toString
+				());
+		bufferedImage = imagenRawOut.getBufferedImage();
+		return SwingFXUtils.toFXImage(bufferedImage, null);
+	}
+
+	private BufferedImage findBufferedImageWithFormat(File file) {
+		BufferedImage bufferedImage;
+		Opener opener = new Opener();
+
+		Path path = file.toPath();
+
+		ImagePlus img = opener.openImage(path.toString());
+
+		bufferedImage = img.getBufferedImage();
+		return bufferedImage;
 	}
 
 	private static String getFileExtension(File file) {
@@ -73,5 +84,4 @@ public class ImageRepositoryImpl implements ImageRepository {
 		else
 			return "";
 	}
-
 }

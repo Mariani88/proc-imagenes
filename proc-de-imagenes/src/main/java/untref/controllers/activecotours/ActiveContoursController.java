@@ -1,11 +1,9 @@
-package untref.controllers;
+package untref.controllers.activecotours;
 
-import javafx.scene.Scene;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
-import javafx.scene.layout.BorderPane;
-import javafx.stage.Stage;
-import untref.eventhandlers.ActiveContoursEventHandler;
+import untref.controllers.OpenMenuController;
+import untref.eventhandlers.activecontours.ActiveContoursEventHandler;
 
 public class ActiveContoursController {
 	private final OpenMenuController openMenuController;
@@ -22,6 +20,5 @@ public class ActiveContoursController {
 		activeContours.getItems().addAll(forOneImage, forVideo);
 		return activeContours;
 	}
-
 
 }

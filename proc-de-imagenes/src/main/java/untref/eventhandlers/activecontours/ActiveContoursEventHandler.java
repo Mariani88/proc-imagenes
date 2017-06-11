@@ -1,5 +1,6 @@
-package untref.eventhandlers;
+package untref.eventhandlers.activecontours;
 
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
@@ -15,10 +16,17 @@ import untref.controllers.PixelPaneController;
 import untref.controllers.RawImage;
 import untref.controllers.nodeutils.ImageSetter;
 import untref.controllers.nodeutils.settertype.FullSetter;
-import untref.domain.Contour;
+import untref.domain.activecontours.Contour;
 import untref.interfacebuilders.ImageViewBuilder;
 import untref.service.activecontours.ActiveContoursService;
 import untref.service.activecontours.ActiveContoursServiceImpl;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.function.Consumer;
 
 import static untref.domain.utils.ImageValuesTransformer.toInt;
 
@@ -54,6 +62,11 @@ public class ActiveContoursEventHandler implements EventHandler<ActionEvent> {
 		ImageView imageView = new ImageViewBuilder("default.jpg").withPreserveRatio(true).withAutosize().withVisible(true).withImageSize().build();
 		imageToShow = imageView.getImage();
 		final Contour[] contour = new Contour[1];
+
+		/*imageView.setOnMouseClicked(
+				new InitialContourEventHandler(firstPixelPaneController, secondPixelPaneController, contour, activeContoursService, imageView,
+						imageToShow));*/
+
 		imageView.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
@@ -77,12 +90,17 @@ public class ActiveContoursEventHandler implements EventHandler<ActionEvent> {
 		});
 
 		Menu openImage = new Menu("open");
-		openImage.getItems().addAll(openMenuController.createOpenMenuItemWithSpecificEvent(imageView, new RawImage(), new FullSetter(), o -> {
+		MenuItem openOneImage = openMenuController.createOpenMenuItemWithSpecificEvent(imageView, new RawImage(), new FullSetter(), o -> {
 			contour[0] = null;
 			firstPixelPaneController.clearValues();
 			secondPixelPaneController.clearValues();
 			imageToShow = imageView.getImage();
-		}));
+		});
+		openOneImage.setText("open one image");
+		MenuItem openMultipleImages = new MenuItem("open multiples images");
+		List<Image> videoImages = new ArrayList<>();
+		openMultipleImages.setOnAction(new OpenMultiplesImageEventHandler(imageView, videoImages));
+		openImage.getItems().addAll(openOneImage, openMultipleImages);
 		MenuBar menuBar = new MenuBar(openImage);
 
 		Label objectColorDelta = new Label("object color delta");
@@ -99,10 +117,62 @@ public class ActiveContoursEventHandler implements EventHandler<ActionEvent> {
 				ImageSetter.setWithImageSize(imageView, contour[0].getImageWithContour());
 			}
 		});
-		cordinates.getChildren().addAll(firstPixelPane, secondPixelPane);
+
+		Button applyContoursOnVideo = new Button("apply contours on video");
+
+		Task<Void> task = new Task<Void>() {
+			@Override
+			protected Void call() throws Exception {
+				reproduceVideoWithContour(contour, videoImages, imageView, objectColorDeltaValue);
+				return null;
+			}
+		};
+
+		TimerTask timerTask = new TimerTask() {
+			@Override
+			public void run() {
+				reproduceVideoWithContour(contour, videoImages, imageView, objectColorDeltaValue);
+			}
+		};
+
+		Timer timer = new Timer();
+		timer.schedule(timerTask, 3000, 10000);
+
+
+
+		/*applyContoursOnVideo.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				thread.run();
+
+			}
+		});*/
+
+		cordinates.getChildren().addAll(firstPixelPane, secondPixelPane, applyContoursOnVideo);
 		pane.getChildren().addAll(menuBar, imageView, cordinates, objectColorDelta, objectColorDeltaValue, applyContours);
 		Scene scene = new Scene(pane);
 		stage.setScene(scene);
 		stage.show();
+	}
+
+	private void reproduceVideoWithContour(Contour[] contour, List<Image> videoImages, ImageView imageView, TextField objectColorDeltaValue) {
+		if (contour[0] != null) {
+
+			videoImages.forEach(new Consumer<Image>() {
+				@Override
+				public void accept(Image image) {
+					System.out.println("ejecutando");
+					contour[0] = activeContoursService.applyContourToNewImage(contour[0], image);
+					contour[0] = activeContoursService
+							.adjustContoursAutomatically(contour[0], Double.valueOf(objectColorDeltaValue.getText()));
+					ImageSetter.setWithImageSize(imageView, contour[0].getImageWithContour());
+					try {
+						Thread.sleep(200);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			});
+		}
 	}
 }
