@@ -14,10 +14,9 @@ public class ActiveContoursController {
 
 	public Menu create() {
 		Menu activeContours = new Menu("active contours");
-		MenuItem forOneImage = new MenuItem("for one image");
-		MenuItem forVideo = new MenuItem("for video");
+		MenuItem forOneImage = new MenuItem("open");
 		forOneImage.setOnAction(new ActiveContoursEventHandler(openMenuController));
-		activeContours.getItems().addAll(forOneImage, forVideo);
+		activeContours.getItems().addAll(forOneImage);
 		return activeContours;
 	}
 

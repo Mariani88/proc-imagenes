@@ -122,7 +122,6 @@ public class ActiveContoursEventHandler implements EventHandler<ActionEvent> {
 		TextField timeByFrameValue = new TextField();
 		timeByFrameValue.setMaxWidth(40);
 
-
 		TimerTask timerTask = new TimerTask() {
 			@Override
 			public void run() {
