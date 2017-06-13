@@ -40,10 +40,12 @@ public class MenuBarController {
 	private ThresholdingMenuController thresholdingMenuController;
 	private final DiffusionMenuControler diffusionMenuControler;
 	private ActiveContoursController activeContoursController;
+	private HoughMenuController houghMenuController;
 	private RawImage rawImage;
 
 	public MenuBarController() {
 		this.diffusionMenuControler = new DiffusionMenuControler();
+		this.houghMenuController=new HoughMenuController();
 		this.edgeDetectionService = new EdgeDetectionServiceImpl();
 		this.imageEditionService = new ImageEditionServiceImpl();
 		this.imageRepository = new ImageRepositoryImpl();
@@ -77,7 +79,8 @@ public class MenuBarController {
 		Menu thresholdingMenu = thresholdingMenuController.createThresholdingMenu(imageView, imageResultView);
 		Menu difussionMenu = this.diffusionMenuControler.createDiffusionMenu(imageView, imageResultView);
 		Menu activeContours = this.activeContoursController.create();
-		menuBar.getMenus().addAll(fileMenu, editionMenu, histogramMenu, filterMenu, EdgeMenu, thresholdingMenu, difussionMenu, activeContours);
+		Menu houghTransform =this.houghMenuController.createHoughMenu(imageView, imageResultView);
+		menuBar.getMenus().addAll(fileMenu, editionMenu, histogramMenu, filterMenu, EdgeMenu, thresholdingMenu, difussionMenu, houghTransform,activeContours);
 		return menuBar;
 	}
 
