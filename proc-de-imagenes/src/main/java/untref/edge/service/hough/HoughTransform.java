@@ -47,7 +47,8 @@ public class HoughTransform {
 
 	public BufferedImage start(Image imagefx) throws Exception {
 
-		BufferedImage image = this.edgeDetector(imagefx);
+		//BufferedImage image = this.edgeDetector(imagefx);
+		BufferedImage image = SwingFXUtils.fromFXImage(imagefx, null);
 		this.setSizeImage(image.getWidth(), image.getHeight());
 		initialise();
 		this.addPoints(image);
@@ -74,7 +75,7 @@ public class HoughTransform {
 	private  void initialise() {
 		
 		thetaStep = Math.PI / maxTheta;		 
-		 neighbourhoodSize = 4;
+		 neighbourhoodSize = 15;
 		// CALCULO EL TAMAÑO DE LA MATRIZ
 		houghHeight = (int) (Math.sqrt(2) * Math.max(height, width)) / 2;
 

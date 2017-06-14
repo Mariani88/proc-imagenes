@@ -82,7 +82,7 @@ public class StageInitHough {
 
 			@Override
 			public void handle(ActionEvent event) {
-				thetaMin = Integer.parseInt(fieldtheta.getText());
+				//thetaMin = Integer.parseInt(fieldtheta.getText());
 				thetaMax = Integer.parseInt(fieldThetaMax.getText());
 				minimunPoint = Integer.parseInt(fieldPointMinimun.getText());
 				HoughTransform houghRecta =new HoughTransform();
@@ -110,8 +110,8 @@ public class StageInitHough {
 
 		});
 
-		root.getChildren().addAll(thetaLabel, fieldtheta, labelThetaMax, fieldThetaMax, labelPointMinimun,
-				fieldPointMinimun,labelThetaDiscre,fieldThetaDiscre,labelRodiscrt,fieldReDiscr, buttonAccept);
+		root.getChildren().addAll( labelThetaMax, fieldThetaMax, labelPointMinimun,
+				fieldPointMinimun, buttonAccept);
 		root.autosize();
 
 		secondaryStage.setTitle("Hough - Stage");
