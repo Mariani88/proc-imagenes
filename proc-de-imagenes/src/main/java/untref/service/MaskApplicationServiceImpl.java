@@ -6,6 +6,7 @@ import untref.domain.TemporalColor;
 
 import static untref.domain.utils.ImageValuesTransformer.getPositionColorOrEmpty;
 import static untref.domain.utils.ImageValuesTransformer.toInt;
+import static untref.domain.utils.MatrixUtils.getPositionOrEmpty;
 
 public class MaskApplicationServiceImpl implements MaskApplicationService {
 
@@ -41,5 +42,19 @@ public class MaskApplicationServiceImpl implements MaskApplicationService {
 			}
 		}
 		return new TemporalColor(toInt(red), toInt(green), toInt(blue));
+	}
+
+	@Override
+	public double applyMask(double[][] matrix, double[][] maskGauss, int offsetI, int offsetJ, int row, int column) {
+		double value = 0;
+
+		for (int i = 0; i < maskGauss.length; i++) {
+			for (int j = 0; j < maskGauss[i].length; j++) {
+				double positionValue = getPositionOrEmpty(matrix, row - offsetI + i, column - offsetJ + j);
+				value += maskGauss[i][j] * positionValue;
+			}
+		}
+
+		return value;
 	}
 }
