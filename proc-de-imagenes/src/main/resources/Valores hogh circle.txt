@@ -1,0 +1,36 @@
+coins.jpg
+/////////////////////////////
+
+
+     
+    public static int HOUGH_MIN_RADIUS = 20;
+
+     
+    public static int HOUGH_MAX_RADIUS = 120;
+
+    
+    public static int HOUGH_RADIUS_STEP = 2;
+
+     
+    public static float HOUGH_CIRCLE_DETECTION_THRESHOLD = 1.3f;
+ 
+    public static boolean HOUGH_SAVE_BUFFER = false;
+
+    
+    public static int HOUGH_MAX_EXPECTED_CIRCLES = 20;
+
+
+canny.setGaussianKernelRadius(2.55f);
+		canny.setHighThreshold(50);
+		canny.setLowThreshold(130);
+
+
+/////////////////////////////////
+coins-squared
+
+sigma 4
+100	
+130	
+
+20
+1

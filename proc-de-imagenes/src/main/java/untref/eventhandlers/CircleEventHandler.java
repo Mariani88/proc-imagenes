@@ -4,6 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.image.ImageView;
 import untref.edge.service.hough.StageInitHough;
+import untref.edge.service.hough.circle.StageInitHoughCircle;
 
 public class CircleEventHandler implements EventHandler<ActionEvent>{
 	ImageView imageView;
@@ -17,7 +18,7 @@ public class CircleEventHandler implements EventHandler<ActionEvent>{
 	@Override
 	public void handle(ActionEvent arg0) {
 
-		StageInitHough houghStage = new StageInitHough();
+		StageInitHoughCircle houghStage = new StageInitHoughCircle();
 		houghStage.start(imageView.getImage(), imageResultView);
 	}
 }
