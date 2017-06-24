@@ -61,7 +61,7 @@ public class HarrisServiceImpl implements HarrisService {
 		for (int row = 0; row < height; row++) {
 			for (int column = 0; column < width; column++) {
 				if (cim[row][column] > (max * percent / 100)) {
-					pixelWriter.setColor(column, row, Color.YELLOW);
+					pixelWriter.setColor(column, row, Color.RED);
 				} else {
 					pixelWriter.setColor(column, row, pixelReader.getColor(column, row));
 				}
