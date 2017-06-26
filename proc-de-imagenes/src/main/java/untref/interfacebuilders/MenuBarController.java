@@ -41,11 +41,14 @@ public class MenuBarController {
 	private final DiffusionMenuControler diffusionMenuControler;
 	private ActiveContoursController activeContoursController;
 	private HoughMenuController houghMenuController;
+	private SiftController siftController;
 	private RawImage rawImage;
+	private CharacteristicPointsController CharacteristicPointsController;
 
 	public MenuBarController() {
+		this.siftController=new SiftController();
 		this.diffusionMenuControler = new DiffusionMenuControler();
-		this.houghMenuController=new HoughMenuController();
+		this.houghMenuController = new HoughMenuController();
 		this.edgeDetectionService = new EdgeDetectionServiceImpl();
 		this.imageEditionService = new ImageEditionServiceImpl();
 		this.imageRepository = new ImageRepositoryImpl();
@@ -62,16 +65,18 @@ public class MenuBarController {
 		histogramMenuController = new HistogramMenuController(aleatoryNumbersGeneratorService, histogramService);
 		edgeMenuController = new EdgeMenuController(edgeDetectionService);
 		filterMenuController = new FilterMenuController();
-		multiplesImageOpenMenuController = new MultiplesImageOpenMenuController(fileImageChooserFactory, imageIOService,rawImage);
+		multiplesImageOpenMenuController = new MultiplesImageOpenMenuController(fileImageChooserFactory, imageIOService, rawImage);
 		thresholdingMenuController = new ThresholdingMenuController();
 		openMenuController = new OpenMenuController(fileImageChooserFactory, imageIOService);
 		activeContoursController = new ActiveContoursController(openMenuController);
+		this.CharacteristicPointsController = new CharacteristicPointsController();
 	}
 
 	public MenuBar build(final ImageView imageView, final ImageView imageResultView, RawImage rawImage) {
-		this.rawImage=rawImage;
+		this.rawImage = rawImage;
 		MenuBar menuBar = new MenuBar();
-		Menu fileMenu = createFileMenu(imageView, imageResultView,rawImage);
+		Menu sift=this.siftController.createSift(imageView, imageResultView);
+		Menu fileMenu = createFileMenu(imageView, imageResultView, rawImage);
 		Menu editionMenu = editionMenuController.createEditionMenu(imageView, imageResultView);
 		Menu histogramMenu = histogramMenuController.createHistogramMenu(imageView, imageResultView);
 		Menu filterMenu = filterMenuController.createFilterMenu(imageView, imageResultView);
@@ -79,12 +84,15 @@ public class MenuBarController {
 		Menu thresholdingMenu = thresholdingMenuController.createThresholdingMenu(imageView, imageResultView);
 		Menu difussionMenu = this.diffusionMenuControler.createDiffusionMenu(imageView, imageResultView);
 		Menu activeContours = this.activeContoursController.create();
-		Menu houghTransform =this.houghMenuController.createHoughMenu(imageView, imageResultView);
-		menuBar.getMenus().addAll(fileMenu, editionMenu, histogramMenu, filterMenu, EdgeMenu, thresholdingMenu, difussionMenu, houghTransform,activeContours);
+		Menu houghTransform = this.houghMenuController.createHoughMenu(imageView, imageResultView);
+		Menu harris = this.CharacteristicPointsController.create(imageView, imageResultView);
+		menuBar.getMenus()
+				.addAll(fileMenu, editionMenu, histogramMenu, filterMenu, EdgeMenu, thresholdingMenu, difussionMenu, houghTransform, activeContours,
+						harris,sift);
 		return menuBar;
 	}
 
-	private Menu createFileMenu(ImageView imageView, ImageView imageView2,RawImage rawImage) {
+	private Menu createFileMenu(ImageView imageView, ImageView imageView2, RawImage rawImage) {
 		Menu fileMenu = new Menu("File");
 		MenuItem fileMenuItemOpen = openMenuController.createOpenMenuItem(imageView, rawImage, new SetterAdjustToView());
 		Menu multiplesImagesOpen = multiplesImageOpenMenuController.createMultiplesImagesOpenMenu(imageView, imageView2);

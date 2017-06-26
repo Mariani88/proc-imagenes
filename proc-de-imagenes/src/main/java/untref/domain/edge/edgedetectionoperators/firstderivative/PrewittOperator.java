@@ -4,13 +4,11 @@ import javafx.scene.image.Image;
 import untref.service.MaskApplicationService;
 import untref.service.MaskApplicationServiceImpl;
 
+import static untref.domain.edge.edgedetectionoperators.firstderivative.PrewithUtils.*;
+
 public class PrewittOperator implements EdgeDetectionFirstDerivativeOperator {
 
-	private static final int[][] PREWITH_OPERATOR_Fx = { { -1, -1, -1 }, { 0, 0, 0 }, { 1, 1, 1 } };
-	private static final int[][] PREWITH_OPERATOR_Fy = { { -1, 0, 1 }, { -1, 0, 1 }, { -1, 0, 1 } };
 	private final MaskApplicationService maskApplicationService;
-	private static final int OFFSET_I = 1;
-	private static final int OFFSET_J = 1;
 
 	public PrewittOperator() {
 		maskApplicationService = new MaskApplicationServiceImpl();

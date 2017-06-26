@@ -30,8 +30,8 @@ public class EdgeDetectionAplicator {
 		PixelReader pixelReader = image.getPixelReader();
 		PixelWriter pixelWriter = imageWithEdges.getPixelWriter();
 
-		for (int row = NOT_EDGE; row < height; row++) {
-			for (int column = NOT_EDGE; column < width; column++) {
+		for (int row = 0; row < height; row++) {
+			for (int column = 0; column < width; column++) {
 				TemporalColor fx = imageDerivativeService.calculateDerivative(image, row, column, pixelReader, operatorFx, offsetI, offsetJ);
 				TemporalColor fy = imageDerivativeService.calculateDerivative(image, row, column, pixelReader, operatorFy, offsetI, offsetJ);
 				TemporalColor gradientMagnitude = calculateGradientMagnitude(fx, fy);

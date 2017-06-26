@@ -50,6 +50,13 @@ public class ImageValuesTransformer {
 		return (red + green + blue) / 3;
 	}
 
+	public static int toGrayScale(TemporalColor temporalColor) {
+		int red = toRGBScale(temporalColor.getRed());
+		int green = toRGBScale(temporalColor.getGreen());
+		int blue = toRGBScale(temporalColor.getBlue());
+		return (red + green + blue) / 3;
+	}
+
 	public static int toGrayScaleOrEmpty(int row, int column, Image image) {
 		int gray = 0;
 		PixelReader pixelReader = image.getPixelReader();
