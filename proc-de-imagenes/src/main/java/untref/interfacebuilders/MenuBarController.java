@@ -75,7 +75,9 @@ public class MenuBarController {
 	public MenuBar build(final ImageView imageView, final ImageView imageResultView, RawImage rawImage) {
 		this.rawImage = rawImage;
 		MenuBar menuBar = new MenuBar();
+
 		Menu sift=this.siftController.createSift(imageView, imageResultView);
+
 		Menu fileMenu = createFileMenu(imageView, imageResultView, rawImage);
 		Menu editionMenu = editionMenuController.createEditionMenu(imageView, imageResultView);
 		Menu histogramMenu = histogramMenuController.createHistogramMenu(imageView, imageResultView);
