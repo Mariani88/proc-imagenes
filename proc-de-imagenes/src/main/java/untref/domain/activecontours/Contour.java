@@ -23,13 +23,12 @@ public class Contour {
 	private static int L_OUT = 1;
 	private static int L_IN = -1;
 	private static int OBJECT = -3;
-	private final Color objectColorAverage;
+	private Color objectColorAverage;
 	private Image imageWithContour;
 	private int matrix[][];
 	private CopyOnWriteArrayList<ImagePosition> lIn;
 	private CopyOnWriteArrayList<ImagePosition> lOut;
 	private Image originalImage;
-
 	public Contour(Image imageWithContour, List<ImagePosition> lIn, List<ImagePosition> lOut, Image originalImage, int fromRowObject,
 			int fromColumnObject, int toRowObject, int toColumnObject) {
 		this.imageWithContour = imageWithContour;
@@ -38,6 +37,12 @@ public class Contour {
 		this.originalImage = originalImage;
 		initializeMatrix(fromRowObject, fromColumnObject, toRowObject, toColumnObject);
 		objectColorAverage = calculateObjectColorAverage();
+	}
+
+
+
+	public void setObjectColorAverage(Color objectColorAverage) {
+		this.objectColorAverage = objectColorAverage;
 	}
 
 	public Color getObjectColorAverage() {

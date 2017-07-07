@@ -17,8 +17,16 @@ import static untref.domain.utils.ImageValuesTransformer.toRGBScale;
 
 public class ActiveContoursServiceImpl implements ActiveContoursService {
 
+	private double processedImages = 0;
+	private double totalLin = 0;
+	private double average;
+	private ImagePosition imagePosition;
+	private ImagePosition imagePosition2;
+
 	@Override
 	public Contour initializeActiveContours(Image image, ImagePosition imagePosition, ImagePosition imagePosition2) {
+		this.imagePosition = imagePosition;
+		this.imagePosition2 = imagePosition2;
 		WritableImage imageWithContours = replicateImage(image);
 		return paintExternalContours(imageWithContours, imagePosition, imagePosition2, image);
 	}
@@ -53,14 +61,99 @@ public class ActiveContoursServiceImpl implements ActiveContoursService {
 	}
 
 	@Override
-	public Contour adjustContoursAutomatically(Contour contour, Double colorDelta) {
+	public Contour adjustContoursAutomatically(Contour contour, Double colorDelta, Double reductionTolerance) {
 		int iterations = 20;
 
 		for (int index = 0; index < iterations; index++) {
-			contour = adjustContours(contour, colorDelta);
+			contour = adjustContoursForVideo(contour, colorDelta, reductionTolerance);
+		}
+		updateLinAverage(contour.getlIn());
+		return contour;
+	}
+
+	private Contour adjustContoursForVideo(Contour contour, Double colorDelta, Double reductionTolerance) {
+		List<ImagePosition> lOut = contour.getlOut();
+		List<ImagePosition> lIn = contour.getlIn();
+
+		for (int index = 0; index < lOut.size(); index++) {
+			ImagePosition imagePosition = lOut.get(index);
+			boolean isPositive = applyFd(imagePosition, contour.getOriginalImage(), contour.getObjectColorAverage(), colorDelta);
+			expandContours(isPositive, contour, imagePosition);
 		}
 
+		contour.moveInvalidLinToObject();
+
+		for (int index = 0; index < lIn.size(); index++) {
+			ImagePosition imagePosition = lIn.get(index);
+			boolean isPositive = applyFd(imagePosition, contour.getOriginalImage(), contour.getObjectColorAverage(), colorDelta);
+			shortenContour(isPositive, contour, imagePosition);
+		}
+
+		contour.moveInvalidLoutToBackground();
+		contour.updateImage();
+		contour = evaluateOclusion(lIn, reductionTolerance, contour);
 		return contour;
+	}
+
+	private Contour evaluateOclusion(List<ImagePosition> lIn, Double reductionTolerance, Contour contour) {
+		System.out.println("lIn: " + lIn.size() + " tolerance: " + reductionTolerance * average);
+		if (lIn.size() < reductionTolerance * average) {
+			//ImagePosition minimumPosition = searchMinimumPosition(lIn);
+			//ImagePosition maximumPosition = searchMaximumPosition(lIn);
+			//System.out.println("minimum row: " + minimumPosition.getRow() + " minimum column: "+ minimumPosition.getColumn());
+			//System.out.println("maximum row: " + maximumPosition.getRow() + " maximum column: "+ maximumPosition.getColumn());
+
+			ImagePosition imagePosition = new ImagePosition(Math.max(this.imagePosition.getRow() - 60, 0),
+					Math.max(this.imagePosition.getColumn() - 60, 0));
+			ImagePosition imagePosition2 = new ImagePosition(
+					Math.min(this.imagePosition2.getRow() + 60, toInt(contour.getOriginalImage().getHeight() - 1)),
+					Math.min(this.imagePosition2.getColumn() + 60, toInt(contour.getOriginalImage().getWidth() - 1)));
+			return resetActiveContours(contour.getOriginalImage(), imagePosition, imagePosition2, contour.getObjectColorAverage());
+		} else {
+			return contour;
+		}
+	}
+
+	private Contour resetActiveContours(Image image, ImagePosition imagePosition, ImagePosition imagePosition2, Color objectColorAverage) {
+		WritableImage imageWithContours = replicateImage(image);
+		Contour contour = paintExternalContours(imageWithContours, imagePosition, imagePosition2, image);
+		contour.setObjectColorAverage(objectColorAverage);
+		processedImages = 1;
+		totalLin = contour.getlIn().size();
+		average = totalLin/processedImages;
+		return contour;
+	}
+
+	private ImagePosition searchMaximumPosition(List<ImagePosition> lIn) {
+		int maximumColumn = Integer.MIN_VALUE;
+		int maximumRow = Integer.MIN_VALUE;
+
+		for (ImagePosition imagePosition : lIn) {
+			maximumColumn = Math.max(maximumColumn, imagePosition.getColumn());
+			maximumRow = Math.max(maximumRow, imagePosition.getRow());
+		}
+
+		return new ImagePosition(maximumRow, maximumColumn);
+	}
+
+	private ImagePosition searchMinimumPosition(List<ImagePosition> lIn) {
+		int minimumColumn = Integer.MAX_VALUE;
+		int minimumRow = Integer.MAX_VALUE;
+
+		for (ImagePosition imagePosition : lIn) {
+			minimumColumn = Math.min(minimumColumn, imagePosition.getColumn());
+			minimumRow = Math.min(minimumRow, imagePosition.getRow());
+		}
+
+		return new ImagePosition(minimumRow, minimumColumn);
+	}
+
+	private void updateLinAverage(List<ImagePosition> lIn) {
+		processedImages++;
+		totalLin += lIn.size();
+		System.out.println("processed images:" + processedImages);
+		average = ((double) totalLin) / processedImages;
+		System.out.println("average:" + average);
 	}
 
 	private void shortenContour(boolean isPositive, Contour contour, ImagePosition imagePosition) {

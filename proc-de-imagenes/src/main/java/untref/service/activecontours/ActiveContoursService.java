@@ -11,5 +11,5 @@ public interface ActiveContoursService {
 
 	Contour applyContourToNewImage(Contour contour, Image image);
 
-	Contour adjustContoursAutomatically(Contour contour, Double colorDelta);
+	Contour adjustContoursAutomatically(Contour contour, Double colorDelta, Double reductionTolerance);
 }

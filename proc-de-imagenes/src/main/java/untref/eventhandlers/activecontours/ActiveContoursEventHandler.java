@@ -1,6 +1,5 @@
 package untref.eventhandlers.activecontours;
 
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
@@ -23,7 +22,6 @@ import untref.service.activecontours.ActiveContoursServiceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.function.Consumer;
@@ -33,7 +31,7 @@ import static untref.domain.utils.ImageValuesTransformer.toInt;
 public class ActiveContoursEventHandler implements EventHandler<ActionEvent> {
 
 	private static final String FIRST_PIXEL = "first pixel   ";
-	private static final String SECOND_PIXEL = "second pixel";
+	private static final String SECOND_PIXEL = "second pixel  ";
 	private final OpenMenuController openMenuController;
 	private final PixelPaneController firstPixelPaneController;
 	private final PixelPaneController secondPixelPaneController;
@@ -62,10 +60,6 @@ public class ActiveContoursEventHandler implements EventHandler<ActionEvent> {
 		ImageView imageView = new ImageViewBuilder("default.jpg").withPreserveRatio(true).withAutosize().withVisible(true).withImageSize().build();
 		imageToShow = imageView.getImage();
 		final Contour[] contour = new Contour[1];
-
-		/*imageView.setOnMouseClicked(
-				new InitialContourEventHandler(firstPixelPaneController, secondPixelPaneController, contour, activeContoursService, imageView,
-						imageToShow));*/
 
 		imageView.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
@@ -122,17 +116,22 @@ public class ActiveContoursEventHandler implements EventHandler<ActionEvent> {
 		TextField timeByFrameValue = new TextField();
 		timeByFrameValue.setMaxWidth(40);
 
+		Label contourReduceTolerance = new Label("reduction tolerance");
+		TextField contourReduceToleranceValue = new TextField();
+		contourReduceToleranceValue.setMaxWidth(40);
+
 		TimerTask timerTask = new TimerTask() {
 			@Override
 			public void run() {
-				reproduceVideoWithContour(contour, videoImages, imageView, objectColorDeltaValue, timeByFrameValue);
+				reproduceVideoWithContour(contour, videoImages, imageView, objectColorDeltaValue, timeByFrameValue, contourReduceToleranceValue);
 			}
 		};
 
 		Timer timer = new Timer();
 		timer.schedule(timerTask, 3000, 10000);
 
-		cordinates.getChildren().addAll(firstPixelPane, secondPixelPane, timeByFrame, timeByFrameValue);
+		cordinates.getChildren()
+				.addAll(firstPixelPane, secondPixelPane, timeByFrame, timeByFrameValue, contourReduceTolerance, contourReduceToleranceValue);
 		pane.getChildren().addAll(menuBar, imageView, cordinates, objectColorDelta, objectColorDeltaValue, applyContours);
 		Scene scene = new Scene(pane);
 		stage.setScene(scene);
@@ -140,8 +139,8 @@ public class ActiveContoursEventHandler implements EventHandler<ActionEvent> {
 	}
 
 	private void reproduceVideoWithContour(Contour[] contour, List<Image> videoImages, ImageView imageView, TextField objectColorDeltaValue,
-			TextField timeByFrameValue) {
-		if (contour[0] != null && hasDeltaSetted(objectColorDeltaValue.getText())) {
+			TextField timeByFrameValue, TextField contourReduceToleranceValue) {
+		if (contour[0] != null && hasSetted(objectColorDeltaValue.getText()) && hasSetted(contourReduceToleranceValue.getText())) {
 			final double[] accumulateTime = { 0 };
 			videoImages.forEach(new Consumer<Image>() {
 				@Override
@@ -149,8 +148,8 @@ public class ActiveContoursEventHandler implements EventHandler<ActionEvent> {
 					System.out.println("executing");
 					double time = System.currentTimeMillis();
 					contour[0] = activeContoursService.applyContourToNewImage(contour[0], image);
-					contour[0] = activeContoursService
-							.adjustContoursAutomatically(contour[0], Double.valueOf(objectColorDeltaValue.getText()));
+					contour[0] = activeContoursService.adjustContoursAutomatically(contour[0], Double.valueOf(objectColorDeltaValue.getText()),
+							Double.valueOf(contourReduceToleranceValue.getText()));
 					ImageSetter.setWithImageSize(imageView, contour[0].getImageWithContour());
 					accumulateTime[0] += (System.currentTimeMillis() - time);
 					try {
@@ -164,11 +163,11 @@ public class ActiveContoursEventHandler implements EventHandler<ActionEvent> {
 		}
 	}
 
-	private boolean hasDeltaSetted(String value) {
+	private boolean hasSetted(String value) {
 		try {
 			Double.valueOf(value);
 			return true;
-		}catch (NumberFormatException e){
+		} catch (NumberFormatException e) {
 			return false;
 		}
 	}

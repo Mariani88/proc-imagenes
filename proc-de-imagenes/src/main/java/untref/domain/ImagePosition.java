@@ -1,6 +1,6 @@
 package untref.domain;
 
-public class ImagePosition {
+public class ImagePosition implements Comparable<ImagePosition> {
 
 	private int row;
 	private int column;
@@ -37,5 +37,19 @@ public class ImagePosition {
 		int result = row;
 		result = 31 * result + column;
 		return result;
+	}
+
+	@Override
+	public int compareTo(ImagePosition imagePosition) {
+
+		if (this.equals(imagePosition)) {
+			return 0;
+		}
+
+		if (this.column < imagePosition.getColumn() && this.row < imagePosition.getRow()) {
+			return -1;
+		}
+
+		return 1;
 	}
 }
