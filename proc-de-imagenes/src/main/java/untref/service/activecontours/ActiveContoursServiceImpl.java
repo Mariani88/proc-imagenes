@@ -98,11 +98,6 @@ public class ActiveContoursServiceImpl implements ActiveContoursService {
 	private Contour evaluateOclusion(List<ImagePosition> lIn, Double reductionTolerance, Contour contour) {
 		System.out.println("lIn: " + lIn.size() + " tolerance: " + reductionTolerance * average);
 		if (lIn.size() < reductionTolerance * average) {
-			//ImagePosition minimumPosition = searchMinimumPosition(lIn);
-			//ImagePosition maximumPosition = searchMaximumPosition(lIn);
-			//System.out.println("minimum row: " + minimumPosition.getRow() + " minimum column: "+ minimumPosition.getColumn());
-			//System.out.println("maximum row: " + maximumPosition.getRow() + " maximum column: "+ maximumPosition.getColumn());
-
 			ImagePosition imagePosition = new ImagePosition(Math.max(this.imagePosition.getRow() - 60, 0),
 					Math.max(this.imagePosition.getColumn() - 60, 0));
 			ImagePosition imagePosition2 = new ImagePosition(
@@ -120,39 +115,15 @@ public class ActiveContoursServiceImpl implements ActiveContoursService {
 		contour.setObjectColorAverage(objectColorAverage);
 		processedImages = 1;
 		totalLin = contour.getlIn().size();
-		average = totalLin/processedImages;
+		average = totalLin / processedImages;
 		return contour;
-	}
-
-	private ImagePosition searchMaximumPosition(List<ImagePosition> lIn) {
-		int maximumColumn = Integer.MIN_VALUE;
-		int maximumRow = Integer.MIN_VALUE;
-
-		for (ImagePosition imagePosition : lIn) {
-			maximumColumn = Math.max(maximumColumn, imagePosition.getColumn());
-			maximumRow = Math.max(maximumRow, imagePosition.getRow());
-		}
-
-		return new ImagePosition(maximumRow, maximumColumn);
-	}
-
-	private ImagePosition searchMinimumPosition(List<ImagePosition> lIn) {
-		int minimumColumn = Integer.MAX_VALUE;
-		int minimumRow = Integer.MAX_VALUE;
-
-		for (ImagePosition imagePosition : lIn) {
-			minimumColumn = Math.min(minimumColumn, imagePosition.getColumn());
-			minimumRow = Math.min(minimumRow, imagePosition.getRow());
-		}
-
-		return new ImagePosition(minimumRow, minimumColumn);
 	}
 
 	private void updateLinAverage(List<ImagePosition> lIn) {
 		processedImages++;
 		totalLin += lIn.size();
 		System.out.println("processed images:" + processedImages);
-		average = ((double) totalLin) / processedImages;
+		average = totalLin / processedImages;
 		System.out.println("average:" + average);
 	}
 
