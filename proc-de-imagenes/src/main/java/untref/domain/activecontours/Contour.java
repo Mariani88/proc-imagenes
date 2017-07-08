@@ -2,8 +2,6 @@ package untref.domain.activecontours;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
-import javafx.scene.image.PixelWriter;
-import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import untref.domain.ImagePosition;
 import untref.utils.ImageValidator;
@@ -29,6 +27,7 @@ public class Contour {
 	private CopyOnWriteArrayList<ImagePosition> lIn;
 	private CopyOnWriteArrayList<ImagePosition> lOut;
 	private Image originalImage;
+
 	public Contour(Image imageWithContour, List<ImagePosition> lIn, List<ImagePosition> lOut, Image originalImage, int fromRowObject,
 			int fromColumnObject, int toRowObject, int toColumnObject) {
 		this.imageWithContour = imageWithContour;
@@ -38,8 +37,6 @@ public class Contour {
 		initializeMatrix(fromRowObject, fromColumnObject, toRowObject, toColumnObject);
 		objectColorAverage = calculateObjectColorAverage();
 	}
-
-
 
 	public void setObjectColorAverage(Color objectColorAverage) {
 		this.objectColorAverage = objectColorAverage;
@@ -53,6 +50,10 @@ public class Contour {
 		originalImage = image;
 		updateImage();
 		return this;
+	}
+
+	public void updateImage() {
+		imageWithContour = new ContourImageUpdater().updateImage(originalImage, L_IN, L_OUT, matrix);
 	}
 
 	private Color calculateObjectColorAverage() {
@@ -145,28 +146,6 @@ public class Contour {
 		Set<ImagePosition> neighborings = getNeighborings(imagePosition, BACKGROUND);
 		return neighborings.stream().filter(imagePosition1 -> ImageValidator.existPosition(originalImage, imagePosition1))
 				.collect(Collectors.toSet());
-	}
-
-	public void updateImage() {
-		int width = toInt(originalImage.getWidth());
-		int height = toInt(originalImage.getHeight());
-		WritableImage writableImage = new WritableImage(width, height);
-		PixelWriter pixelWriter = writableImage.getPixelWriter();
-		PixelReader pixelReader = originalImage.getPixelReader();
-
-		for (int row = 0; row < height; row++) {
-			for (int column = 0; column < width; column++) {
-				if (matrix[row][column] == L_OUT) {
-					pixelWriter.setColor(column, row, Color.BLUE);
-				} else if (matrix[row][column] == L_IN) {
-					pixelWriter.setColor(column, row, Color.RED);
-				} else {
-					pixelWriter.setColor(column, row, pixelReader.getColor(column, row));
-				}
-			}
-		}
-
-		imageWithContour = writableImage;
 	}
 
 	public void moveFromLinToLout(ImagePosition imagePosition) {
