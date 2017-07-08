@@ -1,26 +1,20 @@
 package untref.domain.activecontours;
 
 import javafx.scene.image.Image;
-import javafx.scene.image.PixelReader;
 import javafx.scene.paint.Color;
 import untref.domain.ImagePosition;
 import untref.utils.ImageValidator;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
-import static untref.domain.utils.ImageValuesTransformer.toInt;
+import static untref.domain.activecontours.ContourObjectElement.*;
 
 public class Contour {
 
-	private static int BACKGROUND = 3;
-	private static int L_OUT = 1;
-	private static int L_IN = -1;
-	private static int OBJECT = -3;
 	private Color objectColorAverage;
 	private Image imageWithContour;
 	private int matrix[][];
@@ -34,7 +28,8 @@ public class Contour {
 		this.lIn = new CopyOnWriteArrayList<>(lIn);
 		this.lOut = new CopyOnWriteArrayList<>(lOut);
 		this.originalImage = originalImage;
-		initializeMatrix(fromRowObject, fromColumnObject, toRowObject, toColumnObject);
+		matrix = new ContourMatrixInitializer()
+				.initializeMatrix(fromRowObject, fromColumnObject, toRowObject, toColumnObject, originalImage, lIn, lOut);
 		objectColorAverage = new ContourObjectCalculator().calculateObjectColorAverage(imageWithContour, matrix, OBJECT);
 	}
 
@@ -53,7 +48,7 @@ public class Contour {
 	}
 
 	public void updateImage() {
-		imageWithContour = new ContourImageUpdater().updateImage(originalImage, L_IN, L_OUT, matrix);
+		imageWithContour = new ContourImageUpdater().updateImage(originalImage, matrix);
 	}
 
 	public List<ImagePosition> getlIn() {
@@ -172,33 +167,5 @@ public class Contour {
 		if (ImageValidator.existPosition(originalImage, row, column) && matrix[row][column] == element) {
 			elementNeighborings.add(new ImagePosition(row, column));
 		}
-	}
-
-	private void initializeMatrix(int fromRowObject, int fromColumnObject, int toRowObject, int toColumnObject) {
-		int height = toInt(originalImage.getHeight());
-		int width = toInt(originalImage.getWidth());
-		matrix = new int[height][width];
-
-		for (int row = 0; row < height; row++) {
-			for (int column = 0; column < width; column++) {
-				matrix[row][column] = BACKGROUND;
-			}
-		}
-
-		setWithEdges();
-		setWithObject(fromRowObject, fromColumnObject, toRowObject, toColumnObject);
-	}
-
-	private void setWithObject(int fromRowObject, int fromColumnObject, int toRowObject, int toColumnObject) {
-		for (int row = fromRowObject; row <= toRowObject; row++) {
-			for (int column = fromColumnObject; column <= toColumnObject; column++) {
-				matrix[row][column] = OBJECT;
-			}
-		}
-	}
-
-	private void setWithEdges() {
-		lIn.forEach(imagePosition -> matrix[imagePosition.getRow()][imagePosition.getColumn()] = L_IN);
-		lOut.forEach(imagePosition -> matrix[imagePosition.getRow()][imagePosition.getColumn()] = L_OUT);
 	}
 }
