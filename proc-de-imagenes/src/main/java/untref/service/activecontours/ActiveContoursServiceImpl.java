@@ -104,18 +104,19 @@ public class ActiveContoursServiceImpl implements ActiveContoursService {
 			ImagePosition imagePosition2 = new ImagePosition(
 					Math.min(this.imagePosition2.getRow() + 60, toInt(contour.getOriginalImage().getHeight() - 1)),
 					Math.min(this.imagePosition2.getColumn() + 60, toInt(contour.getOriginalImage().getWidth() - 1)));
-			return resetActiveContours(contour.getOriginalImage(), imagePosition, imagePosition2, contour.getObjectColorAverage());
+			Contour newContour = contourDomainService
+					.createContourWithColorAverage(imagePosition, imagePosition2, contour.getOriginalImage(), contour.getObjectColorAverage());
+			resetVideoAttributes(newContour);
+			return newContour;
 		} else {
 			return contour;
 		}
 	}
 
-	private Contour resetActiveContours(Image image, ImagePosition imagePosition, ImagePosition imagePosition2, Color objectColorAverage) {
-		Contour contour = contourDomainService.createContourWithColorAverage(imagePosition, imagePosition2, image, objectColorAverage);
+	private void resetVideoAttributes(Contour contour) {
 		processedImages = 1;
 		totalLin = contour.getlIn().size();
 		average = totalLin / processedImages;
-		return contour;
 	}
 
 	private void updateLinAverage(List<ImagePosition> lIn) {
