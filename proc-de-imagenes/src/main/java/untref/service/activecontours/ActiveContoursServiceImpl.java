@@ -66,13 +66,14 @@ public class ActiveContoursServiceImpl implements ActiveContoursService {
 		int iterations = 20;
 
 		for (int index = 0; index < iterations; index++) {
-			contour = adjustContoursForVideo(contour, colorDelta, reductionTolerance);
+			contour = adjustContoursForVideo(contour, colorDelta);
 		}
 		updateLinAverage(contour.getlIn());
+		contour = evaluateOclusion(contour.getlIn(), reductionTolerance, contour);
 		return contour;
 	}
 
-	private Contour adjustContoursForVideo(Contour contour, Double colorDelta, Double reductionTolerance) {
+	private Contour adjustContoursForVideo(Contour contour, Double colorDelta) {
 		List<ImagePosition> lOut = contour.getlOut();
 		List<ImagePosition> lIn = contour.getlIn();
 
@@ -92,7 +93,6 @@ public class ActiveContoursServiceImpl implements ActiveContoursService {
 
 		contour.moveInvalidLoutToBackground();
 		contour.updateImage();
-		contour = evaluateOclusion(lIn, reductionTolerance, contour);
 		return contour;
 	}
 

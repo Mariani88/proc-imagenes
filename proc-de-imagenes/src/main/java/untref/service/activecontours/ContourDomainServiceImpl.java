@@ -15,14 +15,16 @@ import static untref.domain.utils.ImageValuesTransformer.toInt;
 
 public class ContourDomainServiceImpl implements ContourDomainService {
 
+	private static final int INITIAL_CAPACITY = 10000;
+
 	@Override
 	public Contour createContour(ImagePosition imagePosition, ImagePosition imagePosition2, Image image) {
 		int firstRow = Math.min(imagePosition.getRow(), imagePosition2.getRow());
 		int secondRow = Math.max(imagePosition.getRow(), imagePosition2.getRow());
 		int firstColumn = Math.min(imagePosition.getColumn(), imagePosition2.getColumn());
 		int secondColumn = Math.max(imagePosition.getColumn(), imagePosition2.getColumn());
-		List<ImagePosition> lIn = new ArrayList<>();
-		List<ImagePosition> lOut = new ArrayList<>();
+		List<ImagePosition> lIn = new ArrayList<>(INITIAL_CAPACITY);
+		List<ImagePosition> lOut = new ArrayList<>(INITIAL_CAPACITY);
 		WritableImage imageWithContours = replicateImage(image);
 		PixelWriter pixelWriter = imageWithContours.getPixelWriter();
 		paintContourColumns(lOut, firstRow, secondRow, firstColumn, secondColumn, Color.BLUE, pixelWriter);
