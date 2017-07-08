@@ -35,7 +35,7 @@ public class Contour {
 		this.lOut = new CopyOnWriteArrayList<>(lOut);
 		this.originalImage = originalImage;
 		initializeMatrix(fromRowObject, fromColumnObject, toRowObject, toColumnObject);
-		objectColorAverage = calculateObjectColorAverage();
+		objectColorAverage = new ContourObjectCalculator().calculateObjectColorAverage(imageWithContour, matrix, OBJECT);
 	}
 
 	public void setObjectColorAverage(Color objectColorAverage) {
@@ -54,34 +54,6 @@ public class Contour {
 
 	public void updateImage() {
 		imageWithContour = new ContourImageUpdater().updateImage(originalImage, L_IN, L_OUT, matrix);
-	}
-
-	private Color calculateObjectColorAverage() {
-		List<Color> objectColors = new ArrayList<>();
-		PixelReader pixelReader = imageWithContour.getPixelReader();
-
-		for (int row = 0; row < imageWithContour.getHeight(); row++) {
-			for (int column = 0; column < imageWithContour.getWidth(); column++) {
-				if (matrix[row][column] == OBJECT) {
-					objectColors.add(pixelReader.getColor(column, row));
-				}
-			}
-		}
-
-		double redAverage = calculateAverage(objectColors.stream().map(Color::getRed).collect(Collectors.toList()));
-		double greenAverage = calculateAverage(objectColors.stream().map(Color::getGreen).collect(Collectors.toList()));
-		double blueAverage = calculateAverage(objectColors.stream().map(Color::getBlue).collect(Collectors.toList()));
-		return Color.rgb(toInt(redAverage), toInt(greenAverage), toInt(blueAverage));
-	}
-
-	private double calculateAverage(List<Double> grays) {
-		double gray = 0;
-
-		for (Double grayValue : grays) {
-			gray += grayValue;
-		}
-
-		return (double) 255 * gray / (double) grays.size();
 	}
 
 	public List<ImagePosition> getlIn() {
