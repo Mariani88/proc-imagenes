@@ -1,7 +1,6 @@
 package untref.service.activecontours;
 
 import javafx.scene.image.Image;
-import javafx.scene.image.PixelReader;
 import javafx.scene.paint.Color;
 import untref.domain.ImagePosition;
 import untref.domain.activecontours.Contour;
@@ -10,11 +9,11 @@ import java.util.List;
 import java.util.Set;
 
 import static untref.domain.utils.ImageValuesTransformer.toInt;
-import static untref.domain.utils.ImageValuesTransformer.toRGBScale;
 
 public class ActiveContoursServiceImpl implements ActiveContoursService {
 
 	private final ContourDomainService contourDomainService;
+	private final FdFunction fdFunction;
 	private double processedImages = 0;
 	private double totalLin = 0;
 	private double average;
@@ -23,6 +22,7 @@ public class ActiveContoursServiceImpl implements ActiveContoursService {
 
 	public ActiveContoursServiceImpl() {
 		contourDomainService = new ContourDomainServiceImpl();
+		fdFunction = new FdFunction();
 	}
 
 	@Override
@@ -39,7 +39,7 @@ public class ActiveContoursServiceImpl implements ActiveContoursService {
 
 		for (int index = 0; index < lOut.size(); index++) {
 			ImagePosition imagePosition = lOut.get(index);
-			boolean isPositive = applyFd(imagePosition, contour.getOriginalImage(), contour.getObjectColorAverage(), colorDelta);
+			boolean isPositive = fdFunction.apply(imagePosition, contour.getOriginalImage(), contour.getObjectColorAverage(), colorDelta);
 			expandContours(isPositive, contour, imagePosition);
 		}
 
@@ -47,7 +47,7 @@ public class ActiveContoursServiceImpl implements ActiveContoursService {
 
 		for (int index = 0; index < lIn.size(); index++) {
 			ImagePosition imagePosition = lIn.get(index);
-			boolean isPositive = applyFd(imagePosition, contour.getOriginalImage(), contour.getObjectColorAverage(), colorDelta);
+			boolean isPositive = fdFunction.apply(imagePosition, contour.getOriginalImage(), contour.getObjectColorAverage(), colorDelta);
 			shortenContour(isPositive, contour, imagePosition);
 		}
 
@@ -78,7 +78,7 @@ public class ActiveContoursServiceImpl implements ActiveContoursService {
 
 		for (int index = 0; index < lOut.size(); index++) {
 			ImagePosition imagePosition = lOut.get(index);
-			boolean isPositive = applyFd(imagePosition, contour.getOriginalImage(), contour.getObjectColorAverage(), colorDelta);
+			boolean isPositive = fdFunction.apply(imagePosition, contour.getOriginalImage(), contour.getObjectColorAverage(), colorDelta);
 			expandContours(isPositive, contour, imagePosition);
 		}
 
@@ -86,7 +86,7 @@ public class ActiveContoursServiceImpl implements ActiveContoursService {
 
 		for (int index = 0; index < lIn.size(); index++) {
 			ImagePosition imagePosition = lIn.get(index);
-			boolean isPositive = applyFd(imagePosition, contour.getOriginalImage(), contour.getObjectColorAverage(), colorDelta);
+			boolean isPositive = fdFunction.apply(imagePosition, contour.getOriginalImage(), contour.getObjectColorAverage(), colorDelta);
 			shortenContour(isPositive, contour, imagePosition);
 		}
 
@@ -141,15 +141,5 @@ public class ActiveContoursServiceImpl implements ActiveContoursService {
 			Set<ImagePosition> backgroundNeighborings = contour.getAllBackgroundNeighboring(imagePosition);
 			contour.addToLout(backgroundNeighborings);
 		}
-	}
-
-	private boolean applyFd(ImagePosition imagePosition, Image originalImage, Color objectColorAverage, Double colorDelta) {
-		PixelReader pixelReader = originalImage.getPixelReader();
-		Color imagePositionColor = pixelReader.getColor(imagePosition.getColumn(), imagePosition.getRow());
-		int difRed = toRGBScale(imagePositionColor.getRed() - objectColorAverage.getRed());
-		int difGreen = toRGBScale(imagePositionColor.getGreen() - objectColorAverage.getGreen());
-		int difBlue = toRGBScale(imagePositionColor.getBlue() - objectColorAverage.getBlue());
-		double module = Math.sqrt(Math.pow(difRed, 2) + Math.pow(difGreen, 2) + Math.pow(difBlue, 2));
-		return !(module >= colorDelta);
 	}
 }
