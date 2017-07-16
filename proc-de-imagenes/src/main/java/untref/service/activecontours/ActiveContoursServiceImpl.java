@@ -1,7 +1,6 @@
 package untref.service.activecontours;
 
 import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
 import untref.domain.ImagePosition;
 import untref.domain.activecontours.Contour;
 
@@ -17,8 +16,8 @@ public class ActiveContoursServiceImpl implements ActiveContoursService {
 	private double processedImages = 0;
 	private double totalLin = 0;
 	private double average;
-	private ImagePosition imagePosition;
-	private ImagePosition imagePosition2;
+	private ImagePosition initialImagePosition;
+	private ImagePosition initialImagePosition2;
 
 	public ActiveContoursServiceImpl() {
 		contourDomainService = new ContourDomainServiceImpl();
@@ -27,8 +26,8 @@ public class ActiveContoursServiceImpl implements ActiveContoursService {
 
 	@Override
 	public Contour initializeActiveContours(Image image, ImagePosition imagePosition, ImagePosition imagePosition2) {
-		this.imagePosition = imagePosition;
-		this.imagePosition2 = imagePosition2;
+		this.initialImagePosition = imagePosition;
+		this.initialImagePosition2 = imagePosition2;
 		return contourDomainService.createContour(imagePosition, imagePosition2, image);
 	}
 
@@ -99,11 +98,11 @@ public class ActiveContoursServiceImpl implements ActiveContoursService {
 	private Contour evaluateOclusion(List<ImagePosition> lIn, Double reductionTolerance, Contour contour) {
 		System.out.println("lIn: " + lIn.size() + " tolerance: " + reductionTolerance * average);
 		if (lIn.size() < reductionTolerance * average) {
-			ImagePosition imagePosition = new ImagePosition(Math.max(this.imagePosition.getRow() - 60, 0),
-					Math.max(this.imagePosition.getColumn() - 60, 0));
+			ImagePosition imagePosition = new ImagePosition(Math.max(this.initialImagePosition.getRow() - 60, 0),
+					Math.max(this.initialImagePosition.getColumn() - 60, 0));
 			ImagePosition imagePosition2 = new ImagePosition(
-					Math.min(this.imagePosition2.getRow() + 60, toInt(contour.getOriginalImage().getHeight() - 1)),
-					Math.min(this.imagePosition2.getColumn() + 60, toInt(contour.getOriginalImage().getWidth() - 1)));
+					Math.min(this.initialImagePosition2.getRow() + 60, toInt(contour.getOriginalImage().getHeight() - 1)),
+					Math.min(this.initialImagePosition2.getColumn() + 60, toInt(contour.getOriginalImage().getWidth() - 1)));
 			Contour newContour = contourDomainService
 					.createContourWithColorAverage(imagePosition, imagePosition2, contour.getOriginalImage(), contour.getObjectColorAverage());
 			resetVideoAttributes(newContour);
