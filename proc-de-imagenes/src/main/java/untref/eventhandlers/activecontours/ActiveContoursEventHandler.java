@@ -120,10 +120,15 @@ public class ActiveContoursEventHandler implements EventHandler<ActionEvent> {
 		TextField contourReduceToleranceValue = new TextField();
 		contourReduceToleranceValue.setMaxWidth(40);
 
+		Label expandSize = new Label("expand size");
+		TextField expandSizeValue = new TextField();
+		contourReduceToleranceValue.setMaxWidth(40);
+
 		TimerTask timerTask = new TimerTask() {
 			@Override
 			public void run() {
-				reproduceVideoWithContour(contour, videoImages, imageView, objectColorDeltaValue, timeByFrameValue, contourReduceToleranceValue);
+				reproduceVideoWithContour(contour, videoImages, imageView, objectColorDeltaValue, timeByFrameValue, contourReduceToleranceValue,
+						expandSizeValue);
 			}
 		};
 
@@ -131,7 +136,8 @@ public class ActiveContoursEventHandler implements EventHandler<ActionEvent> {
 		timer.schedule(timerTask, 3000, 10000);
 
 		cordinates.getChildren()
-				.addAll(firstPixelPane, secondPixelPane, timeByFrame, timeByFrameValue, contourReduceTolerance, contourReduceToleranceValue);
+				.addAll(firstPixelPane, secondPixelPane, timeByFrame, timeByFrameValue, contourReduceTolerance, contourReduceToleranceValue,
+						expandSize, expandSizeValue);
 		pane.getChildren().addAll(menuBar, imageView, cordinates, objectColorDelta, objectColorDeltaValue, applyContours);
 		Scene scene = new Scene(pane);
 		stage.setScene(scene);
@@ -139,8 +145,9 @@ public class ActiveContoursEventHandler implements EventHandler<ActionEvent> {
 	}
 
 	private void reproduceVideoWithContour(Contour[] contour, List<Image> videoImages, ImageView imageView, TextField objectColorDeltaValue,
-			TextField timeByFrameValue, TextField contourReduceToleranceValue) {
-		if (contour[0] != null && hasSetted(objectColorDeltaValue.getText()) && hasSetted(contourReduceToleranceValue.getText())) {
+			TextField timeByFrameValue, TextField contourReduceToleranceValue, TextField expandSizeValue) {
+		if (contour[0] != null && hasSetted(objectColorDeltaValue.getText()) && hasSetted(contourReduceToleranceValue.getText()) && hasSetted(
+				expandSizeValue.getText())) {
 			final double[] accumulateTime = { 0 };
 			videoImages.forEach(new Consumer<Image>() {
 				@Override
@@ -149,7 +156,7 @@ public class ActiveContoursEventHandler implements EventHandler<ActionEvent> {
 					double time = System.currentTimeMillis();
 					contour[0] = activeContoursService.applyContourToNewImage(contour[0], image);
 					contour[0] = activeContoursService.adjustContoursAutomatically(contour[0], Double.valueOf(objectColorDeltaValue.getText()),
-							Double.valueOf(contourReduceToleranceValue.getText()));
+							Double.valueOf(contourReduceToleranceValue.getText()), Integer.valueOf(expandSizeValue.getText()));
 					ImageSetter.setWithImageSize(imageView, contour[0].getImageWithContour());
 					accumulateTime[0] += (System.currentTimeMillis() - time);
 					try {
