@@ -2,6 +2,7 @@ package untref.service.activecontours;
 
 import javafx.scene.image.Image;
 import untref.domain.ImagePosition;
+import untref.domain.activecontours.ActiveContourCurves;
 import untref.domain.activecontours.Contour;
 
 import java.util.List;
@@ -69,6 +70,11 @@ public class ActiveContoursServiceImpl implements ActiveContoursService {
 		}
 		updateLinAverage(contour.getlIn());
 		contour = evaluateOclusion(contour.getlIn(), reductionTolerance, contour, expandSize);
+		ActiveContourCurves activeContourCurves = new ActiveContourCurveDetectorServiceImpl().calculateCurves(contour.getlIn());
+
+		System.out.println("curves: " + activeContourCurves.getCurves().size());
+		System.out.println("detection factor:" + activeContourCurves.getDetectionFactor());
+
 		return contour;
 	}
 
