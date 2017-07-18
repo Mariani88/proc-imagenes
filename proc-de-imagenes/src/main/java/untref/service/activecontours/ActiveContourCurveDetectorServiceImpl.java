@@ -48,9 +48,11 @@ public class ActiveContourCurveDetectorServiceImpl implements ActiveContourCurve
 				if (v4 != -1) {
 					curveByPosition.put(pixels.get(v4), closedCurve);
 					amountPixels++;
+					actualPixel = v4;
 				} else if (v8 != -1) {
 					curveByPosition.put(pixels.get(v8), closedCurve);
 					amountPixels++;
+					actualPixel = v8;
 				} else {
 					foundEightNeighboring = false;
 					foundFourNeighboring = false;
@@ -75,7 +77,7 @@ public class ActiveContourCurveDetectorServiceImpl implements ActiveContourCurve
 			}
 		}
 
-		List<List<ImagePosition>> curves = mapToCurves(curveByPosition);
+		List<List<ImagePosition>> curves = mapToCurves(curveByPosition); //error aca
 		return new ActiveContourCurves(curves, toDouble(amountPixels) / toDouble(n));
 	}
 
@@ -87,7 +89,7 @@ public class ActiveContourCurveDetectorServiceImpl implements ActiveContourCurve
 
 	private void unmark(Map<ImagePosition, Integer> curveByPosition, int closedCurve) {
 		List<ImagePosition> pixelsToRemove = curveByPosition.entrySet().stream()
-				.filter(imagePositionIntegerEntry -> !imagePositionIntegerEntry.getValue().equals(closedCurve)).map(Map.Entry::getKey)
+				.filter(imagePositionIntegerEntry -> imagePositionIntegerEntry.getValue().equals(closedCurve)).map(Map.Entry::getKey)
 				.collect(Collectors.toList());
 		pixelsToRemove.forEach(curveByPosition::remove);
 	}
