@@ -54,7 +54,12 @@ public class ImagePosition implements Cloneable,Comparable<ImagePosition> {
 	}
 
 	@Override
-	public ImagePosition clone(){
+	public Object clone(){
+		try {
+			super.clone();
+		} catch (CloneNotSupportedException e) {
+			throw new RuntimeException(e);
+		}
 		return new ImagePosition(this.row, this.column);
 	}
 }

@@ -3,9 +3,10 @@ package untref.service.activecontours;
 import untref.domain.ImagePosition;
 import untref.domain.activecontours.ActiveContourCurves;
 
-import java.util.*;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static untref.domain.utils.ImageValuesTransformer.toDouble;
@@ -14,7 +15,7 @@ public class ActiveContourCurveDetectorServiceImpl implements ActiveContourCurve
 
 	@Override
 	public ActiveContourCurves calculateCurves(List<ImagePosition> lIn) {
-		List<ImagePosition> pixels = new LinkedList<>(lIn);
+		List<ImagePosition> pixels = lIn.stream().map(imagePosition -> (ImagePosition) imagePosition.clone()).collect(Collectors.toList());
 		int n = pixels.size();
 		int initialPixel = 0;
 		Map<ImagePosition, Integer> curveByPosition = new HashMap<>();
@@ -22,16 +23,15 @@ public class ActiveContourCurveDetectorServiceImpl implements ActiveContourCurve
 		int amountPixels = 1;
 
 		while (initialPixel < n) {
-			System.out.println("primer while");
+			//System.out.println("primer while");
 			int actualPixel = initialPixel;
 			curveByPosition.put(pixels.get(actualPixel), closedCurve);
 			//int amountPixels = 1;
 			boolean foundFourNeighboring = true;
 			boolean foundEightNeighboring = true;
 
-			while (foundFourNeighboring
-					|| foundEightNeighboring/*foundFourNeighboring(pixels.get(actualPixel)) || foundEightNeighboring(pixels.get(actualPixel))*/) {
-				System.out.println("segundo while");
+			while (foundFourNeighboring || foundEightNeighboring) {
+				//System.out.println("segundo while");
 				int v4 = -1;
 				int v8 = -1;
 
@@ -50,7 +50,7 @@ public class ActiveContourCurveDetectorServiceImpl implements ActiveContourCurve
 				if (v4 != -1) {
 					curveByPosition.put(pixels.get(v4), closedCurve);
 					amountPixels++;
-					actualPixel = v4;
+					actualPixel = v4;  //Esto se agrego
 				} else if (v8 != -1) {
 					curveByPosition.put(pixels.get(v8), closedCurve);
 					amountPixels++;
@@ -72,10 +72,10 @@ public class ActiveContourCurveDetectorServiceImpl implements ActiveContourCurve
 			while (initialPixel < n) {
 				if (curveByPosition.get(pixels.get(initialPixel)) != null) {
 					initialPixel++;
-				}else{
-					break;
+				} else {
+					break; //se agrego para salir del while
 				}
-				System.out.println("tercer while");
+				//System.out.println("tercer while");
 			}
 		}
 
@@ -85,17 +85,7 @@ public class ActiveContourCurveDetectorServiceImpl implements ActiveContourCurve
 
 	private List<List<ImagePosition>> mapToCurves(Map<ImagePosition, Integer> curveByPosition) {
 		Map<Integer, List<ImagePosition>> pixelsByCurve = new HashMap<>();
-		curveByPosition.forEach(new BiConsumer<ImagePosition, Integer>() {
-			@Override
-			public void accept(ImagePosition key, Integer value) {
-				pixelsByCurve.computeIfAbsent(value, new Function<Integer, List<ImagePosition>>() {
-					@Override
-					public List<ImagePosition> apply(Integer integer) {
-						return new ArrayList<>();
-					}
-				}).add(key);
-			}
-		});
+		curveByPosition.forEach((key, value) -> pixelsByCurve.computeIfAbsent(value, integer -> new ArrayList<>()).add(key));
 		return pixelsByCurve.entrySet().stream().map(Map.Entry::getValue).collect(Collectors.toList());
 	}
 
@@ -127,5 +117,4 @@ public class ActiveContourCurveDetectorServiceImpl implements ActiveContourCurve
 		return isFourNeighboring(candidateNeighboring, positionToEvaluate) || rightBottomNeighboring || topLeftNeighboring || topRightNeighboring
 				|| bottomLeftNeighboring;
 	}
-
 }

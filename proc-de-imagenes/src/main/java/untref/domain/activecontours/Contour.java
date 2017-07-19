@@ -5,6 +5,7 @@ import javafx.scene.paint.Color;
 import untref.domain.ImagePosition;
 import untref.utils.ImageValidator;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -80,6 +81,35 @@ public class Contour {
 		List<ImagePosition> invalidLinPositions = lIn.stream().filter(this::hasAllNeighboringWithValueLowerThanZero).collect(Collectors.toList());
 		lIn.removeAll(invalidLinPositions);
 		invalidLinPositions.forEach(imagePosition -> matrix[imagePosition.getRow()][imagePosition.getColumn()] = OBJECT);
+	}
+
+	public void deleteCurves(List<List<ImagePosition>> curvesToDelete) {
+		curvesToDelete.forEach(curve -> removeObjectAndLinFromMatrix(curve));
+		List<ImagePosition> lInToDelete = new ArrayList<>();
+		curvesToDelete.forEach(lInToDelete::addAll);
+		lIn.removeAll(curvesToDelete);
+		//moveLinToBackground(curvesToDelete);
+		moveInvalidLoutToBackground();
+	}
+
+	private void removeObjectAndLinFromMatrix(List<ImagePosition> curve) {
+		int minimumRow = Integer.MAX_VALUE;
+		int minimumColumn = Integer.MAX_VALUE;
+		int maximumRow = Integer.MIN_VALUE;
+		int maximumColumn = Integer.MIN_VALUE;
+
+		for (ImagePosition imagePosition : curve) {
+			minimumRow = Math.min(minimumRow, imagePosition.getRow());
+			maximumRow = Math.max(maximumRow, imagePosition.getRow());
+			minimumColumn = Math.min(minimumColumn, imagePosition.getColumn());
+			maximumColumn = Math.max(maximumColumn, imagePosition.getColumn());
+		}
+
+		for (int row = minimumRow; row <= maximumRow; row++) {
+			for (int column = minimumColumn; column <= maximumColumn; column++) {
+				matrix[row][column] = BACKGROUND;
+			}
+		}
 	}
 
 	private boolean hasAllNeighboringWithValueLowerThanZero(ImagePosition imagePosition) {
