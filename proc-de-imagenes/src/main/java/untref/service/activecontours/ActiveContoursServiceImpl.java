@@ -91,14 +91,14 @@ public class ActiveContoursServiceImpl implements ActiveContoursService {
 			double distance = Double.MAX_VALUE;
 			for (int centroidIndex = 0; centroidIndex < centroids.size(); centroidIndex++) {
 				double distanceToOldCentroid = calculateDistance(oldCentroid, centroids.get(centroidIndex));
-				System.out.println("curve:" + centroidIndex + " distance:" + distanceToOldCentroid + " pixels:"+ curves.get(centroidIndex).size());
+				System.out.println("curve:" + centroidIndex + " distance:" + distanceToOldCentroid + " pixels:" + curves.get(centroidIndex).size());
 				if (distance > distanceToOldCentroid) {
 					distance = distanceToOldCentroid;
 					candidateCurve = centroidIndex;
 				}
 			}
 
-			if(candidateCurve != -1){
+			if (candidateCurve != -1 && 0.2 < activeContourCurves.getDetectionFactor()) {
 				List<List<ImagePosition>> curvesToDelete = new ArrayList<>(curves);
 				curvesToDelete.remove(candidateCurve);
 				contour.deleteCurves(curvesToDelete);

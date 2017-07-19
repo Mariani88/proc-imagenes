@@ -20,13 +20,15 @@ public class ActiveContourCurveDetectorServiceImpl implements ActiveContourCurve
 		int initialPixel = 0;
 		Map<ImagePosition, Integer> curveByPosition = new HashMap<>();
 		int closedCurve = 1;
-		int amountPixels = 1;
+		//int amountPixels = 1;
+		double pixelsIntoCurves = 0;
+
 
 		while (initialPixel < n) {
 			//System.out.println("primer while");
 			int actualPixel = initialPixel;
 			curveByPosition.put(pixels.get(actualPixel), closedCurve);
-			//int amountPixels = 1;
+			double amountPixels = 1;
 			boolean foundFourNeighboring = true;
 			boolean foundEightNeighboring = true;
 
@@ -64,6 +66,7 @@ public class ActiveContourCurveDetectorServiceImpl implements ActiveContourCurve
 			if (isFourNeighboring(pixels.get(actualPixel), pixels.get(initialPixel)) || isEightNeighboring(pixels.get(actualPixel),
 					pixels.get(initialPixel))) {
 				closedCurve++;
+				pixelsIntoCurves+= amountPixels;
 			} else {
 				unmark(curveByPosition, closedCurve);
 				initialPixel++;
@@ -80,7 +83,7 @@ public class ActiveContourCurveDetectorServiceImpl implements ActiveContourCurve
 		}
 
 		List<List<ImagePosition>> curves = mapToCurves(curveByPosition); //error aca
-		return new ActiveContourCurves(curves, toDouble(amountPixels) / toDouble(n));
+		return new ActiveContourCurves(curves, pixelsIntoCurves/toDouble(lIn.size()));
 	}
 
 	private List<List<ImagePosition>> mapToCurves(Map<ImagePosition, Integer> curveByPosition) {
