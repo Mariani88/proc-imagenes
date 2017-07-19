@@ -67,7 +67,7 @@ public class ActiveContoursServiceImpl implements ActiveContoursService {
 	@Override
 	public Contour adjustContoursAutomatically(Contour contour, Double colorDelta, Double reductionTolerance, int expandSize) {
 		int iterations = 20;
-
+		oldCentroid = calculateCentroid(contour.getlIn());
 		for (int index = 0; index < iterations; index++) {
 			contour = adjustContoursForVideo(contour, colorDelta);
 		}
