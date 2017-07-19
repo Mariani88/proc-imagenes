@@ -97,10 +97,13 @@ public class ActiveContoursServiceImpl implements ActiveContoursService {
 					candidateCurve = centroidIndex;
 				}
 			}
-			List<List<ImagePosition>> curvesToDelete = new ArrayList<>(curves);
-			curvesToDelete.remove(candidateCurve);
-			contour.deleteCurves(curvesToDelete);
-			contour.updateImage();
+
+			if(candidateCurve != -1){
+				List<List<ImagePosition>> curvesToDelete = new ArrayList<>(curves);
+				curvesToDelete.remove(candidateCurve);
+				contour.deleteCurves(curvesToDelete);
+				contour.updateImage();
+			}
 		}
 
 		return activeContourCurves;
