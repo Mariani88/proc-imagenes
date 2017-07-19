@@ -4,6 +4,8 @@ import untref.domain.ImagePosition;
 import untref.domain.activecontours.ActiveContourCurves;
 
 import java.util.*;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static untref.domain.utils.ImageValuesTransformer.toDouble;
@@ -83,7 +85,17 @@ public class ActiveContourCurveDetectorServiceImpl implements ActiveContourCurve
 
 	private List<List<ImagePosition>> mapToCurves(Map<ImagePosition, Integer> curveByPosition) {
 		Map<Integer, List<ImagePosition>> pixelsByCurve = new HashMap<>();
-		curveByPosition.forEach((key, value) -> pixelsByCurve.getOrDefault(value, new ArrayList<>()).add(key));
+		curveByPosition.forEach(new BiConsumer<ImagePosition, Integer>() {
+			@Override
+			public void accept(ImagePosition key, Integer value) {
+				pixelsByCurve.computeIfAbsent(value, new Function<Integer, List<ImagePosition>>() {
+					@Override
+					public List<ImagePosition> apply(Integer integer) {
+						return new ArrayList<>();
+					}
+				}).add(key);
+			}
+		});
 		return pixelsByCurve.entrySet().stream().map(Map.Entry::getValue).collect(Collectors.toList());
 	}
 

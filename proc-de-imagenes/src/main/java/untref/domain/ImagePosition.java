@@ -1,6 +1,6 @@
 package untref.domain;
 
-public class ImagePosition implements Comparable<ImagePosition> {
+public class ImagePosition implements Cloneable,Comparable<ImagePosition> {
 
 	private int row;
 	private int column;
@@ -51,5 +51,10 @@ public class ImagePosition implements Comparable<ImagePosition> {
 		}
 
 		return 1;
+	}
+
+	@Override
+	public ImagePosition clone(){
+		return new ImagePosition(this.row, this.column);
 	}
 }
